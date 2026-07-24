@@ -1,7 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { upsertCalendarDay } from '../../shared/upserts.ts';
 
-// Skeleton: pulls availability + rates from Guesty and upserts CalendarDay rows.
+// Pulls availability + rates from Guesty and upserts CalendarDay rows by listingId+date (unique).
 // Rates and availability live ONLY in CalendarDay; money is stored verbatim from Guesty.
+// Until guestyFetch returns real Guesty data, callers may pass { days: [...] } to exercise the upsert.
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -9,11 +11,24 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
     if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
-    // TODO: per listing, fetch calendar from Guesty, upsert CalendarDay { listing_id, date, available, nightly_rate, min_stay }.
+    let payload: any = {};
+    try { payload = await req.json(); } catch { payload = {}; }
+
+    const incoming = Array.isArray(payload?.days) ? payload.days : [];
+    let upserted = 0;
+    for (const d of incoming) {
+      if (!d?.listingId || !d?.date) continue;
+      await upsertCalendarDay(base44, d);
+      upserted++;
+    }
+
     const days = await base44.asServiceRole.entities.CalendarDay.list();
     return Response.json({
-      status: 'skeleton',
-      message: 'syncCalendars not yet implemented',
+      status: incoming.length ? 'upserted' : 'skeleton',
+      message: incoming.length
+        ? `${upserted} calendar days upserted by listingId+date`
+        : 'syncCalendars awaiting Guesty data; pass { days: [...] } to upsert',
+      upserted,
       currentCount: days.length,
     });
   } catch (error) {
