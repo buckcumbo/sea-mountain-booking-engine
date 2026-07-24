@@ -2,26 +2,41 @@
   "name": "GuestProfile",
   "type": "object",
   "properties": {
-    "first_name": {
-      "type": "string"
-    },
-    "last_name": {
-      "type": "string"
-    },
     "email": {
       "type": "string",
       "format": "email"
     },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
     "phone": {
       "type": "string"
     },
+    "marketingConsent": {
+      "type": "boolean",
+      "default": false
+    },
     "notes": {
       "type": "string"
+    },
+    "stayCount": {
+      "type": "number",
+      "default": 0
+    },
+    "lifetimeValue": {
+      "type": "number",
+      "default": 0
+    },
+    "preferences": {
+      "type": "object"
     }
   },
   "required": [
-    "first_name",
-    "last_name",
-    "email"
+    "email",
+    "firstName",
+    "lastName"
   ]
 }

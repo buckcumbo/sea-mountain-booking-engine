@@ -2,44 +2,108 @@
   "name": "Listing",
   "type": "object",
   "properties": {
-    "name": {
+    "guestyId": {
+      "type": "string"
+    },
+    "syncedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
       "type": "string"
     },
     "area": {
       "type": "string",
       "enum": [
-        "Myrtle Beach",
-        "North Myrtle Beach",
-        "Surfside Beach",
-        "Garden City",
-        "Murrells Inlet",
-        "Pawleys Island"
+        "north-myrtle-beach",
+        "myrtle-beach",
+        "surfside",
+        "garden-city",
+        "pawleys-island",
+        "murrells-inlet"
       ],
-      "default": "Myrtle Beach"
+      "default": "myrtle-beach"
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "bedrooms": {
       "type": "number",
-      "default": 1
+      "default": 0
     },
     "bathrooms": {
       "type": "number",
+      "default": 0
+    },
+    "sleeps": {
+      "type": "number",
       "default": 1
     },
-    "max_occupancy": {
-      "type": "number",
-      "default": 4
+    "petFriendly": {
+      "type": "boolean",
+      "default": false
     },
-    "status": {
-      "type": "string",
-      "enum": [
-        "active",
-        "inactive"
-      ],
-      "default": "active"
+    "amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "storyCopy": {
+      "type": "string"
+    },
+    "beachWalkMinutes": {
+      "type": "number"
+    },
+    "sleepsWhere": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "room": {
+            "type": "string"
+          },
+          "beds": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
-    "name",
+    "guestyId",
+    "title",
     "area"
   ]
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw } from "lucide-react";
+import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint } from "lucide-react";
 
 const STAT_CARDS = [
   { key: "Listing", label: "Listings", icon: Building2 },
@@ -9,6 +9,9 @@ const STAT_CARDS = [
   { key: "GuestProfile", label: "Guest Profiles", icon: Users },
   { key: "Quote", label: "Quotes", icon: FileText },
 ];
+
+const prettifyArea = (slug) =>
+  (slug || "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default function Admin() {
   const [loading, setLoading] = useState(true);
@@ -83,32 +86,36 @@ export default function Admin() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50 text-muted-foreground">
                 <tr>
-                  <th className="text-left font-medium px-4 py-3">Name</th>
+                  <th className="text-left font-medium px-4 py-3">Title</th>
                   <th className="text-left font-medium px-4 py-3">Area</th>
                   <th className="text-right font-medium px-4 py-3">Beds</th>
                   <th className="text-right font-medium px-4 py-3">Baths</th>
-                  <th className="text-right font-medium px-4 py-3">Max Guests</th>
+                  <th className="text-right font-medium px-4 py-3">Sleeps</th>
+                  <th className="text-center font-medium px-4 py-3">Pet</th>
                   <th className="text-left font-medium px-4 py-3">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">
+                  <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
                     <Loader2 className="w-5 h-5 animate-spin mx-auto" />
                   </td></tr>
                 ) : listings.length === 0 ? (
-                  <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">No listings yet.</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">No listings yet.</td></tr>
                 ) : (
                   listings.map((l) => (
                     <tr key={l.id} className="border-t border-border hover:bg-muted/30">
-                      <td className="px-4 py-3 font-medium">{l.name}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{l.area}</td>
+                      <td className="px-4 py-3 font-medium">{l.title}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{prettifyArea(l.area)}</td>
                       <td className="px-4 py-3 text-right">{l.bedrooms}</td>
                       <td className="px-4 py-3 text-right">{l.bathrooms}</td>
-                      <td className="px-4 py-3 text-right">{l.max_occupancy}</td>
+                      <td className="px-4 py-3 text-right">{l.sleeps}</td>
+                      <td className="px-4 py-3 text-center">
+                        {l.petFriendly ? <PawPrint className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-muted-foreground">—</span>}
+                      </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-full ${l.status === "active" ? "bg-emerald-500/10 text-emerald-600" : "bg-amber-500/10 text-amber-600"}`}>
-                          {l.status}
+                        <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-full ${l.active ? "bg-emerald-500/10 text-emerald-600" : "bg-amber-500/10 text-amber-600"}`}>
+                          {l.active ? "Active" : "Inactive"}
                         </span>
                       </td>
                     </tr>

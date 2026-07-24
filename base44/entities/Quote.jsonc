@@ -2,38 +2,52 @@
   "name": "Quote",
   "type": "object",
   "properties": {
-    "listing_id": {
+    "guestyQuoteId": {
       "type": "string"
     },
-    "check_in": {
+    "listingId": {
+      "type": "string"
+    },
+    "checkIn": {
       "type": "string",
       "format": "date"
     },
-    "check_out": {
+    "checkOut": {
       "type": "string",
       "format": "date"
     },
-    "total_amount": {
+    "guests": {
       "type": "number",
-      "default": 0
+      "default": 1
+    },
+    "invoice": {
+      "type": "object"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
     },
     "status": {
       "type": "string",
       "enum": [
-        "draft",
-        "sent",
+        "active",
         "booked",
         "expired"
       ],
-      "default": "draft"
+      "default": "active"
     },
-    "guest_id": {
+    "email": {
       "type": "string"
+    },
+    "recoveryEmailSentAt": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
-    "listing_id",
-    "check_in",
-    "check_out"
+    "guestyQuoteId",
+    "listingId",
+    "checkIn",
+    "checkOut"
   ]
 }
