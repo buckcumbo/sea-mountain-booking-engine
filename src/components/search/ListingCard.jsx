@@ -1,6 +1,7 @@
 import React from "react";
 import { PawPrint, BedDouble, Bath, Users } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
+import { Link } from "react-router-dom";
 
 function PriceLine({ price }) {
   if (price.hasDates) {
@@ -28,7 +29,7 @@ function PriceLine({ price }) {
 export default function ListingCard({ listing, price }) {
   const photo = listing.photos && listing.photos[0] ? listing.photos[0].url : null;
   return (
-    <div className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
+    <Link to={`/listing/${listing.slug || listing.id}`} className="group block bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-coast-foam">
         {photo && (
           <img
@@ -73,6 +74,6 @@ export default function ListingCard({ listing, price }) {
           <PriceLine price={price} />
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
