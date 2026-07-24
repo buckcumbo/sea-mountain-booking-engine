@@ -1,0 +1,32 @@
+{
+  "name": "CalendarDay",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "available": {
+      "type": "boolean",
+      "default": true
+    },
+    "nightly_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "min_stay": {
+      "type": "number",
+      "default": 1
+    },
+    "blocked_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "listing_id",
+    "date"
+  ]
+}

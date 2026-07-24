@@ -1,0 +1,54 @@
+{
+  "name": "Reservation",
+  "type": "object",
+  "properties": {
+    "confirmation_code": {
+      "type": "string"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "guest_id": {
+      "type": "string"
+    },
+    "check_in": {
+      "type": "string",
+      "format": "date"
+    },
+    "check_out": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "checked_in",
+        "checked_out"
+      ],
+      "default": "pending"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "direct",
+        "airbnb",
+        "vrbo",
+        "booking_com"
+      ],
+      "default": "direct"
+    }
+  },
+  "required": [
+    "listing_id",
+    "guest_id",
+    "check_in",
+    "check_out"
+  ]
+}

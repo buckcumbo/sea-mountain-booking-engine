@@ -1,0 +1,39 @@
+{
+  "name": "Quote",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string"
+    },
+    "check_in": {
+      "type": "string",
+      "format": "date"
+    },
+    "check_out": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "sent",
+        "booked",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "guest_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "listing_id",
+    "check_in",
+    "check_out"
+  ]
+}
