@@ -4,6 +4,13 @@
 
 @layer base {
   :root {
+    --coast-navy: 214 47% 18%;
+    --coast-navy-soft: 214 40% 30%;
+    --coast-sand: 36 45% 90%;
+    --coast-sand-deep: 36 38% 82%;
+    --coast-foam: 190 30% 96%;
+    --coast-ocean: 199 68% 44%;
+    --coast-ocean-soft: 199 60% 90%;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -44,6 +51,13 @@
   }
 
   .dark {
+    --coast-navy: 214 47% 18%;
+    --coast-navy-soft: 214 40% 30%;
+    --coast-sand: 36 45% 90%;
+    --coast-sand-deep: 36 38% 82%;
+    --coast-foam: 190 30% 96%;
+    --coast-ocean: 199 68% 44%;
+    --coast-ocean-soft: 199 60% 90%;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;

@@ -10,6 +10,15 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			coast: {
+  				navy: 'hsl(var(--coast-navy))',
+  				'navy-soft': 'hsl(var(--coast-navy-soft))',
+  				sand: 'hsl(var(--coast-sand))',
+  				'sand-deep': 'hsl(var(--coast-sand-deep))',
+  				foam: 'hsl(var(--coast-foam))',
+  				ocean: 'hsl(var(--coast-ocean))',
+  				'ocean-soft': 'hsl(var(--coast-ocean-soft))'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

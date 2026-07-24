@@ -1,0 +1,166 @@
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PawPrint } from "lucide-react";
+import { AREA_LABELS, prettifyCollection } from "@/lib/availability";
+
+const GUEST_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16];
+const BED_OPTIONS = [0, 1, 2, 3, 4, 5, 6];
+
+export default function FiltersPanel({ filters, onChange, collections }) {
+  const toggleCollection = (c) => {
+    const has = filters.collections.includes(c);
+    onChange({
+      collections: has
+        ? filters.collections.filter((x) => x !== c)
+        : [...filters.collections, c],
+    });
+  };
+  const budgetAny = filters.maxBudget >= 1000;
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Check-in</Label>
+          <Input
+            type="date"
+            value={filters.checkIn}
+            onChange={(e) => onChange({ checkIn: e.target.value })}
+            className="h-10"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Check-out</Label>
+          <Input
+            type="date"
+            value={filters.checkOut}
+            min={filters.checkIn || undefined}
+            onChange={(e) => onChange({ checkOut: e.target.value })}
+            className="h-10"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Guests</Label>
+          <Select
+            value={String(filters.guests)}
+            onValueChange={(v) => onChange({ guests: Number(v) })}
+          >
+            <SelectTrigger className="h-10">
+              <SelectValue placeholder="Any" />
+            </SelectTrigger>
+            <SelectContent>
+              {GUEST_OPTIONS.map((g) => (
+                <SelectItem key={g} value={String(g)}>
+                  {g === 0 ? "Any" : `${g}+`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Area</Label>
+          <Select value={filters.area} onValueChange={(v) => onChange({ area: v })}>
+            <SelectTrigger className="h-10">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All areas</SelectItem>
+              {Object.entries(AREA_LABELS).map(([slug, label]) => (
+                <SelectItem key={slug} value={slug}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Min bedrooms</Label>
+          <Select
+            value={String(filters.minBedrooms)}
+            onValueChange={(v) => onChange({ minBedrooms: Number(v) })}
+          >
+            <SelectTrigger className="h-10">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {BED_OPTIONS.map((b) => (
+                <SelectItem key={b} value={String(b)}>
+                  {b === 0 ? "Any" : `${b}+`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 flex items-end">
+          <div className="flex items-center justify-between w-full rounded-lg border border-border px-3 h-10">
+            <span className="text-sm text-muted-foreground inline-flex items-center gap-1.5">
+              <PawPrint className="w-4 h-4" /> Pet-friendly
+            </span>
+            <Switch
+              checked={filters.petFriendly}
+              onCheckedChange={(v) => onChange({ petFriendly: v })}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">Max nightly budget</Label>
+        <div className="flex items-center gap-3">
+          <Slider
+            value={[filters.maxBudget]}
+            min={100}
+            max={1000}
+            step={50}
+            onValueChange={(v) => onChange({ maxBudget: v[0] })}
+            className="flex-1"
+          />
+          <span className="text-sm font-medium text-coast-navy w-24 text-right">
+            {budgetAny ? "Any price" : `≤ $${filters.maxBudget}`}
+          </span>
+        </div>
+      </div>
+
+      {collections.length > 0 && (
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Collections</Label>
+          <div className="flex flex-wrap gap-2">
+            {collections.map((c) => {
+              const active = filters.collections.includes(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => toggleCollection(c)}
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    active
+                      ? "bg-coast-navy text-white border-coast-navy"
+                      : "bg-card text-coast-navy border-border hover:border-coast-ocean"
+                  }`}
+                >
+                  {prettifyCollection(c)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
