@@ -1,0 +1,61 @@
+{
+  "name": "Inquiry",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "property-management"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "propertyAddress": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "handled"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "type",
+    "name",
+    "email",
+    "message"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

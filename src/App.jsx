@@ -22,6 +22,12 @@ import Guides from '@/pages/Guides';
 import GuideDetail from '@/pages/GuideDetail';
 import CollectionsIndex from '@/pages/CollectionsIndex';
 import CollectionDetail from '@/pages/CollectionDetail';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import ListYourProperty from '@/pages/ListYourProperty';
+import SpecialOffers from '@/pages/SpecialOffers';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -78,6 +84,12 @@ function App() {
               <Route path="/guides/:slug" element={<GuideDetail />} />
               <Route path="/collections" element={<CollectionsIndex />} />
               <Route path="/collections/:slug" element={<CollectionDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/list-your-property" element={<ListYourProperty />} />
+              <Route path="/special-offers" element={<SpecialOffers />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
             </Route>
             <Route path="/*" element={<AuthenticatedApp />} />
           </Routes>

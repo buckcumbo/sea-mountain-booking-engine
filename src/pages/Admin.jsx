@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint } from "lucide-react";
+import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare } from "lucide-react";
+import InquiriesTable from "@/components/admin/InquiriesTable";
 
 const STAT_CARDS = [
   { key: "Listing", label: "Listings", icon: Building2 },
@@ -17,6 +18,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [counts, setCounts] = useState({});
   const [listings, setListings] = useState([]);
+  const [tab, setTab] = useState("listings");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -80,52 +82,79 @@ export default function Admin() {
           ))}
         </div>
 
-        <h2 className="font-heading text-base font-semibold mb-4">Listings</h2>
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 text-muted-foreground">
-                <tr>
-                  <th className="text-left font-medium px-4 py-3">Title</th>
-                  <th className="text-left font-medium px-4 py-3">Area</th>
-                  <th className="text-right font-medium px-4 py-3">Beds</th>
-                  <th className="text-right font-medium px-4 py-3">Baths</th>
-                  <th className="text-right font-medium px-4 py-3">Sleeps</th>
-                  <th className="text-center font-medium px-4 py-3">Pet</th>
-                  <th className="text-left font-medium px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
-                    <Loader2 className="w-5 h-5 animate-spin mx-auto" />
-                  </td></tr>
-                ) : listings.length === 0 ? (
-                  <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">No listings yet.</td></tr>
-                ) : (
-                  listings.map((l) => (
-                    <tr key={l.id} className="border-t border-border hover:bg-muted/30">
-                      <td className="px-4 py-3 font-medium">{l.title}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{prettifyArea(l.area)}</td>
-                      <td className="px-4 py-3 text-right">{l.bedrooms}</td>
-                      <td className="px-4 py-3 text-right">{l.bathrooms}</td>
-                      <td className="px-4 py-3 text-right">{l.sleeps}</td>
-                      <td className="px-4 py-3 text-center">
-                        {l.petFriendly ? <PawPrint className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-muted-foreground">—</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-full ${l.active ? "bg-emerald-500/10 text-emerald-600" : "bg-amber-500/10 text-amber-600"}`}>
-                          {l.active ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+        <div className="flex items-center gap-2 mb-4">
+          <TabButton active={tab === "listings"} onClick={() => setTab("listings")} icon={Building2}>
+            Listings
+          </TabButton>
+          <TabButton active={tab === "inquiries"} onClick={() => setTab("inquiries")} icon={MessageSquare}>
+            Inquiries
+          </TabButton>
         </div>
+
+        {tab === "listings" ? (
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 text-muted-foreground">
+                  <tr>
+                    <th className="text-left font-medium px-4 py-3">Title</th>
+                    <th className="text-left font-medium px-4 py-3">Area</th>
+                    <th className="text-right font-medium px-4 py-3">Beds</th>
+                    <th className="text-right font-medium px-4 py-3">Baths</th>
+                    <th className="text-right font-medium px-4 py-3">Sleeps</th>
+                    <th className="text-center font-medium px-4 py-3">Pet</th>
+                    <th className="text-left font-medium px-4 py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
+                      <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+                    </td></tr>
+                  ) : listings.length === 0 ? (
+                    <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">No listings yet.</td></tr>
+                  ) : (
+                    listings.map((l) => (
+                      <tr key={l.id} className="border-t border-border hover:bg-muted/30">
+                        <td className="px-4 py-3 font-medium">{l.title}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{prettifyArea(l.area)}</td>
+                        <td className="px-4 py-3 text-right">{l.bedrooms}</td>
+                        <td className="px-4 py-3 text-right">{l.bathrooms}</td>
+                        <td className="px-4 py-3 text-right">{l.sleeps}</td>
+                        <td className="px-4 py-3 text-center">
+                          {l.petFriendly ? <PawPrint className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-muted-foreground">—</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-full ${l.active ? "bg-emerald-500/10 text-emerald-600" : "bg-amber-500/10 text-amber-600"}`}>
+                            {l.active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <InquiriesTable />
+        )}
       </main>
     </div>
+  );
+}
+
+function TabButton({ active, onClick, icon: Icon, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-2 text-sm px-3 py-2 rounded-lg transition-colors ${
+        active
+          ? "bg-primary text-primary-foreground"
+          : "bg-card border border-border text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      <Icon className="w-4 h-4" /> {children}
+    </button>
   );
 }
