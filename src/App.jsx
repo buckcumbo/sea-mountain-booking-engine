@@ -12,6 +12,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Admin from '@/pages/Admin';
+import Today from '@/pages/Today';
 import Search from '@/pages/Search';
 import ListingDetail from '@/pages/ListingDetail';
 
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Admin />} />
+      <Route path="/today" element={<Today />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
