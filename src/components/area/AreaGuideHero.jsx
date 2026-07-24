@@ -4,31 +4,7 @@ import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { prettifyArea } from "@/lib/availability";
 import ListingCard from "@/components/search/ListingCard";
-
-// A guide card: title + excerpt, linking to /guides/:slug (detail page to come).
-function GuideCard({ guide }) {
-  return (
-    <Link
-      to={`/guides/${guide.slug}`}
-      className="group block bg-card rounded-2xl border border-border overflow-hidden hover:shadow-md transition-shadow"
-    >
-      <div className="p-5">
-        <span className="text-[11px] uppercase tracking-wide text-coast-ocean font-medium">
-          {guide.category}
-        </span>
-        <h3 className="font-heading font-semibold text-coast-navy mt-1 group-hover:text-coast-ocean transition-colors">
-          {guide.title}
-        </h3>
-        {guide.excerpt && (
-          <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{guide.excerpt}</p>
-        )}
-        <span className="inline-flex items-center gap-1 text-xs text-coast-ocean mt-3">
-          Read more <ArrowRight className="w-3 h-3" />
-        </span>
-      </div>
-    </Link>
-  );
-}
+import GuideCard from "@/components/guides/GuideCard";
 
 export default function AreaGuideHero({ guide, listings, guides }) {
   const areaName = prettifyArea(guide.area);
