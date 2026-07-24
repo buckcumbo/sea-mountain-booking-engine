@@ -70,7 +70,7 @@ export default function Today() {
           </div>
           <div className="flex items-center gap-2">
             <Link
-              to="/"
+              to="/admin"
               className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
             >
               Dashboard

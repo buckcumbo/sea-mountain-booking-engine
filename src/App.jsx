@@ -13,6 +13,8 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Admin from '@/pages/Admin';
 import Today from '@/pages/Today';
+import Home from '@/pages/Home';
+import PublicLayout from '@/components/layout/PublicLayout';
 import Search from '@/pages/Search';
 import ListingDetail from '@/pages/ListingDetail';
 
@@ -42,7 +44,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={<Admin />} />
+      <Route path="/admin" element={<Admin />} />
       <Route path="/today" element={<Today />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -62,8 +64,11 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/listing/:slug" element={<ListingDetail />} />
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/listing/:slug" element={<ListingDetail />} />
+            </Route>
             <Route path="/*" element={<AuthenticatedApp />} />
           </Routes>
         </Router>

@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   Loader2,
-  ArrowLeft,
   BedDouble,
   Bath,
   Users,
@@ -83,23 +82,6 @@ export default function ListingDetail() {
 
   return (
     <div className="min-h-screen bg-coast-foam">
-      <header className="bg-coast-navy text-white">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-3">
-          <Link
-            to="/search"
-            className="inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white"
-          >
-            <ArrowLeft className="w-4 h-4" /> Search
-          </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-              <Waves className="w-4 h-4" />
-            </div>
-            <span className="font-heading text-sm font-semibold">Sea Mountain Stays</span>
-          </div>
-        </div>
-      </header>
-
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div className="space-y-8">

@@ -31,7 +31,17 @@ export default function Search() {
   const [view, setView] = useState("list");
   const [sort, setSort] = useState("price");
   const [selectedId, setSelectedId] = useState(null);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState(() => {
+    const p = new URLSearchParams(window.location.search);
+    const collection = p.get("collection");
+    return {
+      ...DEFAULT_FILTERS,
+      checkIn: p.get("checkIn") || "",
+      checkOut: p.get("checkOut") || "",
+      guests: Number(p.get("guests")) || 0,
+      collections: collection ? [collection] : [],
+    };
+  });
 
   const update = useCallback(
     (patch) => setFilters((f) => ({ ...f, ...patch })),
@@ -130,20 +140,6 @@ export default function Search() {
 
   return (
     <div className="min-h-screen bg-coast-foam">
-      <header className="bg-coast-navy text-white">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
-            <SearchIcon className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="font-heading text-lg font-semibold leading-tight">
-              Sea Mountain Stays
-            </h1>
-            <p className="text-xs text-white/60">Grand Strand vacation rentals</p>
-          </div>
-        </div>
-      </header>
-
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[300px_1fr] gap-8">
           <aside className="lg:sticky lg:top-6 lg:self-start">
