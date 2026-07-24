@@ -17,6 +17,7 @@ import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
 import Search from '@/pages/Search';
 import ListingDetail from '@/pages/ListingDetail';
+import AreaGuidePage from '@/pages/AreaGuidePage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -68,6 +69,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
               <Route path="/listing/:slug" element={<ListingDetail />} />
+              <Route path="/area/:slug" element={<AreaGuidePage />} />
             </Route>
             <Route path="/*" element={<AuthenticatedApp />} />
           </Routes>

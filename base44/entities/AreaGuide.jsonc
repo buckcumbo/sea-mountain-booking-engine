@@ -1,0 +1,90 @@
+{
+  "name": "AreaGuide",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "area",
+        "guide"
+      ],
+      "default": "guide"
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "north-myrtle-beach",
+        "myrtle-beach",
+        "surfside",
+        "garden-city",
+        "murrells-inlet",
+        "pawleys-island"
+      ]
+    },
+    "slug": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "heroImage": {
+      "type": "string"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "attractions",
+        "activities",
+        "dining",
+        "seasonal",
+        "general"
+      ],
+      "default": "general"
+    }
+  },
+  "required": [
+    "type",
+    "area",
+    "slug",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.published": true
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
