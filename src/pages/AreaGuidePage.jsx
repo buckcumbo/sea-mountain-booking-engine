@@ -3,6 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Compass } from "lucide-react";
 import AreaGuideHero from "@/components/area/AreaGuideHero";
+import Seo from "@/components/Seo";
+import { prettifyArea } from "@/lib/availability";
+import { DEFAULT_DESCRIPTION } from "@/lib/seo";
 
 // Public area page. Reads ONLY Listing + AreaGuide. No external calls, no price math.
 export default function AreaGuidePage() {
@@ -80,5 +83,14 @@ export default function AreaGuidePage() {
     );
   }
 
-  return <AreaGuideHero guide={guide} listings={listings} guides={guides} />;
+  return (
+    <>
+      <Seo
+        title={`${prettifyArea(guide.area)} Vacation Rentals | Sea Mountain Vacations`}
+        description={guide.excerpt || DEFAULT_DESCRIPTION}
+        path={`/area/${slug}`}
+      />
+      <AreaGuideHero guide={guide} listings={listings} guides={guides} />
+    </>
+  );
 }

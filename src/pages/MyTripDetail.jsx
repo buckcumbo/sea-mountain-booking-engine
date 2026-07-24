@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Loader2, ArrowLeft, MapPin, Calendar, Clock, Wallet, Home, Phone } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
 import { Button } from "@/components/ui/button";
+import Seo from "@/components/Seo";
 
 export default function MyTripDetail() {
   const { reservationId } = useParams();
@@ -59,6 +60,7 @@ export default function MyTripDetail() {
 
   return (
     <div className="bg-coast-foam min-h-screen">
+      <Seo title="My Trip | Sea Mountain Vacations" path="/my-trips" robots="noindex,nofollow" />
       <main className="max-w-3xl mx-auto px-6 py-8">
         <Link
           to="/my-trips"

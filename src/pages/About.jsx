@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Heart, Crown, Workflow, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Seo from "@/components/Seo";
 
 const VALUES = [
   { icon: Heart, title: "Local & Family-Run", text: "A Grand Strand family behind every stay — not a faceless management company." },
@@ -13,6 +14,11 @@ const VALUES = [
 export default function About() {
   return (
     <div>
+      <Seo
+        title="About | Sea Mountain Vacations"
+        description="A local, family-run vacation rental manager on the Grand Strand — the 100 Collection standard, Guesty-powered operations, and an on-the-ground team."
+        path="/about"
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

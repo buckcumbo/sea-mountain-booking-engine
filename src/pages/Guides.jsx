@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Loader2 } from "lucide-react";
 import { AREA_LABELS } from "@/lib/availability";
 import GuideCard from "@/components/guides/GuideCard";
+import Seo from "@/components/Seo";
 
 const CATEGORIES = ["attractions", "activities", "dining", "seasonal"];
 
@@ -38,6 +39,11 @@ export default function Guides() {
 
   return (
     <div>
+      <Seo
+        title="Things To Do on the Grand Strand | Sea Mountain Vacations"
+        description="Local guides to attractions, activities, dining, and seasonal events across all six Grand Strand communities."
+        path="/guides"
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

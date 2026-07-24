@@ -5,6 +5,7 @@ import { Loader2, Search as SearchIcon, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ListingCard from "@/components/search/ListingCard";
 import { COLLECTIONS, COLLECTION_BY_SLUG, listingMatchesCollection } from "@/lib/collections";
+import Seo from "@/components/Seo";
 
 export default function CollectionDetail() {
   const { slug } = useParams();
@@ -61,6 +62,11 @@ export default function CollectionDetail() {
 
   return (
     <div>
+      <Seo
+        title={`${cfg.label} Vacation Rentals | Sea Mountain Vacations`}
+        description={cfg.blurb || ""}
+        path={`/collections/${slug}`}
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

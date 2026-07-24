@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
+import Seo from "@/components/Seo";
 import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
 import MapView from "@/components/search/MapView";
@@ -140,6 +141,11 @@ export default function Search() {
 
   return (
     <div className="min-h-screen bg-coast-foam">
+      <Seo
+        title="Find a Vacation Rental | Sea Mountain Vacations"
+        description="Search oceanfront condos, beach houses, and pet-friendly vacation rentals across the Grand Strand. Filter by dates, area, and guests — book direct with no fees."
+        path="/search"
+      />
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[300px_1fr] gap-8">
           <aside className="lg:sticky lg:top-6 lg:self-start">

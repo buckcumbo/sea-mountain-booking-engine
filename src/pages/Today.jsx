@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Waves, Loader2, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import ReservationRow from "@/components/today/ReservationRow";
+import Seo from "@/components/Seo";
 
 // Staff-only Today board. Reads ONLY Reservation + Listing. No external calls.
 // Same auth gate as Admin (route lives under AuthenticatedApp; Reservation RLS
@@ -53,6 +54,7 @@ export default function Today() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <Seo title="Today's Board | Sea Mountain Vacations" path="/today" robots="noindex,nofollow" />
       <header className="bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">

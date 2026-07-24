@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Loader2, Tag, Mail } from "lucide-react";
 import { COLLECTIONS } from "@/lib/collections";
 import ListingCard from "@/components/search/ListingCard";
+import Seo from "@/components/Seo";
 
 export default function SpecialOffers() {
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,11 @@ export default function SpecialOffers() {
 
   return (
     <div>
+      <Seo
+        title="Special Offers | Sea Mountain Vacations"
+        description="Seasonal deals and last-minute savings on Grand Strand vacation rentals."
+        path="/special-offers"
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

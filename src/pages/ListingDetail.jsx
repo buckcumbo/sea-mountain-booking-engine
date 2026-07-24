@@ -11,6 +11,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
+import Seo from "@/components/Seo";
+import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
 import BookingPanel from "@/components/listing/BookingPanel";
 import Reviews from "@/components/listing/Reviews";
@@ -82,6 +84,13 @@ export default function ListingDetail() {
 
   return (
     <div className="min-h-screen bg-coast-foam">
+      <Seo
+        title={`${listing.title} | ${prettifyArea(listing.area)} Vacation Rental | Sea Mountain Vacations`}
+        description={truncateDescription(listing.storyCopy || listing.title)}
+        path={`/listing/${listing.slug || listing.id}`}
+        ogImage={listing.photos && listing.photos[0] ? listing.photos[0].url : undefined}
+        jsonLd={buildVacationRentalJsonLd(listing, reviews)}
+      />
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div className="space-y-8">

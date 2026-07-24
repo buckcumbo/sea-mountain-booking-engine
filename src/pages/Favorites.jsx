@@ -5,6 +5,7 @@ import { Loader2, Heart, Search } from "lucide-react";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { Button } from "@/components/ui/button";
 import ListingCard from "@/components/search/ListingCard";
+import Seo from "@/components/Seo";
 
 export default function Favorites() {
   const { items } = useFavorites();
@@ -27,6 +28,7 @@ export default function Favorites() {
 
   return (
     <div className="bg-coast-foam min-h-screen">
+      <Seo title="Favorites | Sea Mountain Vacations" path="/favorites" robots="noindex,nofollow" />
       <section className="bg-coast-navy text-white">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <h1 className="font-heading text-3xl font-semibold">Your Favorites</h1>

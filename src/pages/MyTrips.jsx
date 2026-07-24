@@ -6,6 +6,7 @@ import { Loader2, Luggage, Search } from "lucide-react";
 import { format, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import TripCard from "@/components/my-trips/TripCard";
+import Seo from "@/components/Seo";
 
 export default function MyTrips() {
   const { isAuthenticated, isLoadingAuth } = useAuth();
@@ -47,6 +48,7 @@ export default function MyTrips() {
 
   return (
     <div className="bg-coast-foam min-h-screen">
+      <Seo title="My Trips | Sea Mountain Vacations" path="/my-trips" robots="noindex,nofollow" />
       <section className="bg-coast-navy text-white">
         <div className="max-w-5xl mx-auto px-6 py-12">
           <h1 className="font-heading text-3xl font-semibold">My Trips</h1>

@@ -1,10 +1,18 @@
 import React from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import InquiryForm from "@/components/forms/InquiryForm";
+import Seo from "@/components/Seo";
+import { buildLocalBusinessJsonLd } from "@/lib/seo";
 
 export default function Contact() {
   return (
     <div>
+      <Seo
+        title="Contact | Sea Mountain Vacations"
+        description="Questions about a stay, a booking, or a property? Our Grand Strand team is here to help."
+        path="/contact"
+        jsonLd={buildLocalBusinessJsonLd()}
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

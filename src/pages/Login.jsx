@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import Seo from "@/components/Seo";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -46,6 +47,7 @@ export default function Login() {
         </>
       }
     >
+      <Seo title="Log in | Sea Mountain Vacations" path="/login" robots="noindex,nofollow" />
       <Button
         variant="outline"
         className="w-full h-12 text-sm font-medium mb-6"

@@ -1,9 +1,15 @@
 import React from "react";
 import CollectionGrid from "@/components/home/CollectionGrid";
+import Seo from "@/components/Seo";
 
 export default function CollectionsIndex() {
   return (
     <div>
+      <Seo
+        title="Vacation Rental Collections | Sea Mountain Vacations"
+        description="Browse vacation rentals by collection — oceanfront, pet-friendly, poolside, budget-friendly, and our premier 100 Collection."
+        path="/collections"
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

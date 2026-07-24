@@ -2,6 +2,7 @@ import React from "react";
 import { TrendingUp, Sparkles, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InquiryForm from "@/components/forms/InquiryForm";
+import Seo from "@/components/Seo";
 
 const BENEFITS = [
   {
@@ -30,6 +31,11 @@ const STEPS = [
 export default function ListYourProperty() {
   return (
     <div>
+      <Seo
+        title="List Your Property | Sea Mountain Vacations"
+        description="Grand Strand property management that pays for itself — local, family-run, and obsessed with occupancy. Get a free rental projection."
+        path="/list-your-property"
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">

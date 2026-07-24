@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { prettifyArea } from "@/lib/availability";
 import GuideCard from "@/components/guides/GuideCard";
+import Seo from "@/components/Seo";
+import { buildArticleJsonLd, buildFaqJsonLd } from "@/lib/seo";
 
 const MD = {
   h2: ({ node, ...p }) => <h2 className="font-heading text-2xl font-semibold text-coast-navy mt-8 mb-3" {...p} />,
@@ -87,6 +89,14 @@ export default function GuideDetail() {
 
   return (
     <div>
+      <Seo
+        title={`${guide.title} | Sea Mountain Vacations`}
+        description={guide.excerpt || ""}
+        path={`/guides/${slug}`}
+        ogType="article"
+        ogImage={guide.heroImage || undefined}
+        jsonLd={[buildArticleJsonLd(guide), buildFaqJsonLd(guide)].filter(Boolean)}
+      />
       <section className="relative overflow-hidden bg-coast-navy">
         {guide.heroImage && (
           <img

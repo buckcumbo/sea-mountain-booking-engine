@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare } from "lucide-react";
 import InquiriesTable from "@/components/admin/InquiriesTable";
+import Seo from "@/components/Seo";
 
 const STAT_CARDS = [
   { key: "Listing", label: "Listings", icon: Building2 },
@@ -44,6 +45,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <Seo title="Admin | Sea Mountain Vacations" path="/admin" robots="noindex,nofollow" />
       <header className="bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">

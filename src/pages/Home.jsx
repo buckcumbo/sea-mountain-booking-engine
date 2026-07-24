@@ -6,6 +6,8 @@ import AreaGrid from "@/components/home/AreaGrid";
 import FeaturedRentals from "@/components/home/FeaturedRentals";
 import ReviewStrip from "@/components/home/ReviewStrip";
 import { Receipt, MapPin, Tag } from "lucide-react";
+import Seo from "@/components/Seo";
+import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
 
 function Section({ title, subtitle, children }) {
   return (
@@ -41,6 +43,12 @@ export default function Home() {
 
   return (
     <div>
+      <Seo
+        title="Sea Mountain Vacations | North Myrtle Beach & Grand Strand Vacation Rentals"
+        description={DEFAULT_DESCRIPTION}
+        path="/"
+        jsonLd={buildLocalBusinessJsonLd()}
+      />
       <Hero />
 
       <Section title="Browse by Collection" subtitle="From oceanfront retreats to budget-friendly getaways, find the perfect fit.">

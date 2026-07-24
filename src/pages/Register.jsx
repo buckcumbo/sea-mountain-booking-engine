@@ -8,6 +8,7 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import Seo from "@/components/Seo";
 import { toast } from "@/components/ui/use-toast";
 
 export default function Register() {
@@ -138,6 +139,7 @@ export default function Register() {
         </>
       }
     >
+      <Seo title="Create your account | Sea Mountain Vacations" path="/register" robots="noindex,nofollow" />
       <Button
         variant="outline"
         className="w-full h-12 text-sm font-medium mb-6"
