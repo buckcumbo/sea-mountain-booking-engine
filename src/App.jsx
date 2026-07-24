@@ -20,6 +20,8 @@ import ListingDetail from '@/pages/ListingDetail';
 import AreaGuidePage from '@/pages/AreaGuidePage';
 import Guides from '@/pages/Guides';
 import GuideDetail from '@/pages/GuideDetail';
+import CollectionsIndex from '@/pages/CollectionsIndex';
+import CollectionDetail from '@/pages/CollectionDetail';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -74,6 +76,8 @@ function App() {
               <Route path="/area/:slug" element={<AreaGuidePage />} />
               <Route path="/guides" element={<Guides />} />
               <Route path="/guides/:slug" element={<GuideDetail />} />
+              <Route path="/collections" element={<CollectionsIndex />} />
+              <Route path="/collections/:slug" element={<CollectionDetail />} />
             </Route>
             <Route path="/*" element={<AuthenticatedApp />} />
           </Routes>
