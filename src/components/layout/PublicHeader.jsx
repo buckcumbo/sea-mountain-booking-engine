@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Menu, X, Phone } from "lucide-react";
+import { ChevronDown, Menu, X, Phone, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,11 +9,15 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { AREA_LABELS } from "@/lib/availability";
+import { useFavorites } from "@/lib/FavoritesContext";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = () => setMobileOpen(false);
   const areas = Object.entries(AREA_LABELS);
+  const { count } = useFavorites();
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-border">
@@ -37,10 +41,19 @@ export default function PublicHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/guides" className="hover:text-coast-ocean">Things To Do</Link>
+          {isAuthenticated && <Link to="/my-trips" className="hover:text-coast-ocean">My Trips</Link>}
           <Link to="/list-your-property" className="hover:text-coast-ocean">List Your Property</Link>
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link to="/favorites" className="relative p-2 text-coast-navy hover:text-coast-ocean" aria-label="Favorites">
+            <Heart className={`w-5 h-5 ${count > 0 ? "fill-red-500 text-red-500" : ""}`} />
+            {count > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-coast-ocean text-white text-[10px] font-semibold flex items-center justify-center">
+                {count}
+              </span>
+            )}
+          </Link>
           <a href="tel:8435550100" className="hidden md:inline-flex items-center gap-1.5 text-sm text-coast-navy">
             <Phone className="w-4 h-4" /> (843) 555-0100
           </a>
@@ -71,6 +84,8 @@ export default function PublicHeader() {
             </div>
           </div>
           <Link to="/guides" onClick={close} className="block">Things To Do</Link>
+          {isAuthenticated && <Link to="/my-trips" onClick={close} className="block">My Trips</Link>}
+          <Link to="/favorites" onClick={close} className="block">Favorites{count > 0 ? ` (${count})` : ""}</Link>
           <Link to="/list-your-property" onClick={close} className="block">List Your Property</Link>
           <a href="tel:8435550100" className="inline-flex items-center gap-1.5 pt-1">
             <Phone className="w-4 h-4" /> (843) 555-0100

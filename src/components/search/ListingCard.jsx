@@ -2,6 +2,7 @@ import React from "react";
 import { PawPrint, BedDouble, Bath, Users } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
 import { Link } from "react-router-dom";
+import HeartToggle from "@/components/favorites/HeartToggle";
 
 function PriceLine({ price }) {
   if (price.hasDates) {
@@ -43,8 +44,11 @@ export default function ListingCard({ listing, price }) {
             Featured
           </span>
         )}
-        <span className="absolute top-3 right-3 bg-white/90 backdrop-blur text-coast-navy text-xs font-medium px-2.5 py-1 rounded-full">
+        <span className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-coast-navy text-xs font-medium px-2.5 py-1 rounded-full">
           {prettifyArea(listing.area)}
+        </span>
+        <span className="absolute top-3 right-3">
+          <HeartToggle listingId={listing.id} />
         </span>
       </div>
       <div className="p-4 space-y-3">

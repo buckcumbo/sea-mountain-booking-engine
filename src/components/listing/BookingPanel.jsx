@@ -4,6 +4,7 @@ import { format, startOfDay, differenceInCalendarDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
+import HeartToggle from "@/components/favorites/HeartToggle";
 
 // Date-range picker driven by stored CalendarDay rows: unavailable + past dates
 // are not selectable. A range shorter than the check-in day's minNights shows a
@@ -63,13 +64,16 @@ export default function BookingPanel({ listing, cal }) {
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-sm p-5 space-y-4">
-      <div>
-        <div className="font-heading text-lg font-semibold text-coast-navy">
-          Check availability
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="font-heading text-lg font-semibold text-coast-navy">
+            Check availability
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Select your dates for a sample quote.
+          </p>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Select your dates for a sample quote.
-        </p>
+        <HeartToggle listingId={listing.id} className="bg-coast-sand" />
       </div>
 
       <div className="flex justify-center">

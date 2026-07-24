@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { FavoritesProvider } from '@/lib/FavoritesContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
@@ -28,6 +29,9 @@ import ListYourProperty from '@/pages/ListYourProperty';
 import SpecialOffers from '@/pages/SpecialOffers';
 import Privacy from '@/pages/Privacy';
 import Terms from '@/pages/Terms';
+import Favorites from '@/pages/Favorites';
+import MyTrips from '@/pages/MyTrips';
+import MyTripDetail from '@/pages/MyTripDetail';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -67,6 +71,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <FavoritesProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <ScrollToTop />
@@ -90,12 +95,16 @@ function App() {
               <Route path="/special-offers" element={<SpecialOffers />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/my-trips" element={<MyTrips />} />
+              <Route path="/my-trips/:reservationId" element={<MyTripDetail />} />
             </Route>
             <Route path="/*" element={<AuthenticatedApp />} />
           </Routes>
         </Router>
         <Toaster />
       </QueryClientProvider>
+      </FavoritesProvider>
     </AuthProvider>
   )
 }
