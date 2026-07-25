@@ -1,0 +1,44 @@
+{
+  "name": "Same-Day Turn Flags",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "same_day_turn_flags",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "flag": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "flagSameDayTurns"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Flag same-day turns",
+            "description": "Mark arriving reservations with same-day turn"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Daily at 6 AM ET: flags arriving reservations that share a checkout/check-in date with a departing reservation on the same listing."
+}

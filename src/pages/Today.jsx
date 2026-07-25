@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
@@ -7,52 +7,29 @@ import { format } from "date-fns";
 import ReservationRow from "@/components/today/ReservationRow";
 import Seo from "@/components/Seo";
 
-// Staff-only Today board. Reads ONLY Reservation + Listing. No external calls.
-// Same auth gate as Admin (route lives under AuthenticatedApp; Reservation RLS
-// is admin-only, so non-admins see an empty board).
+// Staff/admin Today board. Loads all data from the getTodayBoard backend
+// function (admin only) instead of querying entities directly. Same-day turns
+// render at the top as the priority section.
 export default function Today() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [reservations, setReservations] = useState([]);
-  const [listings, setListings] = useState([]);
-  const today = format(new Date(), "yyyy-MM-dd");
+  const [board, setBoard] = useState(null);
 
   const load = async () => {
     setLoading(true);
-    const [res, list] = await Promise.all([
-      base44.entities.Reservation.list("-created_date", 500),
-      base44.entities.Listing.list("-created_date", 500),
-    ]);
-    setReservations(res);
-    setListings(list);
-    setLoading(false);
+    try {
+      const res = await base44.functions.invoke("getTodayBoard", {});
+      setBoard(res.data);
+    } catch {
+      setBoard(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     load();
   }, []);
-
-  const listingById = useMemo(
-    () => Object.fromEntries(listings.map((l) => [l.id, l])),
-    [listings]
-  );
-
-  const sections = useMemo(() => {
-    const arrivals = reservations.filter((r) => r.checkIn === today);
-    const departures = reservations.filter((r) => r.checkOut === today);
-    const stayovers = reservations.filter(
-      (r) => r.checkIn < today && r.checkOut > today
-    );
-    // Same-day turns are the fire drill — sort them to the top.
-    const turnFirst = (a, b) => {
-      const at = (a.flags || []).includes("same-day-turn") ? 0 : 1;
-      const bt = (b.flags || []).includes("same-day-turn") ? 0 : 1;
-      return at - bt;
-    };
-    arrivals.sort(turnFirst);
-    departures.sort(turnFirst);
-    return { arrivals, departures, stayovers };
-  }, [reservations, today]);
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -118,11 +95,22 @@ export default function Today() {
           <div className="flex items-center justify-center py-24">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
+        ) : board ? (
+          <div className="space-y-6">
+            {board.sameDayTurns.length > 0 && (
+              <div className="bg-orange-500/5 border border-orange-500/30 rounded-2xl p-5">
+                <Section title="Same-day turns" rows={board.sameDayTurns} />
+              </div>
+            )}
+            <div className="grid lg:grid-cols-3 gap-6">
+              <Section title="Arrivals" rows={board.arrivals} />
+              <Section title="Departures" rows={board.departures} />
+              <Section title="Unpaid balances" rows={board.unpaidBalances} />
+            </div>
+          </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6">
-            <Section title="Arrivals" rows={sections.arrivals} listingById={listingById} />
-            <Section title="Departures" rows={sections.departures} listingById={listingById} />
-            <Section title="Stayovers" rows={sections.stayovers} listingById={listingById} />
+          <div className="text-sm text-muted-foreground text-center py-24">
+            Could not load the board.
           </div>
         )}
       </main>
@@ -130,7 +118,7 @@ export default function Today() {
   );
 }
 
-function Section({ title, rows, listingById }) {
+function Section({ title, rows }) {
   return (
     <section>
       <div className="flex items-center justify-between mb-3">
@@ -144,7 +132,7 @@ function Section({ title, rows, listingById }) {
       ) : (
         <div className="space-y-3">
           {rows.map((r) => (
-            <ReservationRow key={r.id} reservation={r} listing={listingById[r.listingId]} />
+            <ReservationRow key={r.id} reservation={r} listing={r.listing} />
           ))}
         </div>
       )}
