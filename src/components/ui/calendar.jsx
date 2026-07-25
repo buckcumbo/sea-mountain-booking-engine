@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button"
 function Calendar({
   className,
   classNames,
+  components,
   showOutsideDays = true,
   ...props
 }) {
@@ -62,6 +63,9 @@ function Calendar({
         IconRight: ({ className, ...props }) => (
           <ChevronRight className={cn("h-4 w-4", className)} {...props} />
         ),
+        // Callers can add/override day-picker components (e.g. DayContent for
+        // nightly rates) without losing the chevrons above.
+        ...(components || {}),
       }}
       {...props} />)
   );
