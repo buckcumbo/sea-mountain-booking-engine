@@ -54,7 +54,10 @@ function mapProperty(p: any, photos: any[]): any {
   const petFriendly =
     p?.house_rules?.pets_allowed === true ||
     amenities.some((a: string) => a.toLowerCase().includes("pets allowed") || a.toLowerCase() === "pets");
-  const title = p?.public_name || p?.name || "Untitled home";
+  // public_name is OTA-styled ("Callahan's Castle | 5BR Beach House w/ Heated
+  // Pool") — keep only the clean home name for our site and slugs.
+  const rawTitle = p?.public_name || p?.name || "Untitled home";
+  const title = String(rawTitle).split("|")[0].trim() || String(p?.name || "Untitled home").trim();
   return {
     guestyId: `hosp_${p.id}`,
     syncedAt: new Date().toISOString(),
