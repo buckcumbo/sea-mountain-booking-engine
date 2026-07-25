@@ -129,6 +129,10 @@ Deno.serve(async (req) => {
       balanceDue,
       source: "direct",
       flags,
+      // Attribution carried verbatim from the Quote (first-touch UTM).
+      utmSource: quote.utmSource || "",
+      utmMedium: quote.utmMedium || "",
+      utmCampaign: quote.utmCampaign || "",
     });
 
     // (6) Mark the Quote as booked.
