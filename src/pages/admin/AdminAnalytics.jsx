@@ -9,6 +9,7 @@ import TrafficChart from "@/components/analytics/TrafficChart";
 import TopItemsTable from "@/components/analytics/TopItemsTable";
 import SearchInsights from "@/components/analytics/SearchInsights";
 import BookingsPlaceholder from "@/components/analytics/BookingsPlaceholder";
+import GoogleMarketingPanel from "@/components/analytics/GoogleMarketingPanel";
 
 function startOfDay(d) {
   const x = new Date(d);
@@ -241,6 +242,8 @@ export default function AdminAnalytics() {
               collectionCounts={searchInsights.collectionCounts}
             />
           </section>
+
+          <GoogleMarketingPanel />
 
           <section>
             <BookingsPlaceholder />
