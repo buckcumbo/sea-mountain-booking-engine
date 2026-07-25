@@ -322,6 +322,98 @@ Deno.serve(async (req) => {
       return Response.json({ mode, totalHospListings: hosp.length, offset, results, nextOffset });
     }
 
+    // Everything in one invocation — built to run unattended from a one-time
+    // workflow: (1) merge editorial content from same-named original records,
+    // (2) fetch Hospitable descriptions for homes with no donor (capped),
+    // (3) sibling-fill same-building units. Amenity curation happens in the
+    // enrich mode / was applied directly.
+    if (mode === "enrich-all") {
+      const normalize = (t: string) =>
+        String(t || "").toLowerCase().replace(/\bunits?\b/g, "").replace(/[^a-z0-9]/g, "");
+      const all = await svc.Listing.list("-created_date", 500);
+      const rows = Array.isArray(all) ? all : [];
+      const hosp = rows.filter((l: any) => String(l.guestyId || "").startsWith("hosp_"));
+      const legacy = rows.filter((l: any) => !String(l.guestyId || "").startsWith("hosp_"));
+      const byNorm = new Map<string, any>();
+      for (const l of legacy) {
+        const key = normalize(l.title);
+        if (!key) continue;
+        const existing = byNorm.get(key);
+        if (!existing || (!existing.storyCopy && l.storyCopy)) byNorm.set(key, l);
+      }
+      const EDITORIAL_FIELDS = [
+        "storyCopy", "sleepsWhere", "beachWalkMinutes", "featured",
+        "collections", "revaWidgetId", "videoUrl", "tourUrl",
+      ];
+      const isEmpty = (v: any) =>
+        v == null || v === "" || v === false || (Array.isArray(v) && v.length === 0);
+
+      let merged = 0;
+      const unmatched: any[] = [];
+      for (const h of hosp) {
+        let donor = byNorm.get(normalize(h.title));
+        if (!donor) {
+          // Prefix fallback: "Sea House Villas (Entire Property)" → "Sea House Villas"
+          const key = normalize(h.title);
+          for (const [k, v] of byNorm.entries()) {
+            if (key.startsWith(k) || k.startsWith(key)) { donor = v; break; }
+          }
+        }
+        if (!donor) { unmatched.push(h); continue; }
+        const updates: any = {};
+        for (const f of EDITORIAL_FIELDS) {
+          if (!isEmpty(donor[f]) && isEmpty(h[f])) updates[f] = donor[f];
+        }
+        if (Object.keys(updates).length > 0) {
+          try { await svc.Listing.update(h.id, updates); merged++; }
+          catch (e) { console.error("[enrich-all] merge failed:", h.title, e.message); }
+        }
+      }
+
+      // Hospitable descriptions for homes with no donor (capped per run).
+      let described = 0;
+      for (const h of unmatched.slice(0, 12)) {
+        if (!isEmpty(h.storyCopy)) continue;
+        try {
+          const res = await hospFetch(token, `/properties/${String(h.guestyId).slice(5)}?include=details,listings`);
+          const text = extractDescription(res?.data || res);
+          if (text) { await svc.Listing.update(h.id, { storyCopy: text }); described++; }
+        } catch (e) {
+          console.error("[enrich-all] description fetch failed:", h.title, e.message);
+        }
+      }
+
+      // Sibling fill.
+      const fresh = await svc.Listing.list("-created_date", 500);
+      const freshHosp = (Array.isArray(fresh) ? fresh : []).filter((l: any) =>
+        String(l.guestyId || "").startsWith("hosp_"),
+      );
+      const byBase = new Map<string, any[]>();
+      for (const l of freshHosp) {
+        const key = baseName(l.title);
+        if (!key) continue;
+        const arr = byBase.get(key) || [];
+        arr.push(l);
+        byBase.set(key, arr);
+      }
+      let filled = 0;
+      for (const group of byBase.values()) {
+        if (group.length < 2) continue;
+        const donor = group.find((l) => l.storyCopy && String(l.storyCopy).trim() !== "");
+        if (!donor) continue;
+        for (const l of group) {
+          if (l.id === donor.id) continue;
+          if (l.storyCopy && String(l.storyCopy).trim() !== "") continue;
+          try { await svc.Listing.update(l.id, { storyCopy: donor.storyCopy }); filled++; }
+          catch (e) { console.error("[enrich-all] sibling fill failed:", l.title, e.message); }
+        }
+      }
+
+      const summary = { mode, merged, described, siblingFilled: filled, stillEmpty: unmatched.length - described };
+      console.log("[enrich-all]", JSON.stringify(summary));
+      return Response.json(summary);
+    }
+
     // Merge editorial content from the ORIGINAL hand-built records into their
     // same-named Hospitable twins. The originals carry the real descriptions,
     // sleeps-where, beach-walk times, and collection assignments — the hosp_
