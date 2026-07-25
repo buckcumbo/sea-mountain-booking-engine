@@ -38,6 +38,61 @@ function isAdminPath() {
   return window.location.pathname.startsWith("/admin");
 }
 
+// First-touch marketing attribution. Captured once per session on landing,
+// read at quote time so bookings can be tied back to the campaign.
+const ATTRIBUTION_KEY = "smv_attribution";
+
+let inMemoryAttribution = null;
+
+export function captureAttribution() {
+  try {
+    if (sessionStorage.getItem(ATTRIBUTION_KEY)) return; // first touch only
+  } catch {
+    if (inMemoryAttribution) return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  let referrer = "";
+  try {
+    if (document.referrer) {
+      const refHost = new URL(document.referrer).hostname;
+      if (refHost && refHost !== window.location.hostname) {
+        referrer = refHost;
+      }
+    }
+  } catch {
+    // malformed referrer — ignore
+  }
+
+  const attribution = {
+    utmSource: params.get("utm_source") || "",
+    utmMedium: params.get("utm_medium") || "",
+    utmCampaign: params.get("utm_campaign") || "",
+    referrer,
+  };
+
+  // Nothing to store if the visit is direct with no UTMs
+  if (!attribution.utmSource && !attribution.utmMedium && !attribution.utmCampaign && !attribution.referrer) {
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(attribution));
+  } catch {
+    inMemoryAttribution = attribution;
+  }
+}
+
+export function getAttribution() {
+  try {
+    const raw = sessionStorage.getItem(ATTRIBUTION_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // fall through
+  }
+  return inMemoryAttribution || null;
+}
+
 // Core track function. Fire-and-forget: never throws, never blocks.
 export function track(eventType, data = {}) {
   if (isAdminPath()) return;
