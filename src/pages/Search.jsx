@@ -6,6 +6,7 @@ import {
   Map as MapIcon,
   Search as SearchIcon,
   Heart,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,9 @@ export default function Search() {
   // mobile. The map mounts only in map mode, so listing browsing never pays
   // its cost.
   const [view, setView] = useState("list");
+  // Mobile: filters collapse behind a toggle so results are one thumb-scroll
+  // away instead of buried under the full filter column. Desktop always shows.
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   // Homes swiped left in the matchmaker stay out of search until reset.
   const [passedIds, setPassedIds] = useState(() => new Set(getPassedListings()));
   const [sort, setSort] = useState("price");
@@ -254,8 +258,21 @@ export default function Search() {
         </section>
       )}
       <main className="max-w-7xl mx-auto px-6 py-8">
+        <button
+          onClick={() => setShowMobileFilters((v) => !v)}
+          className="lg:hidden mb-4 w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-medium text-coast-navy"
+          aria-expanded={showMobileFilters}
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+          {showMobileFilters ? "Hide filters" : "Filters"}
+          {hasActiveFilters && !showMobileFilters && (
+            <span className="ml-1 min-w-[18px] h-[18px] px-1 rounded-full bg-coast-ocean text-white text-[10px] font-semibold inline-flex items-center justify-center">
+              •
+            </span>
+          )}
+        </button>
         <div className="grid lg:grid-cols-[300px_1fr] gap-8">
-          <aside className="lg:sticky lg:top-6 lg:self-start">
+          <aside className={`${showMobileFilters ? "block" : "hidden"} lg:block lg:sticky lg:top-6 lg:self-start`}>
             <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-heading font-semibold text-coast-navy">Filters</h2>
