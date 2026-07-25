@@ -109,8 +109,11 @@ export function computeListingPrice(listing, calendarMap, checkIn, checkOut) {
   }
   // A fully-booked home still has real nightly rates — show the indicative
   // "from" price rather than "Rates on request" (availability is enforced at
-  // date selection anyway).
-  return { hasDates: false, available: true, total: null, avg: null, from: from ?? fromAnyDay };
+  // date selection anyway). When no calendar rows are loaded client-side
+  // (browse pages don't fetch the calendar at all anymore), fall back to the
+  // precomputed Listing.fromRate maintained by the nightly refresh.
+  const precomputed = Number(listing?.fromRate) > 0 ? Number(listing.fromRate) : null;
+  return { hasDates: false, available: true, total: null, avg: null, from: from ?? fromAnyDay ?? precomputed };
 }
 
 // Flexible-date search: when the exact dates don't work, slide the same stay
