@@ -5,7 +5,11 @@ import { listingMatchesCollection } from "@/lib/collections";
 // collections, amenity strings, and structured fields — so a chip never lies:
 // if the data doesn't say a home has a pool, the pool chip won't include it.
 const hasAmenity = (listing, keywords) => {
-  const amenities = (listing.amenities || []).map((a) => String(a).toLowerCase());
+  // Normalize snake_case amenity keys (Hospitable/Guesty style: "hot_tub",
+  // "beach_access") to spaces so keyword matching works across sources.
+  const amenities = (listing.amenities || []).map((a) =>
+    String(a).toLowerCase().replace(/[_-]+/g, " ")
+  );
   return keywords.some((k) => amenities.some((a) => a.includes(k)));
 };
 
@@ -38,7 +42,9 @@ export const FEATURE_FILTERS = [
     key: "walk-to-beach",
     label: "Walk to beach",
     icon: Footprints,
-    match: (l) => l.beachWalkMinutes != null && Number(l.beachWalkMinutes) <= 10,
+    match: (l) =>
+      (l.beachWalkMinutes != null && Number(l.beachWalkMinutes) <= 10) ||
+      hasAmenity(l, ["beach access", "beachfront", "beach front"]),
   },
   {
     key: "channel-home",
