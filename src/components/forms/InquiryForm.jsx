@@ -9,7 +9,7 @@ import { track } from "@/lib/analytics";
 import { PHONE } from "@/lib/contact";
 
 export default function InquiryForm({ type, showPropertyAddress = false, submitLabel = "Submit" }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", propertyAddress: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", propertyAddress: "", message: "", website: "" });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -35,14 +35,19 @@ export default function InquiryForm({ type, showPropertyAddress = false, submitL
     setSubmitting(true);
     setSubmitError("");
     try {
-      await base44.entities.Inquiry.create({
+      // Submissions go through the submitInquiry backend function (direct
+      // Inquiry.create is closed via RLS) so spam is honeypot- and rate-limited.
+      const res = await base44.functions.invoke("submitInquiry", {
         type,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
         propertyAddress: showPropertyAddress ? form.propertyAddress.trim() : undefined,
         message: form.message.trim(),
+        website: form.website, // honeypot — hidden field, humans leave it empty
       });
+      const data = res?.data ?? res;
+      if (data?.error) throw new Error(data.error);
       track("inquiry_submit");
       setDone(true);
     } catch {
@@ -67,7 +72,19 @@ export default function InquiryForm({ type, showPropertyAddress = false, submitL
   }
 
   return (
-    <form onSubmit={submit} className="bg-card border border-border rounded-2xl p-6 space-y-4">
+    <form onSubmit={submit} className="relative bg-card border border-border rounded-2xl p-6 space-y-4">
+      {/* Honeypot — visually hidden; bots that fill it are dropped server-side */}
+      <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+        <label htmlFor="inquiry-website">Website</label>
+        <input
+          id="inquiry-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={set("website")}
+        />
+      </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Name" error={errors.name} required>
           <Input value={form.name} onChange={set("name")} className="h-10" />
