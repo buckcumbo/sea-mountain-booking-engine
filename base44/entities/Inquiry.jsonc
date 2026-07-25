@@ -6,7 +6,8 @@
       "type": "string",
       "enum": [
         "contact",
-        "property-management"
+        "property-management",
+        "trip-request"
       ]
     },
     "name": {
