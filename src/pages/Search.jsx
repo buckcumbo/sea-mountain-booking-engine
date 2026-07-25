@@ -51,6 +51,7 @@ export default function Search() {
     return {
       ...DEFAULT_FILTERS,
       query: p.get("q") || "",
+      area: p.get("area") || "all",
       checkIn: p.get("checkIn") || "",
       checkOut: p.get("checkOut") || "",
       guests: Number(p.get("guests")) || 0,
