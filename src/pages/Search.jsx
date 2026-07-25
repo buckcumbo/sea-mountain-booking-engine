@@ -5,7 +5,9 @@ import {
   LayoutGrid,
   Map as MapIcon,
   Search as SearchIcon,
+  Heart,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { buildCalendarMap, computeFlexiblePrice } from "@/lib/availability";
 import Seo from "@/components/Seo";
@@ -195,7 +197,7 @@ export default function Search() {
       return pa - pb;
     });
     return { items: computed, prices };
-  }, [listings, calendarMap, filters, sort]);
+  }, [listings, calendarMap, filters, sort, passedIds]);
 
   const hasActiveFilters =
     filters.guests > 0 ||
