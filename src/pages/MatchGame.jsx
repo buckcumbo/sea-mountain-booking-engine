@@ -153,8 +153,13 @@ export default function MatchGame() {
                     opacity: 1 - (i + 1) * 0.25,
                   }}
                 >
-                  {l.photos?.[0]?.url && (
-                    <Image src={l.photos[0].url} alt="" fittingType="fill" className="absolute inset-0 w-full h-full" />
+                  {(l.photos?.[1]?.url || l.photos?.[0]?.url) && (
+                    <Image
+                      src={l.photos?.[1]?.url || l.photos?.[0]?.url}
+                      alt=""
+                      fittingType="fill"
+                      className="absolute inset-0 w-full h-full"
+                    />
                   )}
                 </div>
               ))}
@@ -215,7 +220,10 @@ function SwipeCard({ listing, price, onSwipe, exitDirection }) {
   const rotate = useTransform(x, [-300, 300], [-14, 14]);
   const likeOpacity = useTransform(x, [40, SWIPE_THRESHOLD], [0, 1]);
   const passOpacity = useTransform(x, [-SWIPE_THRESHOLD, -40], [1, 0]);
-  const [photoIdx, setPhotoIdx] = useState(0);
+  // Lead with the second photo: photo[0] is usually the branded collage,
+  // which crops badly in a full-bleed card. The collage stays in the
+  // tap-through set.
+  const [photoIdx, setPhotoIdx] = useState((listing.photos || []).length > 1 ? 1 : 0);
   const photos = (listing.photos || []).slice(0, 6);
   const photo = photos[photoIdx] || photos[0];
   const dragging = useRef(false);
