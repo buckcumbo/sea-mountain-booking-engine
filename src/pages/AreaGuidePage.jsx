@@ -38,19 +38,18 @@ export default function AreaGuidePage() {
         if (cancelled) return;
         setGuide(found);
 
-        const [areaListings, areaGuides, days] = await Promise.all([
+        // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
+        const [areaListings, areaGuides] = await Promise.all([
           base44.entities.Listing.filter({ area: found.area }, "-created_date", 500),
           base44.entities.AreaGuide.filter(
             { type: "guide", area: found.area, published: true },
             "-created_date",
             100
           ),
-          base44.entities.CalendarDay.list("-created_date", 5000),
         ]);
         if (cancelled) return;
         setListings((areaListings || []).filter((l) => l.active !== false));
         setGuides(areaGuides || []);
-        setCalendarMap(buildCalendarMap(days || []));
       } catch {
         if (!cancelled) setGuide(null);
       } finally {
