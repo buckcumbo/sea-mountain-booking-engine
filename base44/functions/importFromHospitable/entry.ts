@@ -162,6 +162,17 @@ function extractDescription(p: any): string {
   if (parts.length === 0 && p?.details) {
     push(p.details.description); push(p.details.summary);
   }
+  // Channel listings (include=listings) often carry the guest-facing copy
+  // when the property object itself doesn't.
+  if (parts.length === 0 && Array.isArray(p?.listings)) {
+    for (const ch of p.listings) {
+      const cd = ch?.description;
+      if (typeof cd === "string") push(cd);
+      if (cd && typeof cd === "object") { push(cd.summary); push(cd.space); push(cd.description); }
+      push(ch?.summary);
+      if (parts.length > 0) break;
+    }
+  }
   return parts.join("\n\n").slice(0, 8000);
 }
 
@@ -325,6 +336,7 @@ Deno.serve(async (req) => {
 
       let described = 0;
       let curated = 0;
+      let debugKeys: string[] | null = null;
       for (const listing of batch) {
         const updates: any = {};
         // Amenity curation — seed hidden list from the noise set.
@@ -339,9 +351,17 @@ Deno.serve(async (req) => {
         if (!listing.storyCopy || String(listing.storyCopy).trim() === "") {
           const propertyId = String(listing.guestyId).slice(5);
           try {
-            const res = await hospFetch(token, `/properties/${propertyId}?include=details`);
-            const text = extractDescription(res?.data || res);
-            if (text) { updates.storyCopy = text; described++; }
+            const res = await hospFetch(token, `/properties/${propertyId}?include=details,listings`);
+            const prop = res?.data || res;
+            const text = extractDescription(prop);
+            if (text) {
+              updates.storyCopy = text;
+              described++;
+            } else if (!debugKeys) {
+              // Self-diagnosis: when no description is found, report the shape
+              // so the mapping can be fixed without guesswork.
+              debugKeys = Object.keys(prop || {});
+            }
           } catch (e) {
             console.error("[importFromHospitable] description fetch failed:", listing.title, e.message);
           }
@@ -352,7 +372,10 @@ Deno.serve(async (req) => {
       }
 
       const nextOffset = offset + limit < hosp.length ? offset + limit : null;
-      return Response.json({ mode, offset, described, curated, nextOffset, totalHospListings: hosp.length });
+      return Response.json({
+        mode, offset, described, curated, nextOffset, totalHospListings: hosp.length,
+        ...(debugKeys ? { noDescriptionFoundKeys: debugKeys } : {}),
+      });
     }
 
     // After enrich: same-building units share copy — a unit still missing a
