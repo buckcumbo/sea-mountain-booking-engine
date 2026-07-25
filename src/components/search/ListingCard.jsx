@@ -6,6 +6,9 @@ import HeartToggle from "@/components/favorites/HeartToggle";
 import CollectionChips from "@/components/search/CollectionChips";
 
 function PriceLine({ price }) {
+  if (!price) {
+    return <div className="text-sm text-muted-foreground">Rates on request</div>;
+  }
   if (price.hasDates) {
     return (
       <div className="text-sm">
