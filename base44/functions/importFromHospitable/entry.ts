@@ -127,6 +127,53 @@ async function fetchImages(token: string, propertyId: string, property: any): Pr
   return [];
 }
 
+// Amenities hidden from the listing page by default — baseline expectations
+// (the brand already promises linens/wifi/basics are always included), not
+// selling points. Buck can re-show any of them per listing in the admin
+// amenity editor; this list only seeds amenitiesHidden when it's empty.
+const NOISE_AMENITIES = new Set([
+  "ac", "heating", "hot_water", "essentials", "body_soap", "shower_gel",
+  "shampoo", "conditioner", "cleaning_products", "cleaning_before_checkout",
+  "baking_sheet", "cooking_basics", "dishes_and_silverware",
+  "childrens_dinnerware", "wine_glasses", "toaster", "blender", "coffee",
+  "coffee_maker", "microwave", "oven", "stove", "refrigerator", "freezer",
+  "hangers", "iron", "hair_dryer", "extra_pillows_and_blankets", "bed_linens",
+  "towels", "wardrobe_or_closet", "dining_table", "private_living_room",
+  "lock_on_bedroom_door", "portable_fans", "ceiling_fan", "smoke_detector",
+  "carbon_monoxide_detector", "fire_extinguisher", "first_aid_kit",
+  "ethernet_connection", "internet", "wireless_internet",
+  "babysitter_recommendations", "luggage_dropoff_allowed", "high_chair_optional",
+]);
+
+// Pull the best description text out of a Hospitable property — the field
+// shape varies (plain string vs Airbnb-style object with summary/space).
+function extractDescription(p: any): string {
+  const d = p?.description;
+  const parts: string[] = [];
+  const push = (v: any) => {
+    const s = typeof v === "string" ? v.trim() : "";
+    if (s && !parts.includes(s)) parts.push(s);
+  };
+  if (typeof d === "string") push(d);
+  if (d && typeof d === "object") {
+    push(d.summary); push(d.space); push(d.description); push(d.neighborhood);
+  }
+  push(p?.summary);
+  if (parts.length === 0 && p?.details) {
+    push(p.details.description); push(p.details.summary);
+  }
+  return parts.join("\n\n").slice(0, 8000);
+}
+
+// Base name for sibling grouping: "Surf Sun Pura Vida - 3" and "Sea House
+// Villas: Unit B2 (The Waypoint)" group under their shared building name.
+function baseName(title: string): string {
+  return String(title || "")
+    .split(/[:\-(]| Unit /i)[0]
+    .trim()
+    .toLowerCase();
+}
+
 function isoDate(offsetDays: number): string {
   const d = new Date(Date.now() + offsetDays * 24 * 60 * 60 * 1000);
   return d.toISOString().slice(0, 10);
@@ -262,6 +309,80 @@ Deno.serve(async (req) => {
 
       const nextOffset = offset + limit < hosp.length ? offset + limit : null;
       return Response.json({ mode, totalHospListings: hosp.length, offset, results, nextOffset });
+    }
+
+    // Descriptions + amenity curation for already-imported hosp_ listings.
+    // storyCopy and amenitiesHidden are editorial fields: each is written
+    // ONLY when currently empty, so manual edits are never clobbered.
+    if (mode === "enrich") {
+      const offset = Number(payload.offset) || 0;
+      const limit = Math.min(Number(payload.limit) || 15, 25);
+      const all = await svc.Listing.list("-created_date", 500);
+      const hosp = (Array.isArray(all) ? all : [])
+        .filter((l: any) => String(l.guestyId || "").startsWith("hosp_"))
+        .sort((a: any, b: any) => String(a.guestyId).localeCompare(String(b.guestyId)));
+      const batch = hosp.slice(offset, offset + limit);
+
+      let described = 0;
+      let curated = 0;
+      for (const listing of batch) {
+        const updates: any = {};
+        // Amenity curation — seed hidden list from the noise set.
+        const hasHidden = Array.isArray(listing.amenitiesHidden) && listing.amenitiesHidden.length > 0;
+        if (!hasHidden && Array.isArray(listing.amenities)) {
+          const hidden = listing.amenities.filter((a: string) =>
+            NOISE_AMENITIES.has(String(a).toLowerCase()),
+          );
+          if (hidden.length > 0) { updates.amenitiesHidden = hidden; curated++; }
+        }
+        // Description — fetch from Hospitable only when storyCopy is empty.
+        if (!listing.storyCopy || String(listing.storyCopy).trim() === "") {
+          const propertyId = String(listing.guestyId).slice(5);
+          try {
+            const res = await hospFetch(token, `/properties/${propertyId}?include=details`);
+            const text = extractDescription(res?.data || res);
+            if (text) { updates.storyCopy = text; described++; }
+          } catch (e) {
+            console.error("[importFromHospitable] description fetch failed:", listing.title, e.message);
+          }
+        }
+        if (Object.keys(updates).length > 0) {
+          await svc.Listing.update(listing.id, updates);
+        }
+      }
+
+      const nextOffset = offset + limit < hosp.length ? offset + limit : null;
+      return Response.json({ mode, offset, described, curated, nextOffset, totalHospListings: hosp.length });
+    }
+
+    // After enrich: same-building units share copy — a unit still missing a
+    // description borrows its sibling's. No Hospitable calls; one pass.
+    if (mode === "sibling-fill") {
+      const all = await svc.Listing.list("-created_date", 500);
+      const hosp = (Array.isArray(all) ? all : []).filter((l: any) =>
+        String(l.guestyId || "").startsWith("hosp_"),
+      );
+      const byBase = new Map<string, any[]>();
+      for (const l of hosp) {
+        const key = baseName(l.title);
+        if (!key) continue;
+        const arr = byBase.get(key) || [];
+        arr.push(l);
+        byBase.set(key, arr);
+      }
+      let filled = 0;
+      for (const group of byBase.values()) {
+        if (group.length < 2) continue;
+        const donor = group.find((l) => l.storyCopy && String(l.storyCopy).trim() !== "");
+        if (!donor) continue;
+        for (const l of group) {
+          if (l.id === donor.id) continue;
+          if (l.storyCopy && String(l.storyCopy).trim() !== "") continue;
+          await svc.Listing.update(l.id, { storyCopy: donor.storyCopy });
+          filled++;
+        }
+      }
+      return Response.json({ mode, filled });
     }
 
     return Response.json({ error: `Unknown mode: ${mode}` }, { status: 400 });
