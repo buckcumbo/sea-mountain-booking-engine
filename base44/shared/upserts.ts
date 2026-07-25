@@ -2,17 +2,29 @@
 // Each looks up the existing record by its natural key before insert/update.
 
 export async function upsertListingByGuestyId(base44, data) {
-  // revaWidgetId is an editorial field — sync jobs must never overwrite it.
-  const { revaWidgetId, ...syncData } = data;
+  // revaWidgetId and photosManaged are editorial fields — sync jobs must never
+  // overwrite them. photos are also editorial once an admin has curated them
+  // (photosManaged === true).
+  const { revaWidgetId, photosManaged, photos, ...syncData } = data;
   const existing = await base44.asServiceRole.entities.Listing.filter(
     { guestyId: syncData.guestyId },
     "-created_date",
     1,
   );
   if (existing.length > 0) {
-    return await base44.asServiceRole.entities.Listing.update(existing[0].id, syncData);
+    const current = existing[0];
+    // When photos have been manually curated, never overwrite them from sync.
+    if (current.photosManaged === true) {
+      return await base44.asServiceRole.entities.Listing.update(current.id, syncData);
+    }
+    return await base44.asServiceRole.entities.Listing.update(
+      current.id,
+      photos ? { ...syncData, photos } : syncData,
+    );
   }
-  return await base44.asServiceRole.entities.Listing.create(syncData);
+  return await base44.asServiceRole.entities.Listing.create(
+    photos ? { ...syncData, photos } : syncData,
+  );
 }
 
 export async function upsertCalendarDay(base44, data) {

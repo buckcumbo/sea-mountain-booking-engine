@@ -88,6 +88,7 @@ export default function AdminListingEditor() {
         amenities: form.amenities,
         storyCopy: form.storyCopy,
         photos: form.photos.map((p, i) => ({ ...p, order: i })),
+        photosManaged: true,
         collections: form.collections,
         featured: !!form.featured,
         beachWalkMinutes: form.beachWalkMinutes ? Number(form.beachWalkMinutes) : null,
@@ -255,7 +256,7 @@ export default function AdminListingEditor() {
       </Section>
 
       {/* PHOTOS */}
-      <Section title="Photos" note="First photo is the hero image on cards and detail pages.">
+      <Section title="Photos" note="First photo is the hero image on cards and detail pages. Saving reindexes order and protects your photos from being overwritten by sync.">
         <PhotoManager photos={form.photos} onChange={(photos) => set({ photos })} />
       </Section>
 

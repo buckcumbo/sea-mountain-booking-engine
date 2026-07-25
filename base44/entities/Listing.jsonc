@@ -108,6 +108,10 @@
     },
     "revaWidgetId": {
       "type": "string"
+    },
+    "photosManaged": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
