@@ -70,6 +70,9 @@ export default function HospitableImport() {
         described += data.described || 0;
         curated += data.curated || 0;
         addLog(`Batch done — ${data.described} descriptions pulled, ${data.curated} amenity lists curated.`);
+        if (data.noDescriptionFoundKeys) {
+          addLog(`Note: Hospitable returned no description text. Property fields seen: ${data.noDescriptionFoundKeys.join(", ")}`);
+        }
         offset = data.nextOffset;
       }
       if (!stopRef.current) {
