@@ -1,30 +1,30 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { Image } from "@/components/ui/image";
 
-// "The 100 Collection" membership badge. External link with UTM params.
-// Uses a bordered text-mark pill because the official logo image could not be
-// reliably sourced/hosted as an app asset. Swap <span> for an <img> when an
-// asset is available. Uses opacity-based colors so it adapts to light/dark bars.
-export default function HundredCollectionBadge({ source }) {
-  const href = `https://theonehundredcollection.com?utm_source=${encodeURIComponent(
-    source
-  )}&utm_medium=${encodeURIComponent("Sea Mountain Vacations")}&utm_campaign=${encodeURIComponent(
-    "The 100 Collection"
-  )}`;
+const LOGO_URL =
+  "https://media.base44.com/images/public/6a63dd8f4f2513356229c302/d4de64f63_100_Collection_Logo_Gold.png";
 
+// "The 100 Collection™" membership badge. Displays the official gold logo
+// next to a small "PROUD MEMBER" label. Links to the internal collection page.
+export default function HundredCollectionBadge({ source: _source }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 group"
+    <Link
+      to="/collections/the-100-collection"
+      className="inline-flex items-center gap-2 group"
       title="The 100 Collection™ — Proud Member"
     >
       <span className="text-[10px] uppercase tracking-wide opacity-70 group-hover:opacity-100 transition-opacity whitespace-nowrap">
         Proud Member
       </span>
-      <span className="inline-flex items-center text-[10px] font-bold tracking-wider uppercase border border-current rounded-full px-2 py-0.5 leading-none whitespace-nowrap">
-        The 100 Collection™
-      </span>
-    </a>
+      <Image
+        src={LOGO_URL}
+        alt="The 100 Collection™"
+        fittingType="fit"
+        originWidth={300}
+        originHeight={400}
+        className="h-10"
+      />
+    </Link>
   );
 }
