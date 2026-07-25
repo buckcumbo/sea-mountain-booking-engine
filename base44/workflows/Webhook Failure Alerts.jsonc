@@ -1,0 +1,45 @@
+{
+  "name": "Webhook Failure Alerts",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "webhook_failure_alerts",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "checkWebhookHealth",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Check webhook health",
+            "description": "Email admins if any webhook events failed in the last hour"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 * * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Hourly at :30 (offset from Quote Recovery on the hour): emails every admin when webhookReceiver recorded failed events in the past hour, so silent sync breakage gets noticed the same day instead of when a guest hits it."
+}
