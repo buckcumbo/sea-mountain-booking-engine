@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { prettifyArea } from "@/lib/availability";
+import { prettifyArea, computeListingPrice } from "@/lib/availability";
 import ListingCard from "@/components/search/ListingCard";
 import GuideCard from "@/components/guides/GuideCard";
 
-export default function AreaGuideHero({ guide, listings, guides }) {
+export default function AreaGuideHero({ guide, listings, guides, calendarMap = {} }) {
   const areaName = prettifyArea(guide.area);
   return (
     <div>
@@ -68,7 +68,7 @@ export default function AreaGuideHero({ guide, listings, guides }) {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {listings.map((l) => (
-              <ListingCard key={l.id} listing={l} price={{ hasDates: false, from: null }} />
+              <ListingCard key={l.id} listing={l} price={computeListingPrice(l, calendarMap, "", "")} />
             ))}
           </div>
         )}

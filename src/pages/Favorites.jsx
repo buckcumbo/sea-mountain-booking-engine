@@ -6,18 +6,24 @@ import { useFavorites } from "@/lib/FavoritesContext";
 import { Button } from "@/components/ui/button";
 import ListingCard from "@/components/search/ListingCard";
 import Seo from "@/components/Seo";
+import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
 
 export default function Favorites() {
   const { items } = useFavorites();
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState([]);
+  const [calendarMap, setCalendarMap] = useState({});
   const ids = items.map((f) => f.listingId);
 
   useEffect(() => {
     (async () => {
       try {
-        const all = await base44.entities.Listing.list("-created_date", 500);
+        const [all, days] = await Promise.all([
+          base44.entities.Listing.list("-created_date", 500),
+          base44.entities.CalendarDay.list("-created_date", 5000),
+        ]);
         setListings(all || []);
+        setCalendarMap(buildCalendarMap(days || []));
       } finally {
         setLoading(false);
       }
@@ -60,7 +66,7 @@ export default function Favorites() {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {saved.map((l) => (
-              <ListingCard key={l.id} listing={l} price={{ hasDates: false, from: null }} />
+              <ListingCard key={l.id} listing={l} price={computeListingPrice(l, calendarMap, "", "")} />
             ))}
           </div>
         )}

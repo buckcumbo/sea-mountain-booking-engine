@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import ListingCard from "@/components/search/ListingCard";
 import { COLLECTIONS, COLLECTION_BY_SLUG, listingMatchesCollection } from "@/lib/collections";
 import Seo from "@/components/Seo";
+import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
 
 export default function CollectionDetail() {
   const { slug } = useParams();
   const cfg = COLLECTION_BY_SLUG[slug];
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState([]);
+  const [calendarMap, setCalendarMap] = useState({});
 
   useEffect(() => {
     if (!cfg) {
@@ -22,8 +24,12 @@ export default function CollectionDetail() {
     (async () => {
       setLoading(true);
       try {
-        const all = await base44.entities.Listing.list("-created_date", 500);
+        const [all, days] = await Promise.all([
+          base44.entities.Listing.list("-created_date", 500),
+          base44.entities.CalendarDay.list("-created_date", 5000),
+        ]);
         if (cancelled) return;
+        setCalendarMap(buildCalendarMap(days || []));
         setListings(
           (all || []).filter(
             (l) => l.active !== false && listingMatchesCollection(l, slug)
@@ -93,7 +99,7 @@ export default function CollectionDetail() {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {listings.map((l) => (
-              <ListingCard key={l.id} listing={l} price={{ hasDates: false, from: null }} />
+              <ListingCard key={l.id} listing={l} price={computeListingPrice(l, calendarMap, "", "")} />
             ))}
           </div>
         )}

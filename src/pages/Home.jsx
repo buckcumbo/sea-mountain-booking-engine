@@ -69,7 +69,7 @@ export default function Home() {
       </Section>
 
       <Section title="Featured Rentals" subtitle="Hand-picked stays from our 100 Collection.">
-        <FeaturedRentals listings={featured} />
+        <FeaturedRentals listings={featured} calendarMap={calendarMap} />
       </Section>
 
       <Section title="New to the Collection" subtitle="The latest additions to our Grand Strand rentals.">

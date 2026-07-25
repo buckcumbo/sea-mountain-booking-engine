@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Loader2, Compass } from "lucide-react";
 import AreaGuideHero from "@/components/area/AreaGuideHero";
 import Seo from "@/components/Seo";
-import { prettifyArea } from "@/lib/availability";
+import { prettifyArea, buildCalendarMap } from "@/lib/availability";
 import { DEFAULT_DESCRIPTION } from "@/lib/seo";
 
 // Public area page. Reads ONLY Listing + AreaGuide. No external calls, no price math.
@@ -14,6 +14,7 @@ export default function AreaGuidePage() {
   const [guide, setGuide] = useState(null);
   const [listings, setListings] = useState([]);
   const [guides, setGuides] = useState([]);
+  const [calendarMap, setCalendarMap] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -35,17 +36,19 @@ export default function AreaGuidePage() {
         if (cancelled) return;
         setGuide(found);
 
-        const [areaListings, areaGuides] = await Promise.all([
+        const [areaListings, areaGuides, days] = await Promise.all([
           base44.entities.Listing.filter({ area: found.area }, "-created_date", 500),
           base44.entities.AreaGuide.filter(
             { type: "guide", area: found.area, published: true },
             "-created_date",
             100
           ),
+          base44.entities.CalendarDay.list("-created_date", 5000),
         ]);
         if (cancelled) return;
         setListings(areaListings || []);
         setGuides(areaGuides || []);
+        setCalendarMap(buildCalendarMap(days || []));
       } catch {
         if (!cancelled) setGuide(null);
       } finally {
@@ -90,7 +93,7 @@ export default function AreaGuidePage() {
         description={guide.excerpt || DEFAULT_DESCRIPTION}
         path={`/area/${slug}`}
       />
-      <AreaGuideHero guide={guide} listings={listings} guides={guides} />
+      <AreaGuideHero guide={guide} listings={listings} guides={guides} calendarMap={calendarMap} />
     </>
   );
 }
