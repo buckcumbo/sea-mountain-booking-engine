@@ -39,10 +39,8 @@ export default function MatchGame() {
   useEffect(() => {
     (async () => {
       try {
-        const [all, days] = await Promise.all([
-          base44.entities.Listing.list("-created_date", 500),
-          base44.entities.CalendarDay.list("-created_date", 5000),
-        ]);
+        // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
+        const all = await base44.entities.Listing.list("-created_date", 500);
         const passed = new Set(getPassedListings());
         const candidates = (all || []).filter(
           (l) => l.active !== false && !passed.has(l.id) && !isFavorite(l.id)
@@ -52,7 +50,6 @@ export default function MatchGame() {
         const featured = shuffle(candidates.filter((l) => l.featured));
         const rest = shuffle(candidates.filter((l) => !l.featured));
         setDeck([...featured, ...rest]);
-        setCalendarMap(buildCalendarMap(days || []));
       } finally {
         setLoading(false);
       }
