@@ -24,16 +24,20 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // (1) SHARED-SECRET CHECK — ?key= query param or X-Webhook-Key header.
+    // (1) SHARED-SECRET CHECK — FAIL CLOSED. This endpoint performs writes
+    // (reservations, calendar availability, listings), so with no secret
+    // configured we cannot safely accept anything. Set the WEBHOOK_SECRET
+    // project secret to enable the endpoint.
     const secret = Deno.env.get("WEBHOOK_SECRET");
-    if (secret) {
-      const url = new URL(req.url);
-      const key = url.searchParams.get("key") ?? req.headers.get("x-webhook-key");
-      if (key !== secret) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
-      }
-    } else {
-      console.warn("[webhookReceiver] WEBHOOK_SECRET unset — dev mode, accepting unauthenticated requests");
+    if (!secret) {
+      console.error("[webhookReceiver] WEBHOOK_SECRET is not set — rejecting request");
+      return Response.json({ error: "Webhook not configured" }, { status: 503 });
+    }
+    // Prefer the header; the ?key= query fallback is kept only for senders
+    // that cannot set headers (query strings can leak into request logs).
+    const key = req.headers.get("x-webhook-key") ?? new URL(req.url).searchParams.get("key");
+    if (key !== secret) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const rawBody = await req.text();
