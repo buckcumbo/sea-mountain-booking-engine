@@ -6,17 +6,26 @@ import AreaGrid from "@/components/home/AreaGrid";
 import FeaturedRentals from "@/components/home/FeaturedRentals";
 
 import NewRentals from "@/components/home/NewRentals";
+import { Link } from "react-router-dom";
 import { Receipt, MapPin, Tag } from "lucide-react";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
 import { buildCalendarMap } from "@/lib/availability";
+import { listingMatchesCollection } from "@/lib/collections";
 
-function Section({ title, subtitle, children }) {
+function Section({ title, subtitle, viewAllTo, children }) {
   return (
     <section className="max-w-7xl mx-auto px-6 py-14">
-      <div className="mb-7">
-        <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy">{title}</h2>
-        {subtitle && <p className="mt-2 text-muted-foreground max-w-2xl">{subtitle}</p>}
+      <div className="mb-7 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy">{title}</h2>
+          {subtitle && <p className="mt-2 text-muted-foreground max-w-2xl">{subtitle}</p>}
+        </div>
+        {viewAllTo && (
+          <Link to={viewAllTo} className="text-sm text-coast-ocean hover:underline shrink-0 mt-1">
+            View all →
+          </Link>
+        )}
       </div>
       {children}
     </section>
@@ -40,8 +49,8 @@ export default function Home() {
         base44.entities.Listing.list("-created_date", 100),
         base44.entities.CalendarDay.list("-created_date", 5000),
       ]);
-      const f = all.filter((l) => l.featured && l.active !== false);
-      setFeatured((f.length ? f : all).slice(0, 4));
+      const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
+      setFeatured(f.slice(0, 4));
       setNewest(all.filter((l) => l.active !== false).slice(0, 4));
       setCalendarMap(buildCalendarMap(days));
 
@@ -66,7 +75,11 @@ export default function Home() {
         <AreaGrid />
       </Section>
 
-      <Section title="Featured Rentals" subtitle="Hand-picked stays from our 100 Collection.">
+      <Section
+        title="The 100 Collection™"
+        subtitle="The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard — they don't settle for less than 100%."
+        viewAllTo="/collections/the-100-collection"
+      >
         <FeaturedRentals listings={featured} calendarMap={calendarMap} />
       </Section>
 
