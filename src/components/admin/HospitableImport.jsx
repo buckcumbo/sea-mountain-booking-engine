@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, FlaskConical, Building2, CalendarDays, AlertTriangle } from "lucide-react";
+import { Loader2, FlaskConical, Building2, CalendarDays, AlertTriangle, Trash2 } from "lucide-react";
 
 // One-time Hospitable seed import (see base44/functions/importFromHospitable).
 // Workflow: Dry run (verify mapping) → Import listings → Import calendars.
@@ -57,6 +57,35 @@ export default function HospitableImport() {
     }
   };
 
+  const purgeSeeds = async () => {
+    const ok = window.confirm(
+      "Permanently delete all OLD MOCK listings (everything not imported from Hospitable) and their calendar rows? Real hosp_ homes are untouched. This cannot be undone."
+    );
+    if (!ok) return;
+    setRunning("purge");
+    stopRef.current = false;
+    try {
+      let remaining = 1;
+      let listings = 0;
+      let days = 0;
+      while (remaining > 0 && !stopRef.current) {
+        addLog("Purging old seed listings…");
+        const res = await base44.functions.invoke("purgeSeedListings", { confirm: "PURGE" });
+        const data = res?.data ?? res;
+        if (data?.error) throw new Error(data.error);
+        listings += data.listingsDeleted || 0;
+        days += data.daysDeleted || 0;
+        remaining = data.remaining || 0;
+        addLog(`Removed ${data.listingsDeleted} listings + ${data.daysDeleted} calendar rows (${remaining} to go).`);
+      }
+      addLog(`Purge done — ${listings} mock listings and ${days} calendar rows removed. Now run \"2. Import listings\" once more so real homes reclaim the clean URLs.`);
+    } catch (e) {
+      addLog(`Purge stopped: ${e.message}`);
+    } finally {
+      setRunning("");
+    }
+  };
+
   const importCalendars = async () => {
     setRunning("calendars");
     stopRef.current = false;
@@ -101,6 +130,10 @@ export default function HospitableImport() {
         <Button onClick={importCalendars} disabled={!!running} className="gap-2">
           {running === "calendars" ? <Loader2 className="w-4 h-4 animate-spin" /> : <CalendarDays className="w-4 h-4" />}
           3. Import calendars
+        </Button>
+        <Button onClick={purgeSeeds} disabled={!!running} variant="outline" className="gap-2 border-destructive/40 text-destructive">
+          {running === "purge" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+          4. Remove old seed listings
         </Button>
         {running && running !== "dry-run" && (
           <Button variant="outline" onClick={() => { stopRef.current = true; }} className="text-destructive">
