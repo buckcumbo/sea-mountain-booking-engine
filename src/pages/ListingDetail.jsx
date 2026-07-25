@@ -198,9 +198,9 @@ export default function ListingDetail() {
                   {visibleAmenities.map((a, i) => (
                     <span
                       key={i}
-                      className="text-xs bg-card border border-border rounded-full px-2.5 py-1 text-coast-navy"
+                      className="text-xs bg-card border border-border rounded-full px-2.5 py-1 text-coast-navy capitalize"
                     >
-                      {a}
+                      {String(a).replace(/[_-]+/g, " ")}
                     </span>
                   ))}
                 </div>
