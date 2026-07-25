@@ -8,6 +8,7 @@ import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
 import HeartToggle from "@/components/favorites/HeartToggle";
 import { openNightsInWindow } from "@/lib/availability";
+import { PHONE } from "@/lib/contact";
 
 // Date-range picker driven by stored CalendarDay rows: unavailable + past dates
 // are not selectable. A range shorter than the check-in day's minNights shows a
@@ -31,11 +32,30 @@ export default function BookingPanel({ listing, cal, restore }) {
 
   const today = format(startOfDay(new Date()), "yyyy-MM-dd");
 
+  // Calendar health: a home with no upcoming CalendarDay rows renders every
+  // date disabled — a wall of grey that reads as broken. In that state we
+  // swap the picker for a warm fallback instead. Rates-in-calendar likewise
+  // only renders when there are real rates to show, so homes without rate
+  // data keep the compact calendar (no empty second line under each date).
+  const calStats = useMemo(() => {
+    let upcoming = 0;
+    let withRates = 0;
+    for (const [ds, day] of Object.entries(cal || {})) {
+      if (ds < today) continue;
+      upcoming++;
+      if (day.available === true && Number(day.rate) > 0) withRates++;
+    }
+    return { upcoming, withRates };
+  }, [cal, today]);
+  const hasCalendar = calStats.upcoming > 0;
+  const showRates = calStats.withRates > 0;
+
   // Honest scarcity: computed from real CalendarDay data, shown only when a
   // meaningful share of the next 60 nights is already taken. Never a gimmick —
   // if the numbers aren't true, the line doesn't render (smv-brand rule).
   const scarcity = useMemo(() => openNightsInWindow(cal, 60), [cal]);
   const showScarcity =
+    hasCalendar &&
     scarcity.tracked >= 30 &&
     scarcity.open > 0 &&
     scarcity.open / scarcity.tracked <= 0.4;
@@ -133,39 +153,60 @@ export default function BookingPanel({ listing, cal, restore }) {
         </p>
       )}
 
-      <div className="flex justify-center">
-        <Calendar
-          mode="range"
-          selected={range}
-          onSelect={setRange}
-          numberOfMonths={1}
-          disabled={isDisabled}
-          components={{ DayContent }}
-          classNames={{
-            day: cn(
-              buttonVariants({ variant: "ghost" }),
-              "h-11 w-9 p-0 font-normal aria-selected:opacity-100"
-            ),
-            head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-          }}
-        />
-      </div>
+      {!hasCalendar ? (
+        <div className="text-sm rounded-lg bg-coast-sand text-coast-navy px-4 py-3 leading-relaxed">
+          Live availability for this home is on its way. Call us at{" "}
+          <a
+            href={`tel:${PHONE.replace(/[^0-9+]/g, "")}`}
+            className="font-medium text-coast-ocean"
+          >
+            {PHONE}
+          </a>{" "}
+          and we'll check your dates right now.
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center">
+            <Calendar
+              mode="range"
+              selected={range}
+              onSelect={setRange}
+              numberOfMonths={1}
+              disabled={isDisabled}
+              components={showRates ? { DayContent } : undefined}
+              classNames={
+                showRates
+                  ? {
+                      day: cn(
+                        buttonVariants({ variant: "ghost" }),
+                        "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
+                      ),
+                      head_cell:
+                        "text-muted-foreground rounded-md w-10 font-normal text-[0.8rem]",
+                      cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
+                    }
+                  : undefined
+              }
+            />
+          </div>
 
-      <div className="flex items-center gap-2">
-        <Users className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm text-muted-foreground">Guests</span>
-        <select
-          value={guests}
-          onChange={(e) => setGuests(Number(e.target.value))}
-          className="ml-auto h-9 rounded-lg border border-border bg-card text-sm px-2 text-coast-navy"
-        >
-          {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Guests</span>
+            <select
+              value={guests}
+              onChange={(e) => setGuests(Number(e.target.value))}
+              className="ml-auto h-9 rounded-lg border border-border bg-card text-sm px-2 text-coast-navy"
+            >
+              {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
 
       {message && (
         <div className="text-sm rounded-lg bg-amber-500/10 text-amber-700 px-3 py-2">
