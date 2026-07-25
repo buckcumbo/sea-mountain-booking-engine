@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter, MapPin, Phone, Mail } from "lucide-react";
 import { AREA_LABELS } from "@/lib/availability";
 import { PHONE, PHONE_TEL, EMAIL, ADDRESS } from "@/lib/contact";
+import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
 
 export default function PublicFooter() {
   const areas = Object.entries(AREA_LABELS);
@@ -62,6 +63,9 @@ export default function PublicFooter() {
                 <Icon className="w-4 h-4" />
               </a>
             ))}
+          </div>
+          <div className="mt-4">
+            <HundredCollectionBadge source="SeaMountainFooter" />
           </div>
         </div>
       </div>

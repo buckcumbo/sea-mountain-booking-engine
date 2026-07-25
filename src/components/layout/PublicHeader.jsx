@@ -12,6 +12,7 @@ import { AREA_LABELS } from "@/lib/availability";
 import { PHONE, PHONE_TEL } from "@/lib/contact";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { useAuth } from "@/lib/AuthContext";
+import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
 
 export default function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,9 +56,12 @@ export default function PublicHeader() {
               </span>
             )}
           </Link>
-          <a href={`tel:${PHONE_TEL}`} className="hidden md:inline-flex items-center gap-1.5 text-sm text-coast-navy">
-            <Phone className="w-4 h-4" /> {PHONE}
-          </a>
+          <div className="hidden lg:flex items-center gap-3">
+            <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5 text-sm text-coast-navy">
+              <Phone className="w-4 h-4" /> {PHONE}
+            </a>
+            <HundredCollectionBadge source="SeaMountainHeader" />
+          </div>
           <Button asChild className="bg-coast-navy hover:bg-coast-navy-soft text-white">
             <Link to="/search">Book Now</Link>
           </Button>
