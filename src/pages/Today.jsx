@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/lib/AuthContext";
 import { Waves, Loader2, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import ReservationRow from "@/components/today/ReservationRow";
@@ -10,6 +11,7 @@ import Seo from "@/components/Seo";
 // Same auth gate as Admin (route lives under AuthenticatedApp; Reservation RLS
 // is admin-only, so non-admins see an empty board).
 export default function Today() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [reservations, setReservations] = useState([]);
   const [listings, setListings] = useState([]);
@@ -77,6 +79,14 @@ export default function Today() {
             >
               Dashboard
             </Link>
+            {user?.role === "admin" && (
+              <Link
+                to="/admin/listings"
+                className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+              >
+                Listings
+              </Link>
+            )}
             <button
               onClick={load}
               disabled={loading}

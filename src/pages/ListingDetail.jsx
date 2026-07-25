@@ -11,7 +11,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { prettifyArea, computeListingPrice, buildCalendarMap } from "@/lib/availability";
-import ReactMarkdown from "react-markdown";
+import ListingMarkdown from "@/components/listing/ListingMarkdown";
+import { Button } from "@/components/ui/button";
 import Seo from "@/components/Seo";
 import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
@@ -105,6 +106,11 @@ export default function ListingDetail() {
         jsonLd={buildVacationRentalJsonLd(listing, reviews)}
       />
       <main className="max-w-7xl mx-auto px-6 py-8 pb-28 lg:pb-8">
+        {listing.active === false && (
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-700 rounded-xl px-4 py-3 text-sm mb-6">
+            This property is no longer available for booking.
+          </div>
+        )}
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div className="space-y-8">
             <PhotoGallery photos={listing.photos} title={listing.title} />
@@ -151,9 +157,7 @@ export default function ListingDetail() {
             {listing.storyCopy && (
               <section className="space-y-2">
                 <h2 className="font-heading text-lg font-semibold text-coast-navy">About this stay</h2>
-                <div className="text-sm text-muted-foreground leading-relaxed [&_h2]:font-heading [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-coast-navy [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-heading [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-coast-navy [&_h3]:mt-4 [&_h3]:mb-1.5 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_ul]:my-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1 [&_ol]:my-3 [&_p]:mb-3 [&_a]:text-coast-ocean [&_a]:underline [&_strong]:font-semibold [&_strong]:text-coast-navy [&_em]:italic">
-                  <ReactMarkdown>{listing.storyCopy}</ReactMarkdown>
-                </div>
+                <ListingMarkdown>{listing.storyCopy}</ListingMarkdown>
               </section>
             )}
 
@@ -213,7 +217,17 @@ export default function ListingDetail() {
           </div>
 
           <aside id="booking" className="lg:sticky lg:top-6 lg:self-start">
-            <BookingPanel listing={listing} cal={cal} />
+            {listing.active === false ? (
+              <div className="bg-card border border-border rounded-2xl p-6 text-center">
+                <p className="font-heading font-semibold text-coast-navy">This property is no longer available</p>
+                <p className="text-sm text-muted-foreground mt-2">Browse our other Grand Strand rentals.</p>
+                <Button asChild className="mt-4 bg-coast-navy hover:bg-coast-navy-soft text-white">
+                  <Link to="/search">Find a rental</Link>
+                </Button>
+              </div>
+            ) : (
+              <BookingPanel listing={listing} cal={cal} />
+            )}
           </aside>
         </div>
       </main>

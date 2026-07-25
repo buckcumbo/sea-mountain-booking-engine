@@ -14,6 +14,9 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Admin from '@/pages/Admin';
 import Today from '@/pages/Today';
+import AdminListings from '@/pages/admin/AdminListings';
+import AdminListingEditor from '@/pages/admin/AdminListingEditor';
+import AdminGuard from '@/components/admin/AdminGuard';
 import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
 import Search from '@/pages/Search';
@@ -59,7 +62,9 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
+      <Route path="/admin/listings" element={<AdminGuard><AdminListings /></AdminGuard>} />
+      <Route path="/admin/listings/:slug" element={<AdminGuard><AdminListingEditor /></AdminGuard>} />
       <Route path="/today" element={<Today />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

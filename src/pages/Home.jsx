@@ -41,7 +41,7 @@ export default function Home() {
         base44.entities.Listing.list("-created_date", 100),
         base44.entities.CalendarDay.list("-created_date", 5000),
       ]);
-      const f = all.filter((l) => l.featured);
+      const f = all.filter((l) => l.featured && l.active !== false);
       setFeatured((f.length ? f : all).slice(0, 4));
       setNewest(all.filter((l) => l.active !== false).slice(0, 4));
       setCalendarMap(buildCalendarMap(days));

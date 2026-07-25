@@ -46,7 +46,7 @@ export default function AreaGuidePage() {
           base44.entities.CalendarDay.list("-created_date", 5000),
         ]);
         if (cancelled) return;
-        setListings(areaListings || []);
+        setListings((areaListings || []).filter((l) => l.active !== false));
         setGuides(areaGuides || []);
         setCalendarMap(buildCalendarMap(days || []));
       } catch {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare } from "lucide-react";
 import InquiriesTable from "@/components/admin/InquiriesTable";
 import Seo from "@/components/Seo";
@@ -57,14 +58,22 @@ export default function Admin() {
               <p className="text-xs text-primary-foreground/70">Back Office · Grand Strand, SC</p>
             </div>
           </div>
-          <button
-            onClick={load}
-            disabled={loading}
-            className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg disabled:opacity-50"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/admin/listings"
+              className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+            >
+              <Building2 className="w-4 h-4" /> Listings
+            </Link>
+            <button
+              onClick={load}
+              disabled={loading}
+              className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              Refresh
+            </button>
+          </div>
         </div>
       </header>
 
