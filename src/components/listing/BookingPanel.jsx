@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { format, startOfDay, differenceInCalendarDays, parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
 import HeartToggle from "@/components/favorites/HeartToggle";
+import { openNightsInWindow } from "@/lib/availability";
 
 // Date-range picker driven by stored CalendarDay rows: unavailable + past dates
 // are not selectable. A range shorter than the check-in day's minNights shows a
@@ -27,6 +28,15 @@ export default function BookingPanel({ listing, cal, restore }) {
   const skipQuoteRef = useRef(!!restore?.quote);
 
   const today = format(startOfDay(new Date()), "yyyy-MM-dd");
+
+  // Honest scarcity: computed from real CalendarDay data, shown only when a
+  // meaningful share of the next 60 nights is already taken. Never a gimmick —
+  // if the numbers aren't true, the line doesn't render (smv-brand rule).
+  const scarcity = useMemo(() => openNightsInWindow(cal, 60), [cal]);
+  const showScarcity =
+    scarcity.tracked >= 30 &&
+    scarcity.open > 0 &&
+    scarcity.open / scarcity.tracked <= 0.4;
 
   const isDisabled = (date) => {
     const ds = format(date, "yyyy-MM-dd");
@@ -97,6 +107,12 @@ export default function BookingPanel({ listing, cal, restore }) {
         </div>
         <HeartToggle listingId={listing.id} className="bg-coast-sand" />
       </div>
+
+      {showScarcity && (
+        <p className="text-xs rounded-lg bg-coast-sand text-coast-navy px-3 py-2">
+          Booking up: only {scarcity.open} of the next {scarcity.tracked} nights are still open.
+        </p>
+      )}
 
       <div className="flex justify-center">
         <Calendar
