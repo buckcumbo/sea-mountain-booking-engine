@@ -75,7 +75,9 @@ function mapProperty(p: any, photos: any[]): any {
       caption: String(ph?.caption || ""),
       order: i,
     })).filter((ph) => ph.url && ph.url.startsWith("http")),
-    active: true,
+    // Hospitable marks delisted homes listed:false — import them inactive so
+    // they never surface in search.
+    active: p?.listed !== false,
   };
 }
 
