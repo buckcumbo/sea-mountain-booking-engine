@@ -138,7 +138,7 @@ export default function About() {
             <p className="text-white/80 mt-1">Browse our rentals — or list your own with us.</p>
           </div>
           <div className="flex gap-3">
-            <Button asChild className="bg-white text-coast-navy hover:bg-white/90">
+            <Button asChild className="bg-coast-sunset hover:bg-coast-sunset-deep text-white">
               <Link to="/search">Find a rental <ArrowRight className="w-4 h-4" /></Link>
             </Button>
             <Button asChild variant="outline" className="border-white/40 text-white hover:bg-white/10">

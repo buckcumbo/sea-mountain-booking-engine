@@ -93,7 +93,7 @@ export default function Contact() {
               </div>
             ))}
           </div>
-          <Button asChild className="mt-8 bg-coast-navy hover:bg-coast-navy-soft text-white">
+          <Button asChild className="mt-8 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
             <Link to="/search">Find a rental</Link>
           </Button>
         </div>

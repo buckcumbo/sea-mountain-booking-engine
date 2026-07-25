@@ -16,7 +16,7 @@ export default function PublicLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="brand-scope min-h-screen flex flex-col bg-background">
       <PublicHeader />
       <main className="flex-1">
         <Outlet />

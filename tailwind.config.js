@@ -17,7 +17,10 @@ module.exports = {
   				'sand-deep': 'hsl(var(--coast-sand-deep))',
   				foam: 'hsl(var(--coast-foam))',
   				ocean: 'hsl(var(--coast-ocean))',
-  				'ocean-soft': 'hsl(var(--coast-ocean-soft))'
+  				'ocean-soft': 'hsl(var(--coast-ocean-soft))',
+  				cyan: 'hsl(var(--coast-cyan))',
+  				sunset: 'hsl(var(--coast-sunset))',
+  				'sunset-deep': 'hsl(var(--coast-sunset-deep))'
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

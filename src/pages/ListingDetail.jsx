@@ -252,7 +252,7 @@ export default function ListingDetail() {
               <div className="bg-card border border-border rounded-2xl p-6 text-center">
                 <p className="font-heading font-semibold text-coast-navy">This property is no longer available</p>
                 <p className="text-sm text-muted-foreground mt-2">Browse our other Grand Strand rentals.</p>
-                <Button asChild className="mt-4 bg-coast-navy hover:bg-coast-navy-soft text-white">
+                <Button asChild className="mt-4 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
                   <Link to="/search">Find a rental</Link>
                 </Button>
               </div>

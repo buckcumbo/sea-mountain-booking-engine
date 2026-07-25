@@ -22,13 +22,13 @@ export default function PublicHeader() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-border">
+    <header className="sticky top-0 z-40 bg-coast-navy text-white border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="font-heading text-lg font-bold text-coast-navy">
-          Sea Mountain <span className="text-coast-ocean">Vacations</span>
+        <Link to="/" className="font-heading text-lg font-bold text-white">
+          Sea Mountain <span className="text-coast-cyan">Vacations</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-coast-navy">
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-white">
           <Link to="/search" className="hover:text-coast-ocean">Find a Rental</Link>
           <DropdownMenu>
             <DropdownMenuTrigger className="inline-flex items-center gap-1 hover:text-coast-ocean outline-none">
@@ -48,7 +48,7 @@ export default function PublicHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link to="/favorites" className="relative p-2 text-coast-navy hover:text-coast-ocean" aria-label="Favorites">
+          <Link to="/favorites" className="relative p-2 text-white hover:text-coast-ocean" aria-label="Favorites">
             <Heart className={`w-5 h-5 ${count > 0 ? "fill-red-500 text-red-500" : ""}`} />
             {count > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-coast-ocean text-white text-[10px] font-semibold flex items-center justify-center">
@@ -57,16 +57,16 @@ export default function PublicHeader() {
             )}
           </Link>
           <div className="hidden lg:flex items-center gap-3">
-            <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5 text-sm text-coast-navy">
+            <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5 text-sm text-white">
               <Phone className="w-4 h-4" /> {PHONE}
             </a>
             <HundredCollectionBadge source="SeaMountainHeader" />
           </div>
-          <Button asChild className="bg-coast-navy hover:bg-coast-navy-soft text-white">
+          <Button asChild className="bg-coast-sunset hover:bg-coast-sunset-deep text-white">
             <Link to="/search">Book Now</Link>
           </Button>
           <button
-            className="lg:hidden p-2 text-coast-navy"
+            className="lg:hidden p-2 text-white"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -76,10 +76,10 @@ export default function PublicHeader() {
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-white px-6 py-4 space-y-3 text-sm font-medium text-coast-navy">
+        <div className="lg:hidden border-t border-white/10 bg-coast-navy px-6 py-4 space-y-3 text-sm font-medium text-white">
           <Link to="/search" onClick={close} className="block">Find a Rental</Link>
           <div>
-            <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Areas</div>
+            <div className="text-xs uppercase tracking-wide text-white/60 mb-1">Areas</div>
             <div className="grid grid-cols-2 gap-1">
               {areas.map(([slug, label]) => (
                 <Link key={slug} to={`/area/${slug}`} onClick={close} className="block py-0.5">

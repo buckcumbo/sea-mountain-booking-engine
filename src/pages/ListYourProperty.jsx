@@ -174,7 +174,7 @@ export default function ListYourProperty() {
           <p className="mt-4 text-lg text-white/85 max-w-2xl">
             Higher revenue. Seamless management. Industry-leading expertise.
           </p>
-          <Button asChild className="mt-6 bg-white text-coast-navy hover:bg-white/90">
+          <Button asChild className="mt-6 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
             <a href="#cta">Get a free revenue analysis</a>
           </Button>
         </div>
@@ -289,7 +289,7 @@ export default function ListYourProperty() {
           <p className="mt-4 text-white/85">
             Property owners with Sea Mountain have increased revenue by 30-50%.
           </p>
-          <Button asChild className="mt-6 bg-white text-coast-navy hover:bg-white/90">
+          <Button asChild className="mt-6 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
             <Link to="/contact">Get a free revenue analysis</Link>
           </Button>
         </div>

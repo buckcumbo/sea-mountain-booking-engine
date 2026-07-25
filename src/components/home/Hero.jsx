@@ -24,7 +24,7 @@ export default function Hero() {
       <img
         src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"
         alt=""
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover fade-in"
         onError={(e) => { e.target.style.display = "none"; }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-coast-navy/50 via-coast-navy/40 to-coast-navy/75" />
@@ -67,7 +67,7 @@ export default function Hero() {
               ))}
             </select>
           </div>
-          <Button type="submit" className="h-11 px-6 bg-coast-navy hover:bg-coast-navy-soft text-white">
+          <Button type="submit" className="h-11 px-6 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
             <SearchIcon className="w-4 h-4 mr-1.5" /> Search
           </Button>
         </form>
