@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
+import { Image } from "@/components/ui/image";
 
 export default function Hero({ image }) {
   const navigate = useNavigate();
@@ -21,11 +22,13 @@ export default function Hero({ image }) {
 
   return (
     <section className="relative overflow-hidden bg-coast-navy">
-      <img
+      {/* CDN-resized + WebP via the Image component — the hero was the page's
+          heaviest download when served at original resolution. */}
+      <Image
         src={image?.imageUrl || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"}
         alt={image?.altText || ""}
-        className="absolute inset-0 w-full h-full object-cover fade-in"
-        onError={(e) => { e.target.style.display = "none"; }}
+        fittingType="fill"
+        className="absolute inset-0 w-full h-full fade-in"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-coast-navy/50 via-coast-navy/40 to-coast-navy/75" />
       <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28 text-white">
