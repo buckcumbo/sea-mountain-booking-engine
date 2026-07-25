@@ -1,0 +1,45 @@
+{
+  "name": "Data Retention",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "data_retention",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "prune": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "pruneOldRecords",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Prune old records",
+            "description": "Delete WebhookEvent/AnalyticsEvent/RateLimitEvent/expired Quote rows past their retention window"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 4 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Nightly at 4 AM UTC (after the 3 AM backup): deletes records past their retention windows \u2014 webhook payloads (90d), analytics events (180d), rate-limit counters (2d), and expired quotes (90d)."
+}
