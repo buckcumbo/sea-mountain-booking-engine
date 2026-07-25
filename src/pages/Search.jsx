@@ -81,12 +81,8 @@ export default function Search() {
     setLoading(true);
     setError("");
     try {
-      const [listingData, days] = await Promise.all([
-        base44.entities.Listing.list("-created_date", 500),
-        base44.entities.CalendarDay.list("-created_date", 5000),
-      ]);
+      const listingData = await base44.entities.Listing.list("-created_date", 500);
       setListings(listingData);
-      setCalendarMap(buildCalendarMap(days));
     } catch (e) {
       setError(e.message || "Unable to load listings");
     } finally {
@@ -97,6 +93,37 @@ export default function Search() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Calendar rows are fetched only for the chosen date window (±3 days for
+  // flexibility) — without dates, cards price from the precomputed fromRate
+  // and the browser never downloads the calendar table.
+  useEffect(() => {
+    if (!filters.checkIn || !filters.checkOut) {
+      setCalendarMap({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const pad = (iso, delta) => {
+          const t = new Date(`${iso}T00:00:00Z`);
+          t.setUTCDate(t.getUTCDate() + delta);
+          return t.toISOString().slice(0, 10);
+        };
+        const days = await base44.entities.CalendarDay.filter(
+          { date: { $gte: pad(filters.checkIn, -3), $lte: pad(filters.checkOut, 3) } },
+          "date",
+          5000
+        );
+        if (!cancelled) setCalendarMap(buildCalendarMap(days));
+      } catch {
+        // cards fall back to fromRate
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [filters.checkIn, filters.checkOut]);
 
   // Track executed searches — fires on filter changes but not on initial mount.
   const searchMounted = useRef(false);
