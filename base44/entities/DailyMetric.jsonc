@@ -1,0 +1,75 @@
+{
+  "name": "DailyMetric",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The day this row covers (unique, enforced in snapshotMetrics upsert)"
+    },
+    "sessions": {
+      "type": "number",
+      "default": 0,
+      "description": "GA4 sessions"
+    },
+    "users": {
+      "type": "number",
+      "default": 0,
+      "description": "GA4 active users"
+    },
+    "pageViews": {
+      "type": "number",
+      "default": 0,
+      "description": "GA4 screenPageViews"
+    },
+    "scClicks": {
+      "type": "number",
+      "default": 0,
+      "description": "Search Console clicks"
+    },
+    "scImpressions": {
+      "type": "number",
+      "default": 0,
+      "description": "Search Console impressions"
+    },
+    "scCtr": {
+      "type": "number",
+      "default": 0,
+      "description": "Search Console CTR as reported"
+    },
+    "scPosition": {
+      "type": "number",
+      "default": 0,
+      "description": "Search Console average position as reported"
+    },
+    "syncedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "date"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
