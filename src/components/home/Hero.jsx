@@ -41,7 +41,7 @@ export default function Hero({ image }) {
         </p>
         <form
           onSubmit={submit}
-          className="mt-8 bg-white rounded-2xl shadow-xl p-3 flex flex-col md:flex-row md:items-end gap-3 max-w-3xl"
+          className="mt-8 bg-white text-coast-navy rounded-2xl shadow-xl p-3 flex flex-col md:flex-row md:items-end gap-3 max-w-3xl"
         >
           <div className="flex-1 w-full space-y-1">
             <label className="text-xs text-muted-foreground">Check-in</label>
