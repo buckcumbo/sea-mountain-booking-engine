@@ -12,7 +12,7 @@ import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
-import MapView, { useIsLgUp } from "@/components/search/MapView";
+import SearchMap from "@/components/search/SearchMap";
 import { track } from "@/lib/analytics";
 import { listingMatchesFeatures } from "@/lib/features";
 import HeroBackground from "@/components/HeroBackground";
@@ -36,12 +36,14 @@ export default function Search() {
   const [error, setError] = useState("");
   const [listings, setListings] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
+  // "list" (default): full-width cards, no map — cards get the whole row.
+  // "map": split view on desktop (cards rail + big sticky map), map-only on
+  // mobile. The map mounts only in map mode, so listing browsing never pays
+  // its cost.
   const [view, setView] = useState("list");
   const [sort, setSort] = useState("price");
   const [selectedId, setSelectedId] = useState(null);
-  const isLgUp = useIsLgUp();
   const heroImage = useSiteImage("hero:search");
-  const showMap = isLgUp || view === "map";
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
     const collection = p.get("collection");
@@ -266,26 +268,28 @@ export default function Search() {
                   <option value="sleeps">Sleeps the most</option>
                   <option value="newest">Newest homes</option>
                 </select>
-                <div className="flex rounded-lg border border-border overflow-hidden lg:hidden">
+                <div className="flex rounded-lg border border-border overflow-hidden">
                   <button
                     onClick={() => setView("list")}
-                    className={`h-9 w-9 flex items-center justify-center ${
+                    aria-pressed={view === "list"}
+                    className={`h-9 px-3 inline-flex items-center gap-1.5 text-xs font-medium ${
                       view === "list"
                         ? "bg-coast-navy text-white"
-                        : "bg-card text-muted-foreground"
+                        : "bg-card text-muted-foreground hover:text-coast-navy"
                     }`}
                   >
-                    <LayoutGrid className="w-4 h-4" />
+                    <LayoutGrid className="w-4 h-4" /> List
                   </button>
                   <button
                     onClick={() => setView("map")}
-                    className={`h-9 w-9 flex items-center justify-center ${
+                    aria-pressed={view === "map"}
+                    className={`h-9 px-3 inline-flex items-center gap-1.5 text-xs font-medium ${
                       view === "map"
                         ? "bg-coast-navy text-white"
-                        : "bg-card text-muted-foreground"
+                        : "bg-card text-muted-foreground hover:text-coast-navy"
                     }`}
                   >
-                    <MapIcon className="w-4 h-4" />
+                    <MapIcon className="w-4 h-4" /> Map
                   </button>
                 </div>
               </div>
@@ -309,9 +313,9 @@ export default function Search() {
             ) : items.length === 0 ? (
               <EmptyState onClear={() => setFilters(DEFAULT_FILTERS)} />
             ) : (
-              <div className="grid lg:grid-cols-[1fr_400px] gap-6 items-start">
-                <div className={view === "map" ? "hidden lg:block" : "block"}>
-                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              view === "map" ? (
+                <div className="grid lg:grid-cols-[1fr_1.1fr] gap-6 items-start">
+                  <div className="hidden lg:grid sm:grid-cols-2 gap-5 max-h-[calc(100vh-7rem)] overflow-y-auto pr-1">
                     {items.map(({ listing, price }) => (
                       <div
                         key={listing.id}
@@ -326,20 +330,32 @@ export default function Search() {
                       </div>
                     ))}
                   </div>
-                </div>
-                <div className={view === "list" ? "hidden lg:block" : "block"}>
-                  <div className="lg:sticky lg:top-6 h-[460px] lg:h-[calc(100vh-7rem)] rounded-2xl overflow-hidden border border-border shadow-sm">
-                    {showMap ? (
-                      <MapView
-                        listings={items.map((i) => i.listing)}
-                        prices={prices}
-                        selectedId={selectedId}
-                        onSelect={handleSelect}
-                      />
-                    ) : null}
+                  <div className="lg:sticky lg:top-6 h-[70vh] lg:h-[calc(100vh-7rem)] rounded-2xl overflow-hidden border border-border shadow-sm">
+                    <SearchMap
+                      listings={items.map((i) => i.listing)}
+                      prices={prices}
+                      selectedId={selectedId}
+                      onSelect={handleSelect}
+                    />
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  {items.map(({ listing, price }) => (
+                    <div
+                      key={listing.id}
+                      ref={(el) => (cardRefs.current[listing.id] = el)}
+                      className={
+                        selectedId === listing.id
+                          ? "rounded-2xl ring-2 ring-coast-ocean"
+                          : ""
+                      }
+                    >
+                      <ListingCard listing={listing} price={price} />
+                    </div>
+                  ))}
+                </div>
+              )
             )}
           </section>
         </div>
