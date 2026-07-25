@@ -10,6 +10,7 @@ import TopItemsTable from "@/components/analytics/TopItemsTable";
 import SearchInsights from "@/components/analytics/SearchInsights";
 import BookingsPlaceholder from "@/components/analytics/BookingsPlaceholder";
 import GoogleMarketingPanel from "@/components/analytics/GoogleMarketingPanel";
+import BookingFunnelPanel from "@/components/analytics/BookingFunnelPanel";
 
 function startOfDay(d) {
   const x = new Date(d);
@@ -244,6 +245,8 @@ export default function AdminAnalytics() {
           </section>
 
           <GoogleMarketingPanel />
+
+          <BookingFunnelPanel />
 
           <section>
             <BookingsPlaceholder />
