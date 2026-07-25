@@ -17,6 +17,12 @@ import {
   Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Seo from "@/components/Seo";
 
 const EARNING_POINTS = [
@@ -103,6 +109,49 @@ const EXPERTISE = [
     icon: Settings,
     title: "Full-service management",
     text: "Dynamic pricing, high-converting listings, maintenance, cleaning and 24/7 guest support.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Why should I choose Sea Mountain Vacations over other property management companies?",
+    a: "With our deep-rooted local expertise in the North Myrtle Beach area and our comprehensive suite of services from property acquisition to management, we offer a truly turnkey solution. Our dedication is reflected in our 2,500+ 5-star reviews across all booking platforms, ensuring your property achieves its fullest potential.",
+  },
+  {
+    q: "What percentage do you charge for managing my property?",
+    a: "Our fees are competitive and tailored to the range and depth of services you require. For a detailed quote and to understand how we can maximize your ROI, please reach out to our team.",
+  },
+  {
+    q: "How do you ensure the quality of guests?",
+    a: "We conduct a meticulous vetting process for all our guests to ensure a respectful and hassle-free rental experience for your property.",
+  },
+  {
+    q: "Do I have to commit for a certain period if I sign up with you?",
+    a: "We offer various contract options tailored to your needs. Our primary goal is to ensure flexibility and comfort for our property owners.",
+  },
+  {
+    q: "Can I use my property for personal vacations?",
+    a: "Absolutely! It's your property, and we'll coordinate with you to ensure it's available for your personal use when you desire. Just give us a heads-up in advance.",
+  },
+  {
+    q: "How do you handle maintenance and unexpected repairs?",
+    a: "We have a dedicated team for regular maintenance and any unexpected issues. With services like yard care and pool cleaning, we ensure your property is always in top condition. Any significant repairs or expenses will be communicated and approved by you before we proceed.",
+  },
+  {
+    q: "I'm interested in buying or selling a vacation rental. How can you assist me?",
+    a: "We have a network of industry-leading agents and partners who specialize in vacation rentals. Whether you're buying or selling, our experts ensure you get the best value and make informed decisions.",
+  },
+  {
+    q: "I want to renovate my property. Can you handle that?",
+    a: "Yes, we offer both interior design and renovation services. Our in-house team focuses on combining aesthetics with functionality, ensuring your property stands out in the vacation rental market.",
+  },
+  {
+    q: "How do you determine the rental price for my property?",
+    a: "We utilize data-driven strategies, considering factors like property location, size, amenities, and current market demand in the North Myrtle Beach area. Our aim is always to maximize your returns.",
+  },
+  {
+    q: "What happens if my property is damaged by a guest?",
+    a: "We take property damage seriously. Our vetting process reduces such risks, but in the rare event of damage, we'll assess the situation, communicate with you, and ensure appropriate steps are taken, including using security deposits if necessary.",
   },
 ];
 
@@ -210,6 +259,25 @@ export default function ListYourProperty() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Owner FAQ */}
+      <section className="max-w-3xl mx-auto px-6 py-14">
+        <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy mb-8">
+          Your questions, answered
+        </h2>
+        <Accordion type="single" collapsible className="bg-card border border-border rounded-2xl px-6">
+          {FAQS.map((faq, i) => (
+            <AccordionItem key={i} value={`faq-${i}`}>
+              <AccordionTrigger className="font-heading text-coast-navy">
+                {faq.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                {faq.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </section>
 
       {/* Closing CTA */}
