@@ -1,95 +1,110 @@
-import React, { useMemo } from "react";
-import { AREA_COORDS, prettifyArea } from "@/lib/availability";
+import React, { useMemo, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Link } from "react-router-dom";
+import { prettifyArea } from "@/lib/availability";
 
-export default function MapView({ listings, prices, selectedId, onSelect }) {
-  const markers = useMemo(
+// Leaflet map for the search results: a price pin per listing, auto-fit to the
+// current results, with a popup (photo, name, price, link) on click. onSelect
+// fires when a pin is clicked so the parent can scroll/highlight its card.
+function priceLabel(price) {
+  if (!price) return "•";
+  if (price.hasDates && price.total != null) return `$${price.total}`;
+  if (price.from != null) return `$${price.from}`;
+  return "•";
+}
+
+function priceIcon(label, selected) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="coast-pin ${selected ? "coast-pin--active" : ""}">${label}</div>`,
+    iconSize: [46, 26],
+    iconAnchor: [23, 26],
+    popupAnchor: [0, -24],
+  });
+}
+
+function FitBounds({ points }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!points.length) return;
+    const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng]));
+    map.fitBounds(bounds, { padding: [44, 44], maxZoom: 14 });
+  }, [map, points]);
+  return null;
+}
+
+export default function MapView({ listings, prices, selectedId, onSelect, className }) {
+  const points = useMemo(
     () =>
-      listings.map((l, i) => {
-        const coord = AREA_COORDS[l.area] || { x: 35, y: 50 };
-        const jitter = (i % 5) * 3 - 6;
-        return {
-          id: l.id,
+      listings
+        .filter((l) => l.latitude != null && l.longitude != null)
+        .map((l) => ({
           listing: l,
+          lat: l.latitude,
+          lng: l.longitude,
           price: prices[l.id],
-          left: coord.x + jitter * 0.4,
-          top: coord.y + jitter * 0.5,
-        };
-      }),
+        })),
     [listings, prices]
   );
 
-  const selected = markers.find((m) => m.id === selectedId);
+  const center = points[0] ? [points[0].lat, points[0].lng] : [33.7, -78.9];
 
   return (
-    <div className="relative w-full h-[560px] rounded-2xl overflow-hidden border border-border bg-gradient-to-b from-coast-ocean-soft to-coast-foam">
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M 0 0 L 22 0 L 26 20 L 24 40 L 28 60 L 30 80 L 24 100 L 0 100 Z"
-          fill="hsl(var(--coast-sand-deep))"
-          opacity="0.6"
-        />
-        <path
-          d="M 0 0 L 20 0 L 24 20 L 22 40 L 26 60 L 28 80 L 22 100 L 0 100 Z"
-          fill="hsl(var(--coast-sand))"
-          opacity="0.85"
-        />
-      </svg>
-
-      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-coast-navy">
-        Grand Strand · {listings.length} stay{listings.length === 1 ? "" : "s"}
-      </div>
-
-      {markers.map((m) => (
-        <button
-          key={m.id}
-          onClick={() => onSelect(m.id)}
-          style={{ left: `${m.left}%`, top: `${m.top}%` }}
-          className={`absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full text-xs font-semibold shadow-md border transition-all ${
-            selectedId === m.id
-              ? "bg-coast-navy text-white border-coast-navy scale-110 z-20"
-              : "bg-white text-coast-navy border-border hover:bg-coast-navy hover:text-white z-10"
-          }`}
-        >
-          {m.price && m.price.hasDates
-            ? `$${m.price.total}`
-            : m.price && m.price.from != null
-            ? `$${m.price.from}`
-            : "•"}
-        </button>
-      ))}
-
-      {selected && (
-        <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:w-80 bg-white rounded-xl shadow-lg border border-border p-3 flex gap-3">
-          <div className="w-16 h-16 rounded-lg bg-coast-foam overflow-hidden shrink-0">
-            {selected.listing.photos && selected.listing.photos[0] && (
-              <img
-                src={selected.listing.photos[0].url}
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-          <div className="min-w-0">
-            <div className="font-heading font-semibold text-sm text-coast-navy truncate">
-              {selected.listing.title}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {prettifyArea(selected.listing.area)} · {selected.listing.sleeps} guests
-            </div>
-            <div className="text-sm font-semibold text-coast-ocean mt-1">
-              {selected.price && selected.price.hasDates
-                ? `from $${selected.price.total} total`
-                : selected.price && selected.price.from != null
-                ? `from $${selected.price.from}/night`
-                : ""}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <MapContainer
+      center={center}
+      zoom={11}
+      scrollWheelZoom={false}
+      className={className || "w-full h-full"}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; OpenStreetMap contributors'
+      />
+      <FitBounds points={points} />
+      {points.map((p) => {
+        const photo =
+          p.listing.photos && p.listing.photos[0] ? p.listing.photos[0].url : null;
+        return (
+          <Marker
+            key={p.listing.id}
+            position={[p.lat, p.lng]}
+            icon={priceIcon(priceLabel(p.price), selectedId === p.listing.id)}
+            eventHandlers={{ click: () => onSelect && onSelect(p.listing.id) }}
+            zIndexOffset={selectedId === p.listing.id ? 1000 : 0}
+          >
+            <Popup>
+              <div className="w-44 flex flex-col gap-1.5">
+                {photo && (
+                  <img
+                    src={photo}
+                    alt={p.listing.title}
+                    className="w-full h-24 object-cover rounded-lg"
+                  />
+                )}
+                <div className="font-heading font-semibold text-sm text-coast-navy leading-tight">
+                  {p.listing.title}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {prettifyArea(p.listing.area)} · {p.listing.sleeps} guests
+                </div>
+                <div className="text-sm font-semibold text-coast-ocean">
+                  {p.price && p.price.from != null
+                    ? `from $${p.price.from}/night`
+                    : "Rates on request"}
+                </div>
+                <Link
+                  to={`/listing/${p.listing.slug || p.listing.id}`}
+                  className="mt-1 text-xs font-medium text-coast-ocean hover:underline"
+                >
+                  View details →
+                </Link>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </MapContainer>
   );
 }

@@ -22,10 +22,16 @@
         "myrtle-beach",
         "surfside",
         "garden-city",
-        "pawleys-island",
-        "murrells-inlet"
+        "murrells-inlet",
+        "pawleys-island"
       ],
       "default": "myrtle-beach"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
     },
     "collections": {
       "type": "array",
