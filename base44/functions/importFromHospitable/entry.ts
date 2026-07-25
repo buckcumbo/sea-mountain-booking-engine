@@ -54,10 +54,14 @@ function mapProperty(p: any, photos: any[]): any {
   const petFriendly =
     p?.house_rules?.pets_allowed === true ||
     amenities.some((a: string) => a.toLowerCase().includes("pets allowed") || a.toLowerCase() === "pets");
-  // public_name is OTA-styled ("Callahan's Castle | 5BR Beach House w/ Heated
-  // Pool") — keep only the clean home name for our site and slugs.
-  const rawTitle = p?.public_name || p?.name || "Untitled home";
-  const title = String(rawTitle).split("|")[0].trim() || String(p?.name || "Untitled home").trim();
+  // Title: prefer Hospitable's internal `name` — it's unique per unit.
+  // public_name is OTA-styled and can be a shared generic descriptor across
+  // same-building units ("4BR Oceanfront Unit w/ Pool" × 3), which collides
+  // slugs. Fall back to public_name stripped of its "| marketing" suffix.
+  const title =
+    String(p?.name || "").trim() ||
+    String(p?.public_name || "").split("|")[0].trim() ||
+    "Untitled home";
   return {
     guestyId: `hosp_${p.id}`,
     syncedAt: new Date().toISOString(),
@@ -188,9 +192,27 @@ Deno.serve(async (req) => {
       const res = await hospFetch(token, `/properties?per_page=25&page=${page}&include=details`);
       const list = Array.isArray(res?.data) ? res.data : [];
       let imported = 0;
+      const runSlugs = new Map<string, string>(); // slug -> guestyId (this invocation)
       for (const p of list) {
         const images = await fetchImages(token, p.id, p);
-        await upsertListingByGuestyId(base44, mapProperty(p, images));
+        const mapped = mapProperty(p, images);
+        // Hard uniqueness guard: a slug is one URL — two homes must never
+        // share it. Suffix -2, -3, … on collision with a different home.
+        const baseSlug = mapped.slug || "home";
+        let candidate = baseSlug;
+        let n = 2;
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const inRun = runSlugs.get(candidate);
+          if (inRun && inRun !== mapped.guestyId) { candidate = `${baseSlug}-${n++}`; continue; }
+          const existing = await svc.Listing.filter({ slug: candidate }, "-created_date", 1);
+          const row = Array.isArray(existing) && existing[0];
+          if (row && row.guestyId !== mapped.guestyId) { candidate = `${baseSlug}-${n++}`; continue; }
+          break;
+        }
+        mapped.slug = candidate;
+        runSlugs.set(candidate, mapped.guestyId);
+        await upsertListingByGuestyId(base44, mapped);
         imported++;
       }
       const lastPage = res?.meta?.last_page ?? (list.length < 25 ? page : page + 1);
