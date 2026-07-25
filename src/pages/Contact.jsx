@@ -1,9 +1,29 @@
 import React from "react";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Phone, Mail, MapPin, Tag, CalendarCheck, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import InquiryForm from "@/components/forms/InquiryForm";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd } from "@/lib/seo";
 import { PHONE, PHONE_TEL, EMAIL, ADDRESS } from "@/lib/contact";
+
+const DIRECT_BENEFITS = [
+  {
+    icon: Tag,
+    title: "Best rates",
+    text: "Our direct prices are the lowest you'll find for our homes.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Priority access",
+    text: "First pick of dates, upgrades, and early check-in requests.",
+  },
+  {
+    icon: Users,
+    title: "Personal service",
+    text: "A local team that knows every home — before, during, and after your stay.",
+  },
+];
 
 export default function Contact() {
   return (
@@ -52,6 +72,31 @@ export default function Contact() {
           </div>
         </div>
         <InquiryForm type="contact" submitLabel="Send Message" />
+      </section>
+
+      <section className="bg-coast-sand">
+        <div className="max-w-7xl mx-auto px-6 py-14">
+          <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy mb-3">
+            Why book direct
+          </h2>
+          <p className="text-muted-foreground max-w-2xl">
+            Booking directly with us gets you the best rates on every home — no third-party fees.
+          </p>
+          <div className="mt-8 grid md:grid-cols-3 gap-6">
+            {DIRECT_BENEFITS.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="bg-card border border-border rounded-2xl p-6">
+                <div className="w-11 h-11 rounded-full bg-white text-coast-ocean flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
+                <p className="text-sm text-muted-foreground mt-2">{text}</p>
+              </div>
+            ))}
+          </div>
+          <Button asChild className="mt-8 bg-coast-navy hover:bg-coast-navy-soft text-white">
+            <Link to="/search">Find a rental</Link>
+          </Button>
+        </div>
       </section>
     </div>
   );
