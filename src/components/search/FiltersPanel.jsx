@@ -1,7 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -10,8 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PawPrint } from "lucide-react";
 import { AREA_LABELS, prettifyCollection } from "@/lib/availability";
+import { FEATURE_FILTERS } from "@/lib/features";
 
 const GUEST_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16];
 const BED_OPTIONS = [0, 1, 2, 3, 4, 5, 6];
@@ -25,10 +24,28 @@ export default function FiltersPanel({ filters, onChange, collections }) {
         : [...filters.collections, c],
     });
   };
+  const toggleFeature = (key) => {
+    const current = filters.features || [];
+    const has = current.includes(key);
+    onChange({
+      features: has ? current.filter((x) => x !== key) : [...current, key],
+    });
+  };
   const budgetAny = filters.maxBudget >= 1000;
 
   return (
     <div className="space-y-5">
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">Search by name</Label>
+        <Input
+          type="search"
+          placeholder="Know the home? Type its name"
+          value={filters.query || ""}
+          onChange={(e) => onChange({ query: e.target.value })}
+          className="h-10"
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Check-in</Label>
@@ -114,35 +131,46 @@ export default function FiltersPanel({ filters, onChange, collections }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Min bedrooms</Label>
-          <Select
-            value={String(filters.minBedrooms)}
-            onValueChange={(v) => onChange({ minBedrooms: Number(v) })}
-          >
-            <SelectTrigger className="h-10">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {BED_OPTIONS.map((b) => (
-                <SelectItem key={b} value={String(b)}>
-                  {b === 0 ? "Any" : `${b}+`}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5 flex items-end">
-          <div className="flex items-center justify-between w-full rounded-lg border border-border px-3 h-10">
-            <span className="text-sm text-muted-foreground inline-flex items-center gap-1.5">
-              <PawPrint className="w-4 h-4" /> Pet-friendly
-            </span>
-            <Switch
-              checked={filters.petFriendly}
-              onCheckedChange={(v) => onChange({ petFriendly: v })}
-            />
-          </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">Min bedrooms</Label>
+        <Select
+          value={String(filters.minBedrooms)}
+          onValueChange={(v) => onChange({ minBedrooms: Number(v) })}
+        >
+          <SelectTrigger className="h-10">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {BED_OPTIONS.map((b) => (
+              <SelectItem key={b} value={String(b)}>
+                {b === 0 ? "Any" : `${b}+`}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">Top features</Label>
+        <div className="flex flex-wrap gap-2">
+          {FEATURE_FILTERS.map(({ key, label, icon: Icon }) => {
+            const active = (filters.features || []).includes(key);
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => toggleFeature(key)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                  active
+                    ? "bg-coast-navy text-white border-coast-navy"
+                    : "bg-card text-coast-navy border-border hover:border-coast-ocean"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" /> {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
