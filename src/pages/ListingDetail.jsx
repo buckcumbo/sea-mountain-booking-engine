@@ -11,7 +11,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
-import ListingMarkdown from "@/components/listing/ListingMarkdown";
+import StoryDescription from "@/components/listing/StoryDescription";
 import { Button } from "@/components/ui/button";
 import Seo from "@/components/Seo";
 import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
@@ -159,7 +159,10 @@ export default function ListingDetail() {
             {listing.storyCopy && (
               <section className="space-y-2">
                 <h2 className="font-heading text-lg font-semibold text-coast-navy">About this stay</h2>
-                <ListingMarkdown>{listing.storyCopy}</ListingMarkdown>
+                <StoryDescription
+                  storyCopy={listing.storyCopy}
+                  hasSleepsWhere={listing.sleepsWhere && listing.sleepsWhere.length > 0}
+                />
               </section>
             )}
 
