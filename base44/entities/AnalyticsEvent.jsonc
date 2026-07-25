@@ -40,7 +40,7 @@
         "role": "admin"
       }
     },
-    "create": {},
+    "create": true,
     "update": {
       "user_condition": {
         "role": "admin"

@@ -17,7 +17,7 @@
     "imageUrl"
   ],
   "rls": {
-    "read": {},
+    "read": true,
     "create": {
       "user_condition": {
         "role": "admin"
