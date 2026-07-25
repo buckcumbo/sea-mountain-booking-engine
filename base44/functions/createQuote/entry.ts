@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { allowRequest, clientIp } from '../../shared/rateLimit.ts';
 
 // MOCK quote generator. No Guesty credentials yet — returns a sample itemized
 // invoice built from stored CalendarDay nightly rates plus placeholder fee/tax
@@ -36,6 +37,12 @@ Deno.serve(async (req) => {
     }
     if (String(checkOut) <= String(checkIn)) {
       return Response.json({ error: "Check-out must be after check-in" }, { status: 400 });
+    }
+
+    // Rate limit: public unauthenticated endpoint that writes a Quote row per
+    // call — cap per-IP so it can't be used to flood the entity or burn quota.
+    if (!(await allowRequest(base44, "createQuote", clientIp(req), 20, 10))) {
+      return Response.json({ error: "Too many quote requests. Please try again in a few minutes." }, { status: 429 });
     }
 
     // Build the night list [checkIn, checkOut)
