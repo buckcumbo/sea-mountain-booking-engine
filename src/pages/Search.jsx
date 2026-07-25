@@ -12,6 +12,7 @@ import Seo from "@/components/Seo";
 import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
 import MapView, { useIsLgUp } from "@/components/search/MapView";
+import { track } from "@/lib/analytics";
 
 const DEFAULT_FILTERS = {
   checkIn: "",
@@ -78,6 +79,27 @@ export default function Search() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Track executed searches — fires on filter changes but not on initial mount.
+  const searchMounted = useRef(false);
+  useEffect(() => {
+    if (!searchMounted.current) {
+      searchMounted.current = true;
+      return;
+    }
+    track("search", {
+      searchParams: {
+        checkIn: filters.checkIn || undefined,
+        checkOut: filters.checkOut || undefined,
+        guests: filters.guests || undefined,
+        area: filters.area !== "all" ? filters.area : undefined,
+        minBedrooms: filters.minBedrooms || undefined,
+        petFriendly: filters.petFriendly || undefined,
+        collections: filters.collections.length ? filters.collections : undefined,
+        maxBudget: filters.maxBudget < 1000 ? filters.maxBudget : undefined,
+      },
+    });
+  }, [filters]);
 
   const collectionOptions = useMemo(() => {
     const set = new Set();

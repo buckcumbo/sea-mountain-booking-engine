@@ -21,6 +21,7 @@ import Reviews from "@/components/listing/Reviews";
 import LocationMap from "@/components/listing/LocationMap";
 import RelatedListings from "@/components/listing/RelatedListings";
 import MobileBookingBar from "@/components/listing/MobileBookingBar";
+import { track } from "@/lib/analytics";
 
 // Reads ONLY Listing, CalendarDay, Review. No external network calls.
 export default function ListingDetail() {
@@ -51,6 +52,7 @@ export default function ListingDetail() {
         if (!found) { if (!cancelled) setNotFound(true); return; }
         if (cancelled) return;
         setListing(found);
+        track("listing_view", { listingSlug: found.slug, area: found.area });
         const [days, revs, allListings] = await Promise.all([
           base44.entities.CalendarDay.list("-created_date", 5000),
           base44.entities.Review.filter({ listingId: found.id, published: true }, "-stayDate", 100),

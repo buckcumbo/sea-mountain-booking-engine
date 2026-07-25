@@ -52,7 +52,7 @@ export default function ListingCard({ listing, price }) {
           {prettifyArea(listing.area)}
         </span>
         <span className="absolute top-3 right-3">
-          <HeartToggle listingId={listing.id} />
+          <HeartToggle listingId={listing.id} listingSlug={listing.slug} />
         </span>
       </div>
       <div className="p-4 space-y-3">

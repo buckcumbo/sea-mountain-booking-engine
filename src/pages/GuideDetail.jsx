@@ -8,6 +8,7 @@ import { prettifyArea } from "@/lib/availability";
 import GuideCard from "@/components/guides/GuideCard";
 import Seo from "@/components/Seo";
 import { buildArticleJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { track } from "@/lib/analytics";
 
 export default function GuideDetail() {
   const { slug } = useParams();
@@ -33,6 +34,7 @@ export default function GuideDetail() {
         }
         if (cancelled) return;
         setGuide(found);
+        track("guide_view");
         const related = await base44.entities.AreaGuide.filter(
           { type: "guide", area: found.area, published: true },
           "-created_date",

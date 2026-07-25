@@ -1,0 +1,55 @@
+{
+  "name": "AnalyticsEvent",
+  "type": "object",
+  "properties": {
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "page_view",
+        "listing_view",
+        "search",
+        "guide_view",
+        "favorite_add",
+        "inquiry_submit"
+      ]
+    },
+    "path": {
+      "type": "string"
+    },
+    "listingSlug": {
+      "type": "string"
+    },
+    "area": {
+      "type": "string"
+    },
+    "searchParams": {
+      "type": "object"
+    },
+    "sessionId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "eventType",
+    "path",
+    "sessionId"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
