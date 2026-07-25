@@ -4,7 +4,7 @@ import Hero from "@/components/home/Hero";
 import CollectionGrid from "@/components/home/CollectionGrid";
 import AreaGrid from "@/components/home/AreaGrid";
 import FeaturedRentals from "@/components/home/FeaturedRentals";
-import ReviewStrip from "@/components/home/ReviewStrip";
+
 import NewRentals from "@/components/home/NewRentals";
 import { Receipt, MapPin, Tag } from "lucide-react";
 import Seo from "@/components/Seo";
@@ -32,7 +32,6 @@ const WHY = [
 export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [newest, setNewest] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
 
   useEffect(() => {
@@ -45,8 +44,7 @@ export default function Home() {
       setFeatured((f.length ? f : all).slice(0, 4));
       setNewest(all.filter((l) => l.active !== false).slice(0, 4));
       setCalendarMap(buildCalendarMap(days));
-      const revs = await base44.entities.Review.filter({ published: true }, "-stayDate", 3);
-      setReviews(revs || []);
+
     })();
   }, []);
 
@@ -91,12 +89,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {reviews.length > 0 && (
-        <Section title="What our guests say" subtitle="Real reviews from recent Grand Strand stays.">
-          <ReviewStrip reviews={reviews} />
-        </Section>
-      )}
 
       <Section title="What Our Guests Say" subtitle="Verified reviews from our recent guests.">
         <div className="w-full">
