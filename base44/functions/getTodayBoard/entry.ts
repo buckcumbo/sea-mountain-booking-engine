@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
-// Admin-only Today board data. Returns arrivals, departures, same-day turns,
+// Admin/staff Today board data. Returns arrivals, departures, same-day turns,
 // and unpaid balances for a given date (default: today, Eastern Time). Each
 // item resolves the listing title/area and guest info via lookups.
 const FLAG_TURN = "same-day-turn";
@@ -29,7 +29,11 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
-    if (user.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
+    // Staff run the ops board day-to-day; admin is not required (the /today
+    // route already admits both roles — this gate must match it).
+    if (user.role !== "admin" && user.role !== "staff") {
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     let payload: any = {};
     try { payload = await req.json(); } catch { payload = {}; }
@@ -106,6 +110,7 @@ Deno.serve(async (req) => {
       unpaidBalances,
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error("[getTodayBoard]", error.message);
+    return Response.json({ error: "Could not load the board. Please try again." }, { status: 500 });
   }
 });
