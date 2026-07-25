@@ -46,7 +46,7 @@
         "role": "admin"
       }
     },
-    "create": {},
+    "create": false,
     "update": {
       "user_condition": {
         "role": "admin"
