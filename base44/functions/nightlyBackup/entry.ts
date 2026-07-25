@@ -62,6 +62,7 @@ Deno.serve(async (req) => {
           Authorization: `Bearer ${ghToken}`,
           Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28',
+          'User-Agent': 'smv-base44-backup',
           ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
         },
         body: opts.body ? JSON.stringify(opts.body) : undefined,
@@ -144,8 +145,30 @@ Deno.serve(async (req) => {
       entities: counts,
     };
 
-    // 6. Resolve the branch tip (if it exists) for the commit parent + base tree.
-    const refRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/refs/heads/${branch}`);
+    // 6. Resolve the branch tip for the commit parent + base tree.
+    //    Empty repos (no commits) reject git/blobs with 409, so bootstrap an
+    //    initial commit via the Contents API when the branch ref is missing.
+    let refRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/refs/heads/${branch}`);
+    if (!refRes.ok) {
+      const initRes = await ghFetch(
+        `/repos/${owner}/${REPO_NAME}/contents/README.md`,
+        {
+          method: 'PUT',
+          body: {
+            message: 'initial commit',
+            content: btoa(`${REPO_NAME} nightly entity backups`),
+          },
+        }
+      );
+      if (!initRes.ok) {
+        const txt = await initRes.text().catch(() => '');
+        return Response.json(
+          { error: `GitHub repo initialization failed (${initRes.status}): ${txt}` },
+          { status: 502 }
+        );
+      }
+      refRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/refs/heads/${branch}`);
+    }
     let parentSha = null;
     let baseTreeSha = null;
     if (refRes.ok) {
@@ -164,7 +187,6 @@ Deno.serve(async (req) => {
         baseTreeSha = commitObj?.tree?.sha || null;
       }
     }
-    // If refRes is not ok (empty repo / 409 / 404), this is the initial commit.
 
     // 7. Create a blob per entity file + the manifest.
     const treeEntries = [];
