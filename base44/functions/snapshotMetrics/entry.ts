@@ -176,6 +176,7 @@ ${metric("Search impressions", "scImpressions")}
     return Response.json({ dates, created, updated, digestSent });
   } catch (error) {
     console.error("[snapshotMetrics]", error.message);
-    return Response.json({ error: "Snapshot failed." }, { status: 500 });
+    // TEMP: detail exposed for QA - revert with probe bypass
+    return Response.json({ error: "Snapshot failed.", detail: String(error?.message || error) }, { status: 500 });
   }
 });
