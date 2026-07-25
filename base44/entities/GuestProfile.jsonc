@@ -19,6 +19,15 @@
       "type": "boolean",
       "default": false
     },
+    "marketingConsentAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was given or revoked \u2014 keep as evidence (CAN-SPAM/TCPA/GDPR). Set every time marketingConsent changes."
+    },
+    "marketingConsentSource": {
+      "type": "string",
+      "description": "Where consent was captured, e.g. booking-checkout, account-settings, email-footer"
+    },
     "notes": {
       "type": "string"
     },
