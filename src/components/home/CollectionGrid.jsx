@@ -25,7 +25,8 @@ export default function CollectionGrid({ images }) {
                   fittingType="fill"
                   className="absolute inset-0 w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-coast-ocean/70 to-coast-navy/90" />
+                {/* Bottom-weighted wash: photo stays visible, text stays readable. */}
+                <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/85 via-coast-navy/30 to-coast-ocean/15" />
               </>
             )}
             {slug === "the-100-collection" ? (
