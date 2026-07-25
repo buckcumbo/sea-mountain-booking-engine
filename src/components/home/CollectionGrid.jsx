@@ -19,13 +19,11 @@ export default function CollectionGrid({ images }) {
           >
             {img && (
               <>
-                <img
+                <Image
                   src={img.imageUrl}
                   alt={img.altText || label}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                  }}
+                  fittingType="fill"
+                  className="absolute inset-0 w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-coast-ocean/70 to-coast-navy/90" />
               </>
