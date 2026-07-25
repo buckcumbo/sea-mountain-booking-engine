@@ -8,7 +8,7 @@ import FeaturedRentals from "@/components/home/FeaturedRentals";
 import NewRentals from "@/components/home/NewRentals";
 import GuestFaq from "@/components/home/GuestFaq";
 import { Link } from "react-router-dom";
-import { Receipt, MapPin, Tag } from "lucide-react";
+import { Receipt, MapPin, Tag, Heart } from "lucide-react";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
 import { buildCalendarMap } from "@/lib/availability";
@@ -126,6 +126,28 @@ export default function Home() {
       <Section title="Browse by Collection" subtitle="From oceanfront retreats to budget-friendly getaways, find the perfect fit.">
         <CollectionGrid images={siteImages} />
       </Section>
+
+      <section className="max-w-7xl mx-auto px-6">
+        <Link
+          to="/match"
+          className="group flex flex-col sm:flex-row items-center justify-between gap-4 bg-coast-navy text-white rounded-2xl px-6 py-6 sm:px-8 hover:shadow-lg transition-shadow"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-coast-sunset flex items-center justify-center shrink-0">
+              <Heart className="w-6 h-6 text-white fill-current" />
+            </div>
+            <div>
+              <h2 className="font-heading text-xl font-semibold">Can't decide? Play matchmaker.</h2>
+              <p className="text-sm text-white/75 mt-0.5">
+                Swipe through our homes — right to save, left to pass — until you find the one.
+              </p>
+            </div>
+          </div>
+          <span className="shrink-0 bg-coast-sunset group-hover:bg-coast-sunset-deep transition-colors text-white text-sm font-medium rounded-xl px-5 py-3">
+            Find your match →
+          </span>
+        </Link>
+      </section>
 
       <Section title="Explore Our Areas" subtitle="Six distinct communities along the Grand Strand, each with its own coastal character.">
         <AreaGrid images={siteImages} />
