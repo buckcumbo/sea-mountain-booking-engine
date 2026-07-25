@@ -1,31 +1,109 @@
 import React from "react";
-import { TrendingUp, Sparkles, Megaphone } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  TrendingUp,
+  Calendar,
+  Wrench,
+  Users,
+  BarChart3,
+  Link2,
+  MapPin,
+  ClipboardCheck,
+  Sparkles,
+  Home,
+  Palette,
+  Search,
+  Star,
+  Settings,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import InquiryForm from "@/components/forms/InquiryForm";
 import Seo from "@/components/Seo";
 
-const BENEFITS = [
+const EARNING_POINTS = [
   {
     icon: TrendingUp,
-    title: "Revenue management that works",
-    text: "Dynamic pricing and occupancy optimization tuned to the Grand Strand market — so your home earns more, season after season.",
+    title: "Smart pricing for maximum revenue",
+    text: "Nightly rates optimized to market demand.",
   },
   {
-    icon: Sparkles,
-    title: "Care & cleaning, handled",
-    text: "Our on-the-ground ops team manages turnovers, maintenance, and guest issues — your home is cared for like it's our own.",
+    icon: Calendar,
+    title: "More bookings, less vacancy",
+    text: "Higher occupancy means more consistent income.",
   },
   {
-    icon: Megaphone,
-    title: "Direct-booking marketing",
-    text: "A polished listing on our direct-booking site plus the major channels — no booking fees on direct reservations.",
+    icon: Wrench,
+    title: "Full-service management",
+    text: "We handle everything from guest support to maintenance.",
   },
 ];
 
-const STEPS = [
-  { n: 1, title: "Tell us about your property", text: "Share your address and a few details — we'll review and reach out within one business day." },
-  { n: 2, title: "Get a rental projection", text: "We'll prepare a tailored revenue projection and onboarding plan for your home." },
-  { n: 3, title: "We list & manage", text: "Once you approve, we handle photography, listing, pricing, cleaning, and guest communication end to end." },
+const TRUST_POINTS = [
+  {
+    icon: Users,
+    title: "Backed by proven operators",
+    text: "Advisors who built multi-billion-dollar hospitality, tech and real estate brands.",
+  },
+  {
+    icon: BarChart3,
+    title: "Data-driven revenue strategies",
+    text: "Market analytics and pricing algorithms keep your rates competitive.",
+  },
+  {
+    icon: Link2,
+    title: "Exclusive partnerships",
+    text: "Direct relationships with top booking platforms and tech providers.",
+  },
+  {
+    icon: MapPin,
+    title: "Hyper-local, globally informed",
+    text: "Deep knowledge of North Myrtle Beach and the Grand Strand combined with global industry expertise.",
+  },
+];
+
+const SERVICES = [
+  {
+    icon: ClipboardCheck,
+    title: "Comprehensive management",
+    text: "Hands-free passive income — we take care of everything from guest bookings to maintenance.",
+  },
+  {
+    icon: Sparkles,
+    title: "Immaculate property care",
+    text: "Five-star cleanliness and guest-ready perfection, from fresh linens to pristine interiors.",
+  },
+  {
+    icon: Wrench,
+    title: "Proactive property upkeep",
+    text: "Landscaping to pool care, keeping your property premium and guest-ready year-round.",
+  },
+  {
+    icon: Home,
+    title: "Turnkey property setup",
+    text: "Furnishings, decor and full staging so your home is rent-ready from day one.",
+  },
+  {
+    icon: Palette,
+    title: "Renovations & interior design",
+    text: "Our in-house team upgrades and styles your property to be aesthetically stunning and highly rentable.",
+  },
+];
+
+const EXPERTISE = [
+  {
+    icon: Search,
+    title: "In-depth property analysis",
+    text: "We evaluate location, design potential and market fit, then provide a customized strategy.",
+  },
+  {
+    icon: Star,
+    title: "Guest experience optimization",
+    text: "Seamless check-ins, five-star cleanliness and personalized communication that lead to higher reviews.",
+  },
+  {
+    icon: Settings,
+    title: "Full-service management",
+    text: "Dynamic pricing, high-converting listings, maintenance, cleaning and 24/7 guest support.",
+  },
 ];
 
 export default function ListYourProperty() {
@@ -33,45 +111,98 @@ export default function ListYourProperty() {
     <div>
       <Seo
         title="List Your Property | Sea Mountain Vacations"
-        description="Grand Strand property management that pays for itself — local, family-run, and obsessed with occupancy. Get a free rental projection."
+        description="Unlock the full potential of your vacation rental. Higher revenue, seamless management, and industry-leading expertise from Sea Mountain Vacations."
         path="/list-your-property"
       />
+
+      {/* Hero */}
       <section className="relative overflow-hidden bg-coast-navy">
         <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">
           <h1 className="font-heading text-3xl md:text-5xl font-semibold max-w-3xl leading-tight">
-            Grand Strand Property Management That Pays For Itself
+            Unlock the full potential of your vacation rental
           </h1>
-          <p className="mt-4 text-white/85 max-w-2xl">
-            Local, family-run, and obsessed with occupancy. Let us turn your coastal home into a
-            worry-free income property.
+          <p className="mt-4 text-lg text-white/85 max-w-2xl">
+            Higher revenue. Seamless management. Industry-leading expertise.
           </p>
           <Button asChild className="mt-6 bg-white text-coast-navy hover:bg-white/90">
-            <a href="#inquiry">Get a Free Projection</a>
+            <a href="#cta">Get a free revenue analysis</a>
           </Button>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-3 gap-6">
-        {BENEFITS.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="bg-card border border-border rounded-2xl p-6">
-            <div className="w-11 h-11 rounded-full bg-coast-sand text-coast-ocean flex items-center justify-center mb-4">
-              <Icon className="w-5 h-5" />
+      {/* Section 1 — Earning potential */}
+      <section className="max-w-7xl mx-auto px-6 py-14">
+        <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy max-w-2xl">
+          How much more could your property be earning?
+        </h2>
+        <p className="mt-3 text-muted-foreground max-w-2xl">
+          Owners earn up to 50% more with our expert revenue strategies and data-driven pricing.
+        </p>
+        <div className="mt-8 grid md:grid-cols-3 gap-6">
+          {EARNING_POINTS.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="bg-card border border-border rounded-2xl p-6">
+              <div className="w-11 h-11 rounded-full bg-coast-sand text-coast-ocean flex items-center justify-center mb-4">
+                <Icon className="w-5 h-5" />
+              </div>
+              <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{text}</p>
             </div>
-            <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
-            <p className="text-sm text-muted-foreground mt-2">{text}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
+      {/* Section 2 — Why homeowners trust us */}
       <section className="bg-coast-sand">
         <div className="max-w-7xl mx-auto px-6 py-14">
-          <h2 className="font-heading text-2xl font-semibold text-coast-navy mb-8">How it works</h2>
+          <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy mb-8">
+            Why homeowners trust Sea Mountain Vacations
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {TRUST_POINTS.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="bg-card border border-border rounded-2xl p-6 flex gap-4">
+                <div className="w-11 h-11 rounded-full bg-coast-foam text-coast-ocean flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
+                  <p className="text-sm text-muted-foreground mt-2">{text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3 — Services grid */}
+      <section className="max-w-7xl mx-auto px-6 py-14">
+        <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy mb-8">
+          What we handle for you
+        </h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {SERVICES.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="bg-card border border-border rounded-2xl p-6">
+              <div className="w-11 h-11 rounded-full bg-coast-sand text-coast-ocean flex items-center justify-center mb-4">
+                <Icon className="w-5 h-5" />
+              </div>
+              <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Section 4 — Your property, our expertise */}
+      <section className="bg-coast-sand">
+        <div className="max-w-7xl mx-auto px-6 py-14">
+          <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy mb-8">
+            Your property, our expertise
+          </h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {STEPS.map(({ n, title, text }) => (
-              <div key={n} className="bg-card border border-border rounded-2xl p-6">
-                <div className="w-9 h-9 rounded-full bg-coast-navy text-white flex items-center justify-center font-heading font-semibold mb-4">
-                  {n}
+            {EXPERTISE.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="bg-card border border-border rounded-2xl p-6">
+                <div className="w-11 h-11 rounded-full bg-coast-foam text-coast-ocean flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-coast-navy">{title}</h3>
                 <p className="text-sm text-muted-foreground mt-2">{text}</p>
@@ -81,16 +212,19 @@ export default function ListYourProperty() {
         </div>
       </section>
 
-      <section id="inquiry" className="max-w-3xl mx-auto px-6 py-16 scroll-mt-20">
-        <div className="text-center mb-8">
-          <h2 className="font-heading text-2xl md:text-3xl font-semibold text-coast-navy">
-            Tell us about your property
+      {/* Closing CTA */}
+      <section id="cta" className="bg-coast-navy scroll-mt-20">
+        <div className="max-w-3xl mx-auto px-6 py-16 text-center text-white">
+          <h2 className="font-heading text-2xl md:text-4xl font-semibold">
+            Ready to earn more with less effort?
           </h2>
-          <p className="text-muted-foreground mt-2">
-            Fill out the form and we'll be in touch within one business day.
+          <p className="mt-4 text-white/85">
+            Property owners with Sea Mountain have increased revenue by 30-50%.
           </p>
+          <Button asChild className="mt-6 bg-white text-coast-navy hover:bg-white/90">
+            <Link to="/contact">Get a free revenue analysis</Link>
+          </Button>
         </div>
-        <InquiryForm type="property-management" showPropertyAddress submitLabel="Request a Projection" />
       </section>
     </div>
   );
