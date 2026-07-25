@@ -13,8 +13,9 @@ import { COLLECTIONS, slugifyCollection } from "@/lib/collections";
 import Seo from "@/components/Seo";
 import AdminShell from "@/components/admin/AdminShell";
 import ListingMarkdown from "@/components/listing/ListingMarkdown";
-import TagInput from "@/components/admin/TagInput";
 import PhotoManager from "@/components/admin/PhotoManager";
+import VideoTourEditor from "@/components/admin/VideoTourEditor";
+import AmenitiesEditor from "@/components/admin/AmenitiesEditor";
 import SleepsWhereEditor from "@/components/admin/SleepsWhereEditor";
 
 export default function AdminListingEditor() {
@@ -95,6 +96,9 @@ export default function AdminListingEditor() {
         sleepsWhere: form.sleepsWhere,
         active: form.active !== false,
         revaWidgetId: form.revaWidgetId || null,
+        videoUrl: form.videoUrl || null,
+        tourUrl: form.tourUrl || null,
+        amenitiesHidden: form.amenitiesHidden || [],
       };
       await base44.entities.Listing.update(listing.id, patch);
       setListing({ ...listing, ...patch });
@@ -211,10 +215,10 @@ export default function AdminListingEditor() {
           </Field>
         </div>
         <Field label="Amenities" className="mt-4">
-          <TagInput
-            tags={form.amenities}
-            onChange={(amenities) => set({ amenities })}
-            placeholder="e.g. Pool, WiFi, Hot tub"
+          <AmenitiesEditor
+            amenities={form.amenities}
+            amenitiesHidden={form.amenitiesHidden}
+            onChange={(amenities, amenitiesHidden) => set({ amenities, amenitiesHidden })}
           />
         </Field>
       </Section>
@@ -253,6 +257,15 @@ export default function AdminListingEditor() {
             </div>
           )}
         </div>
+      </Section>
+
+      {/* VIDEO & 3D TOUR */}
+      <Section title="Video & 3D Tour" note="Add a walk-through video and/or a 3D virtual tour (Matterport/iGuide).">
+        <VideoTourEditor
+          videoUrl={form.videoUrl}
+          tourUrl={form.tourUrl}
+          onChange={(patch) => set(patch)}
+        />
       </Section>
 
       {/* PHOTOS */}
@@ -349,6 +362,7 @@ function cloneEditable(l) {
   return {
     ...l,
     amenities: [...(l.amenities || [])],
+    amenitiesHidden: [...(l.amenitiesHidden || [])],
     collections: [...(l.collections || [])],
     photos: (l.photos || []).map((p) => ({ ...p })),
     sleepsWhere: (l.sleepsWhere || []).map((s) => ({ ...s })),

@@ -1,11 +1,14 @@
 // Guarded upsert helpers — enforce uniqueness in code (no DB unique index available).
 // Each looks up the existing record by its natural key before insert/update.
 
+// Editorial fields that sync must never overwrite.
+const EDITORIAL_FIELDS = ["revaWidgetId", "photosManaged", "photos", "videoUrl", "tourUrl", "amenitiesHidden"];
+
 export async function upsertListingByGuestyId(base44, data) {
-  // revaWidgetId and photosManaged are editorial fields — sync jobs must never
-  // overwrite them. photos are also editorial once an admin has curated them
-  // (photosManaged === true).
-  const { revaWidgetId, photosManaged, photos, ...syncData } = data;
+  const syncData = { ...data };
+  for (const f of EDITORIAL_FIELDS) delete syncData[f];
+  const photos = data.photos;
+
   const existing = await base44.asServiceRole.entities.Listing.filter(
     { guestyId: syncData.guestyId },
     "-created_date",

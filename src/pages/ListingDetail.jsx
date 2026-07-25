@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
 import StoryDescription from "@/components/listing/StoryDescription";
+import VideoTour from "@/components/listing/VideoTour";
 import { Button } from "@/components/ui/button";
 import Seo from "@/components/Seo";
 import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
@@ -79,6 +80,12 @@ export default function ListingDetail() {
     [listing, calendarMap]
   );
 
+  const visibleAmenities = useMemo(() => {
+    if (!listing?.amenities) return [];
+    const hidden = new Set(listing.amenitiesHidden || []);
+    return listing.amenities.filter((a) => !hidden.has(a));
+  }, [listing]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-coast-foam flex items-center justify-center">
@@ -142,9 +149,9 @@ export default function ListingDetail() {
                   <Users className="w-4 h-4" /> Sleeps {listing.sleeps}
                 </span>
               </div>
-              {listing.amenities && listing.amenities.length > 0 && (
+              {visibleAmenities.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {listing.amenities.map((a, i) => (
+                  {visibleAmenities.map((a, i) => (
                     <span
                       key={i}
                       className="text-xs bg-card border border-border rounded-full px-2.5 py-1 text-coast-navy"
@@ -196,6 +203,8 @@ export default function ListingDetail() {
                 </div>
               )}
             </section>
+
+            <VideoTour videoUrl={listing.videoUrl} tourUrl={listing.tourUrl} />
 
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">Location</h2>

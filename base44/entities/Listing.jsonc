@@ -61,6 +61,12 @@
         "type": "string"
       }
     },
+    "amenitiesHidden": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "photos": {
       "type": "array",
       "items": {
@@ -112,6 +118,12 @@
     "photosManaged": {
       "type": "boolean",
       "default": false
+    },
+    "videoUrl": {
+      "type": "string"
+    },
+    "tourUrl": {
+      "type": "string"
     }
   },
   "required": [
