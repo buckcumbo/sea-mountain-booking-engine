@@ -1,0 +1,57 @@
+{
+  "name": "WebhookEvent",
+  "type": "object",
+  "properties": {
+    "eventId": {
+      "type": "string"
+    },
+    "eventType": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "processed",
+        "failed",
+        "skipped"
+      ],
+      "default": "processed"
+    },
+    "error": {
+      "type": "string"
+    },
+    "processedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "eventId",
+    "eventType"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "system"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

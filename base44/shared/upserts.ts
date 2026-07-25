@@ -53,3 +53,23 @@ export async function upsertGuestProfileByEmail(base44, data) {
   }
   return await base44.asServiceRole.entities.GuestProfile.create(data);
 }
+
+// Upsert a Reservation by its Guesty id. Undefined fields are stripped so they
+// are not written as nulls. Used by the webhook receiver for reservation sync.
+export async function upsertReservationByGuestyId(base44, data) {
+  const clean: any = {};
+  for (const [k, v] of Object.entries(data)) {
+    if (v !== undefined) clean[k] = v;
+  }
+  const existing = await base44.asServiceRole.entities.Reservation.filter(
+    { guestyId: clean.guestyId },
+    "-created_date",
+    1,
+  );
+  if (existing.length > 0) {
+    const updates = { ...clean };
+    delete updates.guestyId; // natural key — never changed on update
+    return await base44.asServiceRole.entities.Reservation.update(existing[0].id, updates);
+  }
+  return await base44.asServiceRole.entities.Reservation.create(clean);
+}
