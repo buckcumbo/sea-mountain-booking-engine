@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { AREA_LABELS } from "@/lib/availability";
+import { PHONE, PHONE_TEL } from "@/lib/contact";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -54,8 +55,8 @@ export default function PublicHeader() {
               </span>
             )}
           </Link>
-          <a href="tel:8435550100" className="hidden md:inline-flex items-center gap-1.5 text-sm text-coast-navy">
-            <Phone className="w-4 h-4" /> (843) 555-0100
+          <a href={`tel:${PHONE_TEL}`} className="hidden md:inline-flex items-center gap-1.5 text-sm text-coast-navy">
+            <Phone className="w-4 h-4" /> {PHONE}
           </a>
           <Button asChild className="bg-coast-navy hover:bg-coast-navy-soft text-white">
             <Link to="/search">Book Now</Link>
@@ -87,8 +88,8 @@ export default function PublicHeader() {
           {isAuthenticated && <Link to="/my-trips" onClick={close} className="block">My Trips</Link>}
           <Link to="/favorites" onClick={close} className="block">Favorites{count > 0 ? ` (${count})` : ""}</Link>
           <Link to="/list-your-property" onClick={close} className="block">List Your Property</Link>
-          <a href="tel:8435550100" className="inline-flex items-center gap-1.5 pt-1">
-            <Phone className="w-4 h-4" /> (843) 555-0100
+          <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5 pt-1">
+            <Phone className="w-4 h-4" /> {PHONE}
           </a>
         </div>
       )}

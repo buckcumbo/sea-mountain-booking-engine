@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { track } from "@/lib/analytics";
+import { PHONE } from "@/lib/contact";
 
 export default function InquiryForm({ type, showPropertyAddress = false, submitLabel = "Submit" }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", propertyAddress: "", message: "" });
@@ -45,7 +46,7 @@ export default function InquiryForm({ type, showPropertyAddress = false, submitL
       track("inquiry_submit");
       setDone(true);
     } catch {
-      setSubmitError("Something went wrong. Please try again or call us at (843) 555-0100.");
+      setSubmitError(`Something went wrong. Please try again or call us at ${PHONE}.`);
     } finally {
       setSubmitting(false);
     }

@@ -5,6 +5,7 @@ import { Loader2, Tag, Mail } from "lucide-react";
 import { COLLECTIONS } from "@/lib/collections";
 import ListingCard from "@/components/search/ListingCard";
 import Seo from "@/components/Seo";
+import { EMAIL } from "@/lib/contact";
 
 export default function SpecialOffers() {
   const [loading, setLoading] = useState(true);
@@ -60,7 +61,7 @@ export default function SpecialOffers() {
               to be the first to know.
             </p>
             <a
-              href="mailto:stay@seamountainvacations.com?subject=Special%20Offers%20List"
+              href={`mailto:${EMAIL}?subject=Special%20Offers%20List`}
               className="inline-flex items-center gap-2 bg-coast-navy hover:bg-coast-navy-soft text-white text-sm px-5 py-2.5 rounded-lg"
             >
               <Mail className="w-4 h-4" /> Join our offers list

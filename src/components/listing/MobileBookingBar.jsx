@@ -1,7 +1,7 @@
 import React from "react";
 import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SITE_PHONE_TEL } from "@/lib/seo";
+import { PHONE_TEL } from "@/lib/contact";
 
 // Mobile-only sticky bottom bar: name + from-price on the left, Call + Book
 // buttons on the right. "Book" scrolls to the booking widget (#booking).
@@ -28,7 +28,7 @@ export default function MobileBookingBar({ listing, price }) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href={`tel:${SITE_PHONE_TEL}`}
+            href={`tel:${PHONE_TEL}`}
             aria-label="Call us"
             className="inline-flex items-center justify-center h-9 w-9 rounded-md border border-border text-coast-navy"
           >

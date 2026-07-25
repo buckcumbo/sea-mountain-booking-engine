@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import InquiryForm from "@/components/forms/InquiryForm";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd } from "@/lib/seo";
+import { PHONE, PHONE_TEL, EMAIL, ADDRESS } from "@/lib/contact";
 
 export default function Contact() {
   return (
@@ -30,16 +31,16 @@ export default function Contact() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-coast-ocean shrink-0" />
-                <span className="text-muted-foreground">123 Ocean Boulevard, North Myrtle Beach, SC 29582</span>
+                <span className="text-muted-foreground">{ADDRESS}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-coast-ocean" />
-                <a href="tel:8435550100" className="text-muted-foreground hover:text-coast-navy">(843) 555-0100</a>
+                <a href={`tel:${PHONE_TEL}`} className="text-muted-foreground hover:text-coast-navy">{PHONE}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-coast-ocean" />
-                <a href="mailto:stay@seamountainvacations.com" className="text-muted-foreground hover:text-coast-navy">
-                  stay@seamountainvacations.com
+                <a href={`mailto:${EMAIL}`} className="text-muted-foreground hover:text-coast-navy">
+                  {EMAIL}
                 </a>
               </li>
             </ul>

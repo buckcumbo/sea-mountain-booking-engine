@@ -1,11 +1,12 @@
 import { AREA_LABELS } from "@/lib/availability";
+import { PHONE, PHONE_TEL, EMAIL } from "@/lib/contact";
 
 export const SITE_NAME = "Sea Mountain Vacations";
 // Canonical production origin. Update if the domain changes.
 export const SITE_ORIGIN = "https://www.seamountainvacations.com";
 
-export const SITE_PHONE = "(843) 555-0100";
-export const SITE_PHONE_TEL = "+18435550100";
+export const SITE_PHONE = PHONE;
+export const SITE_PHONE_TEL = PHONE_TEL;
 
 export const DEFAULT_DESCRIPTION =
   "Book direct and save on North Myrtle Beach & Grand Strand vacation rentals — oceanfront condos, beach houses, and pet-friendly stays with no booking fees.";
@@ -54,12 +55,11 @@ export function buildLocalBusinessJsonLd() {
     name: SITE_NAME,
     description: DEFAULT_DESCRIPTION,
     url: SITE_ORIGIN,
-    telephone: "(843) 555-0100",
-    email: "stay@seamountainvacations.com",
+    telephone: PHONE,
+    email: EMAIL,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "123 Ocean Boulevard",
-      addressLocality: "North Myrtle Beach",
+      addressLocality: "Cherry Grove Beach",
       addressRegion: "SC",
       postalCode: "29582",
       addressCountry: "US",
