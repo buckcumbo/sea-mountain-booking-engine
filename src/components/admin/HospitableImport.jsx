@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Loader2, FlaskConical, Building2, CalendarDays, AlertTriangle, Trash2 } from "lucide-react";
+import { Loader2, FlaskConical, Building2, CalendarDays, AlertTriangle, Trash2, Sparkles } from "lucide-react";
 
 // One-time Hospitable seed import (see base44/functions/importFromHospitable).
 // Workflow: Dry run (verify mapping) → Import listings → Import calendars.
@@ -52,6 +52,33 @@ export default function HospitableImport() {
       addLog(`Listings done — ${total} imported/updated. Now run the calendar import.`);
     } catch (e) {
       addLog(`Listings import stopped: ${e.message}`);
+    } finally {
+      setRunning("");
+    }
+  };
+
+  const enrich = async () => {
+    setRunning("enrich");
+    stopRef.current = false;
+    try {
+      let offset = 0;
+      let described = 0;
+      let curated = 0;
+      while (offset !== null && !stopRef.current) {
+        addLog(`Enriching listings ${offset + 1} onward (descriptions + amenity cleanup)…`);
+        const data = await invoke({ mode: "enrich", offset, limit: 15 });
+        described += data.described || 0;
+        curated += data.curated || 0;
+        addLog(`Batch done — ${data.described} descriptions pulled, ${data.curated} amenity lists curated.`);
+        offset = data.nextOffset;
+      }
+      if (!stopRef.current) {
+        addLog("Filling same-building units that still lack copy from their siblings…");
+        const fill = await invoke({ mode: "sibling-fill" });
+        addLog(`Done — ${described} descriptions imported, ${fill.filled} borrowed from sibling units, ${curated} amenity lists cleaned. Manual edits are never overwritten.`);
+      }
+    } catch (e) {
+      addLog(`Enrich stopped: ${e.message}`);
     } finally {
       setRunning("");
     }
@@ -134,6 +161,10 @@ export default function HospitableImport() {
         <Button onClick={purgeSeeds} disabled={!!running} variant="outline" className="gap-2 border-destructive/40 text-destructive">
           {running === "purge" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
           4. Remove old seed listings
+        </Button>
+        <Button onClick={enrich} disabled={!!running} variant="outline" className="gap-2">
+          {running === "enrich" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+          5. Descriptions + amenity cleanup
         </Button>
         {running && running !== "dry-run" && (
           <Button variant="outline" onClick={() => { stopRef.current = true; }} className="text-destructive">
