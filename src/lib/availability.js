@@ -98,14 +98,19 @@ export function computeListingPrice(listing, calendarMap, checkIn, checkOut) {
   }
 
   let from = null;
+  let fromAnyDay = null;
   for (const date of Object.keys(cal)) {
     const day = cal[date];
-    if (day.available !== true) continue;
     if (date < today) continue;
     const r = Number(day.rate) || 0;
-    if (from === null || r < from) from = r;
+    if (r > 0 && (fromAnyDay === null || r < fromAnyDay)) fromAnyDay = r;
+    if (day.available !== true) continue;
+    if (r > 0 && (from === null || r < from)) from = r;
   }
-  return { hasDates: false, available: true, total: null, avg: null, from };
+  // A fully-booked home still has real nightly rates — show the indicative
+  // "from" price rather than "Rates on request" (availability is enforced at
+  // date selection anyway).
+  return { hasDates: false, available: true, total: null, avg: null, from: from ?? fromAnyDay };
 }
 
 // Flexible-date search: when the exact dates don't work, slide the same stay
