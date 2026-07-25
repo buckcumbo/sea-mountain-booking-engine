@@ -130,10 +130,12 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
     if (user.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
 
-    const token = Deno.env.get("HOSPITABLE_API_KEY");
+    // Secret name per Buck's dashboard entry (HOSPITABLE_API_KEY kept as a
+    // fallback in case it gets renamed to match convention later).
+    const token = Deno.env.get("HOSPITABLE_SECRET") || Deno.env.get("HOSPITABLE_API_KEY");
     if (!token) {
       return Response.json(
-        { error: "HOSPITABLE_API_KEY secret is not set. Add it in the dashboard, then retry." },
+        { error: "HOSPITABLE_SECRET secret is not set. Add it in the dashboard, then retry." },
         { status: 503 },
       );
     }
