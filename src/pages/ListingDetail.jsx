@@ -148,7 +148,7 @@ export default function ListingDetail() {
           </div>
         )}
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
-          <div className="space-y-8">
+          <div className="space-y-8 min-w-0">
             <PhotoGallery photos={listing.photos} title={listing.title} />
 
             <div className="space-y-3">
