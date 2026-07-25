@@ -2,22 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Compass } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import GuideMarkdown from "@/components/guides/GuideMarkdown";
 import { Button } from "@/components/ui/button";
 import { prettifyArea } from "@/lib/availability";
 import GuideCard from "@/components/guides/GuideCard";
 import Seo from "@/components/Seo";
 import { buildArticleJsonLd, buildFaqJsonLd } from "@/lib/seo";
-
-const MD = {
-  h2: ({ node, ...p }) => <h2 className="font-heading text-2xl font-semibold text-coast-navy mt-8 mb-3" {...p} />,
-  h3: ({ node, ...p }) => <h3 className="font-heading text-xl font-semibold text-coast-navy mt-6 mb-2" {...p} />,
-  p: ({ node, ...p }) => <p className="mb-4 leading-relaxed text-muted-foreground" {...p} />,
-  ul: ({ node, ...p }) => <ul className="list-disc pl-6 mb-4 space-y-1 text-muted-foreground" {...p} />,
-  ol: ({ node, ...p }) => <ol className="list-decimal pl-6 mb-4 space-y-1 text-muted-foreground" {...p} />,
-  a: ({ node, ...p }) => <a className="text-coast-ocean underline" {...p} />,
-  strong: ({ node, ...p }) => <strong className="font-semibold text-coast-navy" {...p} />,
-};
 
 export default function GuideDetail() {
   const { slug } = useParams();
@@ -121,7 +111,7 @@ export default function GuideDetail() {
       </section>
 
       <article className="max-w-3xl mx-auto px-6 py-14">
-        {guide.body && <ReactMarkdown components={MD}>{guide.body}</ReactMarkdown>}
+        {guide.body && <GuideMarkdown>{guide.body}</GuideMarkdown>}
       </article>
 
       {more.length > 0 && (

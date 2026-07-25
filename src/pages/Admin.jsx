@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare } from "lucide-react";
+import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare, Compass } from "lucide-react";
 import InquiriesTable from "@/components/admin/InquiriesTable";
 import Seo from "@/components/Seo";
 
@@ -64,6 +64,12 @@ export default function Admin() {
               className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
             >
               <Building2 className="w-4 h-4" /> Listings
+            </Link>
+            <Link
+              to="/admin/guides"
+              className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+            >
+              <Compass className="w-4 h-4" /> Guides
             </Link>
             <button
               onClick={load}

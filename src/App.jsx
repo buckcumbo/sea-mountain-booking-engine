@@ -16,6 +16,8 @@ import Admin from '@/pages/Admin';
 import Today from '@/pages/Today';
 import AdminListings from '@/pages/admin/AdminListings';
 import AdminListingEditor from '@/pages/admin/AdminListingEditor';
+import AdminGuides from '@/pages/admin/AdminGuides';
+import AdminGuideEditor from '@/pages/admin/AdminGuideEditor';
 import AdminGuard from '@/components/admin/AdminGuard';
 import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
@@ -65,6 +67,8 @@ const AuthenticatedApp = () => {
       <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
       <Route path="/admin/listings" element={<AdminGuard><AdminListings /></AdminGuard>} />
       <Route path="/admin/listings/:slug" element={<AdminGuard><AdminListingEditor /></AdminGuard>} />
+      <Route path="/admin/guides" element={<AdminGuard><AdminGuides /></AdminGuard>} />
+      <Route path="/admin/guides/:slug" element={<AdminGuard><AdminGuideEditor /></AdminGuard>} />
       <Route path="/today" element={<Today />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

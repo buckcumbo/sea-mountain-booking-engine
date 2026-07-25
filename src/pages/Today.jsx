@@ -80,12 +80,20 @@ export default function Today() {
               Dashboard
             </Link>
             {user?.role === "admin" && (
-              <Link
-                to="/admin/listings"
-                className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
-              >
-                Listings
-              </Link>
+              <>
+                <Link
+                  to="/admin/listings"
+                  className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  Listings
+                </Link>
+                <Link
+                  to="/admin/guides"
+                  className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  Guides
+                </Link>
+              </>
             )}
             <button
               onClick={load}

@@ -40,6 +40,10 @@
       "type": "boolean",
       "default": false
     },
+    "everPublished": {
+      "type": "boolean",
+      "default": false
+    },
     "category": {
       "type": "string",
       "enum": [

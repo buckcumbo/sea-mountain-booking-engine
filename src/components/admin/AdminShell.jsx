@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Waves, LayoutDashboard, CalendarCheck, Building2 } from "lucide-react";
+import { Waves, LayoutDashboard, CalendarCheck, Building2, Compass } from "lucide-react";
 
 const NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/today", label: "Today's Board", icon: CalendarCheck },
   { to: "/admin/listings", label: "Listings", icon: Building2 },
+  { to: "/admin/guides", label: "Guides", icon: Compass },
 ];
 
 export default function AdminShell({ title, subtitle, children, actions }) {
