@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Image } from "@/components/ui/image";
 import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
 
