@@ -322,6 +322,50 @@ Deno.serve(async (req) => {
       return Response.json({ mode, totalHospListings: hosp.length, offset, results, nextOffset });
     }
 
+    // Merge editorial content from the ORIGINAL hand-built records into their
+    // same-named Hospitable twins. The originals carry the real descriptions,
+    // sleeps-where, beach-walk times, and collection assignments — the hosp_
+    // imports arrived bare. Copies each field only when the hosp record's is
+    // empty. Run BEFORE purging the old seeds (they're the donors).
+    if (mode === "merge-legacy") {
+      const normalize = (t: string) => String(t || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const all = await svc.Listing.list("-created_date", 500);
+      const rows = Array.isArray(all) ? all : [];
+      const hosp = rows.filter((l: any) => String(l.guestyId || "").startsWith("hosp_"));
+      const legacy = rows.filter((l: any) => !String(l.guestyId || "").startsWith("hosp_"));
+      const byNorm = new Map<string, any>();
+      for (const l of legacy) {
+        const key = normalize(l.title);
+        if (!key) continue;
+        const existing = byNorm.get(key);
+        // Prefer the donor that actually has copy.
+        if (!existing || (!existing.storyCopy && l.storyCopy)) byNorm.set(key, l);
+      }
+
+      const EDITORIAL_FIELDS = [
+        "storyCopy", "sleepsWhere", "beachWalkMinutes", "featured",
+        "collections", "revaWidgetId", "videoUrl", "tourUrl",
+      ];
+      const isEmpty = (v: any) =>
+        v == null || v === "" || v === false || (Array.isArray(v) && v.length === 0);
+
+      let merged = 0;
+      const unmatched: string[] = [];
+      for (const h of hosp) {
+        const donor = byNorm.get(normalize(h.title));
+        if (!donor) { unmatched.push(h.title); continue; }
+        const updates: any = {};
+        for (const f of EDITORIAL_FIELDS) {
+          if (!isEmpty(donor[f]) && isEmpty(h[f])) updates[f] = donor[f];
+        }
+        if (Object.keys(updates).length > 0) {
+          await svc.Listing.update(h.id, updates);
+          merged++;
+        }
+      }
+      return Response.json({ mode, merged, matchedDonors: hosp.length - unmatched.length, unmatched });
+    }
+
     // Descriptions + amenity curation for already-imported hosp_ listings.
     // storyCopy and amenitiesHidden are editorial fields: each is written
     // ONLY when currently empty, so manual edits are never clobbered.
