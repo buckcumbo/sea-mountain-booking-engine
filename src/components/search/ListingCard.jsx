@@ -1,6 +1,6 @@
 import React from "react";
 import { PawPrint, BedDouble, Bath, Users } from "lucide-react";
-import { prettifyArea } from "@/lib/availability";
+import { prettifyArea, prettifyDateRange } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
 import { Link } from "react-router-dom";
 import { Image } from "@/components/ui/image";
@@ -46,6 +46,8 @@ export default function ListingCard({ listing, price }) {
           <img
             src={photo}
             alt={listing.title}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         )}
@@ -102,8 +104,13 @@ export default function ListingCard({ listing, price }) {
             {listing.sleeps}
           </span>
         </div>
-        <div className="pt-3 border-t border-border">
+        <div className="pt-3 border-t border-border space-y-1">
           <PriceLine price={price} />
+          {price?.shifted && (
+            <div className="text-xs text-coast-ocean">
+              Your dates are booked — open {prettifyDateRange(price.matchedCheckIn, price.matchedCheckOut)}
+            </div>
+          )}
         </div>
       </div>
     </Link>
