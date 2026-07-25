@@ -25,7 +25,7 @@ export default function PublicHeader() {
   return (
     <header className="sticky top-0 z-40 bg-coast-navy text-white border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-        <Link to="/" className="flex items-center shrink-0" aria-label="Sea Mountain Vacations — home">
+        <Link to="/" className="flex items-center shrink-0" aria-label="Sea Mountain Vacations home">
           <img
             src={BRAND_LOGOS.lockupWhite}
             alt="Sea Mountain Vacations"

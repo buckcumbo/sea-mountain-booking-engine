@@ -33,7 +33,7 @@ export default function Hero() {
           Vacation Rentals in North Myrtle Beach &amp; the Grand Strand
         </h1>
         <p className="mt-4 text-white/85 max-w-xl">
-          Stay in one of our 100 Collection homes along the South Carolina coast — oceanfront,
+          Stay in one of our 100 Collection homes along the South Carolina coast: oceanfront,
           channel, and poolside escapes managed by a local on-the-ground team.
         </p>
         <form

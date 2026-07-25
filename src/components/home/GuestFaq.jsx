@@ -9,11 +9,11 @@ import {
 const FAQS = [
   {
     q: "How do I book a home?",
-    a: "Book directly on any listing page — pick your dates, get an exact price, and reserve. Prefer to talk it through? Use the chat widget or call (843) 890-2094.",
+    a: "Book directly on any listing page: pick your dates, get an exact price, and reserve. Prefer to talk it through? Use the chat widget or call (843) 890-2094.",
   },
   {
     q: "Are pets allowed?",
-    a: "Most of our homes are pet-friendly, but not all — each listing specifies. The pet fee is $150 and covers up to 2 pets for your whole stay, with no size or breed limits. Bringing 3 or more? Contact our team first.",
+    a: "Most of our homes are pet-friendly, but not all. Each listing specifies. The pet fee is $150 and covers up to 2 pets for your whole stay, with no size or breed limits. Bringing 3 or more? Contact our team first.",
   },
   {
     q: "What's included in the rental fee?",
@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "How close is the beach?",
-    a: "It varies by home — some are oceanfront, others a short walk or drive. Each listing shows its distance to the sand.",
+    a: "It varies by home: some are oceanfront, others a short walk or drive. Each listing shows its distance to the sand.",
   },
   {
     q: "What's the cancellation policy?",
@@ -33,7 +33,7 @@ const FAQS = [
   },
   {
     q: "Do you offer long-term stays?",
-    a: "Yes — many of our homes are available for extended stays. Contact our team to set one up.",
+    a: "Yes, many of our homes are available for extended stays. Contact our team to set one up.",
   },
   {
     q: "Are linens and towels provided?",
@@ -41,7 +41,7 @@ const FAQS = [
   },
   {
     q: "Are there extra fees for amenities?",
-    a: "Any fees are disclosed right on the listing — what you see is what you pay.",
+    a: "Any fees are disclosed right on the listing. What you see is what you pay.",
   },
   {
     q: "What if something goes wrong during my stay?",
@@ -49,7 +49,7 @@ const FAQS = [
   },
   {
     q: "What is there to do in the area?",
-    a: "Check out our Things to Do guides — plus every stay comes with a custom guidebook for your area.",
+    a: "Check out our Things to Do guides, plus every stay comes with a custom guidebook for your area.",
   },
   {
     q: "Can I check in early or check out late?",
@@ -57,7 +57,7 @@ const FAQS = [
   },
   {
     q: "How do I get into the home?",
-    a: "Every home has a smart lock. Your door code — usually the last 4 digits of your phone number — is sent close to arrival.",
+    a: "Every home has a smart lock. Your door code, usually the last 4 digits of your phone number, is sent close to arrival.",
   },
 ];
 

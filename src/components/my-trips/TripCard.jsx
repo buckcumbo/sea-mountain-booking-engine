@@ -22,11 +22,11 @@ export default function TripCard({ reservation, listing }) {
               </h3>
               <p className="text-xs text-muted-foreground inline-flex items-center gap-1 mt-0.5">
                 <MapPin className="w-3 h-3" />
-                {listing ? prettifyArea(listing.area) : "—"}
+                {listing ? prettifyArea(listing.area) : "N/A"}
               </p>
             </div>
             <span className="text-xs px-2 py-1 rounded-full bg-coast-ocean/10 text-coast-ocean capitalize whitespace-nowrap">
-              {reservation.status || "—"}
+              {reservation.status || "N/A"}
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">

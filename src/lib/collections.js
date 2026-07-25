@@ -14,7 +14,7 @@ export const COLLECTIONS = [
   {
     slug: "pet-friendly",
     label: "Pet Friendly",
-    blurb: "Bring the whole family — four-legged members included.",
+    blurb: "Bring the whole family, four-legged members included.",
     icon: PawPrint,
     match: ["pet-friendly"],
   },
@@ -49,7 +49,7 @@ export const COLLECTIONS = [
   {
     slug: "family",
     label: "Family",
-    blurb: "Room for everyone — multigenerational getaways made easy.",
+    blurb: "Room for everyone: multigenerational getaways made easy.",
     icon: Users,
     match: ["family"],
   },

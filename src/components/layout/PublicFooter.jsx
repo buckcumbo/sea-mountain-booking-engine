@@ -11,7 +11,7 @@ export default function PublicFooter() {
   return (
     <footer className="bg-coast-navy text-white">
       <div className="max-w-7xl mx-auto px-6 pt-12">
-        <Link to="/" className="inline-block" aria-label="Sea Mountain Vacations — home">
+        <Link to="/" className="inline-block" aria-label="Sea Mountain Vacations home">
           <img
             src={BRAND_LOGOS.lockupWhite}
             alt="Sea Mountain Vacations"

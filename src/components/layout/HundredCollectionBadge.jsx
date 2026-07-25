@@ -12,7 +12,7 @@ export default function HundredCollectionBadge({ source: _source }) {
     <Link
       to="/collections/the-100-collection"
       className="inline-flex items-center gap-2 group"
-      title="The 100 Collection™ — Proud Member"
+      title="The 100 Collection™: Proud Member"
     >
       <span className="text-[10px] uppercase tracking-wide opacity-70 group-hover:opacity-100 transition-opacity whitespace-nowrap">
         Proud Member

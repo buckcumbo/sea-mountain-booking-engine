@@ -5,11 +5,11 @@ import { AREA_LABELS } from "@/lib/availability";
 
 const BLURBS = {
   "north-myrtle-beach": "Family-friendly shores, championship golf, and the Cherry Grove pier.",
-  "myrtle-beach": "The heart of the Grand Strand — boardwalk, shows, and oceanfront energy.",
+  "myrtle-beach": "The heart of the Grand Strand: boardwalk, shows, and oceanfront energy.",
   surfside: "A quiet, relaxed stretch perfect for unhurried family getaways.",
   "garden-city": "Canal-front charm and a laid-back pier just south of the action.",
-  "murrells-inlet": "The seafood capital of SC — marsh views and the famous MarshWalk.",
-  "pawleys-island": "Timeless lowcountry — one of America's oldest resort beaches.",
+  "murrells-inlet": "The seafood capital of SC: marsh views and the famous MarshWalk.",
+  "pawleys-island": "Timeless lowcountry: one of America's oldest resort beaches.",
 };
 
 export default function AreaGrid() {

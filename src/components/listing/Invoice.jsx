@@ -13,7 +13,7 @@ export default function Invoice({ quote }) {
       {mock && (
         <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 text-amber-700 px-3 py-2 text-xs font-medium">
           <Clock className="w-3.5 h-3.5" />
-          Sample pricing — live quotes coming soon
+          Sample pricing: live quotes coming soon
         </div>
       )}
 

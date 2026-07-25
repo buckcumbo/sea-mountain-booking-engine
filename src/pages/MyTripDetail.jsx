@@ -86,7 +86,7 @@ export default function MyTripDetail() {
               )}
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="text-xs px-2 py-1 rounded-full bg-coast-ocean/10 text-coast-ocean capitalize">
-                  {reservation.status || "—"}
+                  {reservation.status || "N/A"}
                 </span>
                 {reservation.paymentStatus && (
                   <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground capitalize">
@@ -107,13 +107,13 @@ export default function MyTripDetail() {
           <InfoCard icon={Clock} title="Check-in / Check-out">
             <p className="text-sm text-muted-foreground">Check-in: 4:00 PM · Check-out: 10:00 AM</p>
             <p className="text-xs text-muted-foreground italic mt-1">
-              Times are a placeholder — confirm before travel.
+              Times are a placeholder. Confirm before travel.
             </p>
           </InfoCard>
           <InfoCard icon={Home} title="Property address">
             {showAddress ? (
               <p className="text-sm text-coast-navy">
-                {listing?.address || "[Property address — to be provided]"}
+                {listing?.address || "[Property address: to be provided]"}
               </p>
             ) : (
               <p className="text-sm text-muted-foreground">
@@ -125,7 +125,7 @@ export default function MyTripDetail() {
             <p className="text-sm text-muted-foreground">
               Status:{" "}
               <span className="text-coast-navy font-medium capitalize">
-                {reservation.paymentStatus || "—"}
+                {reservation.paymentStatus || "N/A"}
               </span>
             </p>
             {reservation.balanceDue != null && (
