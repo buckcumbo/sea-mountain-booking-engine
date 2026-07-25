@@ -9,14 +9,17 @@ import {
   Upload,
   Loader2,
   GripVertical,
+  HardDrive,
 } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
+import DrivePickerDialog from "@/components/admin/DrivePickerDialog";
 
 export default function PhotoManager({ photos = [], onChange }) {
   const [newUrl, setNewUrl] = useState("");
+  const [driveOpen, setDriveOpen] = useState(false);
   const [broken, setBroken] = useState(() => new Set());
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
@@ -212,6 +215,13 @@ export default function PhotoManager({ photos = [], onChange }) {
           )}
           {uploading ? "Uploading…" : "Upload image"}
         </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setDriveOpen(true)}
+        >
+          <HardDrive className="w-4 h-4" /> From Drive
+        </Button>
         <Input
           value={newUrl}
           onChange={(e) => setNewUrl(e.target.value)}
@@ -231,6 +241,21 @@ export default function PhotoManager({ photos = [], onChange }) {
       {uploadError && (
         <p className="text-xs text-destructive">{uploadError}</p>
       )}
+
+      <DrivePickerDialog
+        open={driveOpen}
+        onOpenChange={setDriveOpen}
+        onImported={(imported) =>
+          onChange([
+            ...photos,
+            ...imported.map((img, idx) => ({
+              url: img.url,
+              caption: "",
+              order: photos.length + idx,
+            })),
+          ])
+        }
+      />
     </div>
   );
 }
