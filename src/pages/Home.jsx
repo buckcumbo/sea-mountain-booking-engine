@@ -46,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const [all, days] = await Promise.all([
-        base44.entities.Listing.list("-created_date", 100),
+        base44.entities.Listing.list("-created_date", 500),
         base44.entities.CalendarDay.list("-created_date", 5000),
       ]);
       const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
