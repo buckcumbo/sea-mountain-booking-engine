@@ -16,6 +16,10 @@ import { listingMatchesCollection } from "@/lib/collections";
 import { useSiteImageMap } from "@/hooks/useSiteImageMap";
 import { HOMEPAGE_IMAGE_KEYS } from "@/lib/siteImageKeys";
 import { Skeleton } from "@/components/ui/skeleton";
+import LazyIframe from "@/components/LazyIframe";
+import ListingCard from "@/components/search/ListingCard";
+import { computeListingPrice } from "@/lib/availability";
+import { getRecentlyViewed } from "@/lib/recentlyViewed";
 
 // Placeholder cards shown while listings load — the section never renders its
 // empty/blank state during the initial fetch.
@@ -65,6 +69,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [featured, setFeatured] = useState([]);
   const [newest, setNewest] = useState([]);
+  const [recent, setRecent] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
   const siteImages = useSiteImageMap(HOMEPAGE_IMAGE_KEYS);
 
@@ -78,6 +83,15 @@ export default function Home() {
         const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
         setFeatured(f.slice(0, 4));
         setNewest(all.filter((l) => l.active !== false).slice(0, 4));
+        // Recently viewed — ids from localStorage, resolved against the
+        // already-fetched listings, preserving most-recent-first order.
+        const byId = Object.fromEntries(all.map((l) => [l.id, l]));
+        setRecent(
+          getRecentlyViewed()
+            .map((id) => byId[id])
+            .filter((l) => l && l.active !== false)
+            .slice(0, 4)
+        );
         setCalendarMap(buildCalendarMap(days));
       } finally {
         setLoading(false);
@@ -94,6 +108,20 @@ export default function Home() {
         jsonLd={buildLocalBusinessJsonLd()}
       />
       <Hero image={siteImages["hero:home"]} />
+
+      {!loading && recent.length > 0 && (
+        <Section title="Pick up where you left off" viewAllTo="/search">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {recent.map((l) => (
+              <ListingCard
+                key={l.id}
+                listing={l}
+                price={computeListingPrice(l, calendarMap, "", "")}
+              />
+            ))}
+          </div>
+        </Section>
+      )}
 
       <Section title="Browse by Collection" subtitle="From oceanfront retreats to budget-friendly getaways, find the perfect fit.">
         <CollectionGrid images={siteImages} />
@@ -137,14 +165,12 @@ export default function Home() {
 
       <Section title="What Our Guests Say" subtitle="Verified reviews from our recent guests.">
         <div className="w-full">
-          <iframe
+          <LazyIframe
             src="https://embed.joinreva.com/widgets/959b0dfd-c95f-4730-9f81-522a32ad120e"
-            loading="lazy"
             width="100%"
-            height="1400"
+            height={1400}
             frameBorder="0"
             className="w-full block"
-            style={{ border: 0, minHeight: 1400 }}
             title="Guest Reviews"
           />
         </div>
