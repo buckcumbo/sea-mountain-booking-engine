@@ -9,6 +9,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 // update; all blobs/tree/commit creation happens before it, so a failure at
 // any earlier step leaves the branch untouched (no partial writes). Entity
 // reads happen before any GitHub write, so a read failure writes nothing.
+//
+// PRIVACY: every backup is an ORPHAN commit (no parent) and the branch ref is
+// force-updated, so the repo only ever holds the latest snapshot. Git history
+// is deliberately NOT kept — GuestProfile/Reservation PII must be purgeable to
+// honor GDPR/CCPA deletion requests, and immutable history would defeat that.
+// (Old unreachable objects are garbage-collected by GitHub over time.)
 
 const REPO_NAME = 'smv-base44-backup';
 const PAGE_SIZE = 5000;
@@ -169,23 +175,12 @@ Deno.serve(async (req) => {
       }
       refRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/refs/heads/${branch}`);
     }
+    // parentSha is only used to decide PATCH vs POST on the ref — the new
+    // commit is an orphan (see PRIVACY note in the header).
     let parentSha = null;
-    let baseTreeSha = null;
     if (refRes.ok) {
       const refObj = await refRes.json();
       parentSha = refObj?.object?.sha || null;
-      if (parentSha) {
-        const commitRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/commits/${parentSha}`);
-        if (!commitRes.ok) {
-          const txt = await commitRes.text().catch(() => '');
-          return Response.json(
-            { error: `GitHub base commit fetch failed (${commitRes.status}): ${txt}` },
-            { status: 502 }
-          );
-        }
-        const commitObj = await commitRes.json();
-        baseTreeSha = commitObj?.tree?.sha || null;
-      }
     }
 
     // 7. Create a blob per entity file + the manifest.
@@ -230,9 +225,33 @@ Deno.serve(async (req) => {
       sha: manifestBlob.sha,
     });
 
-    // 8. Create the tree referencing all blobs.
+    // README kept in every snapshot (the orphan-commit tree fully replaces the
+    // previous root, so anything not in treeEntries would disappear).
+    const readmeBlobRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/blobs`, {
+      method: 'POST',
+      body: {
+        content: `${REPO_NAME} nightly entity backups.\n\nHistory is intentionally squashed to a single commit per backup so guest personal data can be fully purged when a deletion request is honored.\n`,
+        encoding: 'utf-8',
+      },
+    });
+    if (!readmeBlobRes.ok) {
+      const txt = await readmeBlobRes.text().catch(() => '');
+      return Response.json(
+        { error: `GitHub README blob creation failed (${readmeBlobRes.status}): ${txt}` },
+        { status: 502 }
+      );
+    }
+    const readmeBlob = await readmeBlobRes.json();
+    treeEntries.push({
+      path: 'README.md',
+      mode: '100644',
+      type: 'blob',
+      sha: readmeBlob.sha,
+    });
+
+    // 8. Create the tree referencing all blobs. No base_tree: each backup is
+    // a complete, self-contained tree (nothing inherited from prior commits).
     const treeBody = { tree: treeEntries };
-    if (baseTreeSha) treeBody.base_tree = baseTreeSha;
     const treeRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/trees`, {
       method: 'POST',
       body: treeBody,
@@ -246,9 +265,8 @@ Deno.serve(async (req) => {
     }
     const tree = await treeRes.json();
 
-    // 9. Create the commit (single commit for all files).
+    // 9. Create the commit — ORPHAN, no parents (see PRIVACY note).
     const commitBody = { message: commitMessage, tree: tree.sha };
-    if (parentSha) commitBody.parents = [parentSha];
     const commitRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/commits`, {
       method: 'POST',
       body: commitBody,
@@ -267,7 +285,7 @@ Deno.serve(async (req) => {
     if (parentSha) {
       refUpdateRes = await ghFetch(
         `/repos/${owner}/${REPO_NAME}/git/refs/heads/${branch}`,
-        { method: 'PATCH', body: { sha: commitObj.sha } }
+        { method: 'PATCH', body: { sha: commitObj.sha, force: true } }
       );
     } else {
       refUpdateRes = await ghFetch(`/repos/${owner}/${REPO_NAME}/git/refs`, {
