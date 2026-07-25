@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { AREA_LABELS } from "@/lib/availability";
+import { Image } from "@/components/ui/image";
 
 const BLURBS = {
   "north-myrtle-beach": "Family-friendly shores, championship golf, and the Cherry Grove pier.",
@@ -26,13 +27,11 @@ export default function AreaGrid({ images }) {
           >
             {img && (
               <>
-                <img
+                <Image
                   src={img.imageUrl}
                   alt={img.altText || label}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                  }}
+                  fittingType="fill"
+                  className="absolute inset-0 w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-coast-navy-soft/70 to-coast-navy/90" />
               </>
