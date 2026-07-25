@@ -96,6 +96,15 @@ export default function ListingDetail() {
         if (!d) return;
         if (d.expired) {
           setRestore({ expiredNote: true, checkIn: d.checkIn, checkOut: d.checkOut });
+        } else if (d.requoted) {
+          setRestore({
+            quote: d,
+            checkIn: d.checkIn,
+            checkOut: d.checkOut,
+            guests: d.guests,
+            requoted: true,
+            previousTotal: d.previousTotal,
+          });
         } else {
           setRestore({ quote: d, checkIn: d.checkIn, checkOut: d.checkOut, guests: d.guests });
         }
