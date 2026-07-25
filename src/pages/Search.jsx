@@ -174,7 +174,7 @@ export default function Search() {
     <div className="min-h-screen bg-coast-foam">
       <Seo
         title="Find a Vacation Rental | Sea Mountain Vacations"
-        description="Search oceanfront condos, beach houses, and pet-friendly vacation rentals across the Grand Strand. Filter by dates, area, and guests — book direct with no fees."
+        description="Search oceanfront condos, beach houses, and pet-friendly vacation rentals across the Grand Strand. Filter by dates, area, and guests. Book direct with no fees."
         path="/search"
       />
       <main className="max-w-7xl mx-auto px-6 py-8">

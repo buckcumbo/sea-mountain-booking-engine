@@ -109,7 +109,7 @@ export default function About() {
             ))}
           </div>
           <p className="mt-10 text-muted-foreground max-w-3xl leading-relaxed">
-            We aren't just another property management company — we're partners in your success, whether
+            We aren't just another property management company. We're partners in your success, whether
             you're booking a dream vacation or optimizing your rental income.
           </p>
         </div>
@@ -135,7 +135,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6 py-14 flex flex-col sm:flex-row items-center justify-between gap-5 text-white">
           <div>
             <h2 className="font-heading text-2xl font-semibold">Plan your Grand Strand getaway</h2>
-            <p className="text-white/80 mt-1">Browse our rentals — or list your own with us.</p>
+            <p className="text-white/80 mt-1">Browse our rentals, or list your own with us.</p>
           </div>
           <div className="flex gap-3">
             <Button asChild className="bg-coast-sunset hover:bg-coast-sunset-deep text-white">

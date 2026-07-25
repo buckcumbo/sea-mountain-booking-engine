@@ -21,7 +21,7 @@ const DIRECT_BENEFITS = [
   {
     icon: Users,
     title: "Personal service",
-    text: "A local team that knows every home — before, during, and after your stay.",
+    text: "A local team that knows every home: before, during, and after your stay.",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function Contact() {
             Why book direct
           </h2>
           <p className="text-muted-foreground max-w-2xl">
-            Booking directly with us gets you the best rates on every home — no third-party fees.
+            Booking directly with us gets you the best rates on every home, with no third-party fees.
           </p>
           <div className="mt-8 grid md:grid-cols-3 gap-6">
             {DIRECT_BENEFITS.map(({ icon: Icon, title, text }) => (

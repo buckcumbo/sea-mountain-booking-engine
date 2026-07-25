@@ -70,7 +70,7 @@ const SERVICES = [
   {
     icon: ClipboardCheck,
     title: "Comprehensive management",
-    text: "Hands-free passive income — we take care of everything from guest bookings to maintenance.",
+    text: "Hands-free passive income: we take care of everything from guest bookings to maintenance.",
   },
   {
     icon: Sparkles,

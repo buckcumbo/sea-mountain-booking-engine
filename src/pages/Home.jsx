@@ -34,7 +34,7 @@ function Section({ title, subtitle, viewAllTo, children }) {
 }
 
 const WHY = [
-  { icon: Receipt, title: "No booking fees", text: "Book direct and skip the marketplace service fees — the price you see is the price you pay." },
+  { icon: Receipt, title: "No booking fees", text: "Book direct and skip the marketplace service fees. The price you see is the price you pay." },
   { icon: MapPin, title: "A local team", text: "Our Grand Strand-based team knows every home and is on call throughout your stay." },
   { icon: Tag, title: "Best direct rates", text: "Direct bookings unlock our lowest rates and exclusive offers on 100 Collection homes." },
 ];
@@ -72,13 +72,13 @@ export default function Home() {
         <CollectionGrid />
       </Section>
 
-      <Section title="Explore Our Areas" subtitle="Six distinct communities along the Grand Strand — each with its own coastal character.">
+      <Section title="Explore Our Areas" subtitle="Six distinct communities along the Grand Strand, each with its own coastal character.">
         <AreaGrid />
       </Section>
 
       <Section
         title="The 100 Collection™"
-        subtitle="The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard — they don't settle for less than 100%."
+        subtitle="The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard. They don't settle for less than 100%."
         viewAllTo="/collections/the-100-collection"
       >
         <FeaturedRentals listings={featured} calendarMap={calendarMap} />

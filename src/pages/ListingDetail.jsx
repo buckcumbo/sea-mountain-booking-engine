@@ -221,7 +221,7 @@ export default function ListingDetail() {
               <p className="text-xs text-muted-foreground">
                 {isValidCoord(listing.latitude, listing.longitude)
                   ? "Approximate location shown for privacy. Exact address provided after booking."
-                  : "Approximate area — exact location provided after booking."}
+                  : "Approximate area. Exact location provided after booking."}
               </p>
             </section>
 

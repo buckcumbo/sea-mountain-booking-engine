@@ -55,7 +55,7 @@ export default function Privacy() {
 
         <Section title="Cookies and Cookie Consent">
           <p>
-            Our website uses cookies — small text files stored on your device — to improve your
+            Our website uses cookies, small text files stored on your device, to improve your
             browsing experience, remember your preferences, and analyze site traffic. By continuing
             to use our website, you consent to the use of cookies in accordance with this policy. If
             you create an account and log in, we set cookies to save your login information and

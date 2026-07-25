@@ -57,7 +57,7 @@ export default function SpecialOffers() {
             </div>
             <h2 className="font-heading text-xl font-semibold text-coast-navy mb-2">No current offers</h2>
             <p className="text-muted-foreground mb-6">
-              We don't have any active specials right now — but new offers drop seasonally. Join our list
+              We don't have any active specials right now, but new offers drop seasonally. Join our list
               to be the first to know.
             </p>
             <a

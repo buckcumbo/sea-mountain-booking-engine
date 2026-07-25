@@ -94,7 +94,7 @@ export default function CollectionDetail() {
           </div>
         ) : listings.length === 0 ? (
           <div className="text-sm text-muted-foreground italic border border-dashed border-border rounded-xl p-10 text-center">
-            No homes in this collection yet — check back soon.
+            No homes in this collection yet. Check back soon.
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">

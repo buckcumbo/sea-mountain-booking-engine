@@ -66,7 +66,7 @@ export default function Terms() {
           <p>
             A housekeeping fee is included in all reservations and varies by property size. Homes
             are professionally cleaned before arrival. Any concerns must be reported immediately for
-            resolution—refunds are not issued for cleaning complaints.
+            resolution. Refunds are not issued for cleaning complaints.
           </p>
         </Section>
 

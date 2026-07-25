@@ -9,7 +9,7 @@ export const SITE_PHONE = PHONE;
 export const SITE_PHONE_TEL = PHONE_TEL;
 
 export const DEFAULT_DESCRIPTION =
-  "Book direct and save on North Myrtle Beach & Grand Strand vacation rentals — oceanfront condos, beach houses, and pet-friendly stays with no booking fees.";
+  "Book direct and save on North Myrtle Beach & Grand Strand vacation rentals: oceanfront condos, beach houses, and pet-friendly stays with no booking fees.";
 
 export const DEFAULT_OG_IMAGE =
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";

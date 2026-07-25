@@ -7,7 +7,7 @@ export default function CollectionsIndex() {
     <div>
       <Seo
         title="Vacation Rental Collections | Sea Mountain Vacations"
-        description="Browse vacation rentals by collection — oceanfront, pet-friendly, poolside, budget-friendly, and our premier 100 Collection."
+        description="Browse vacation rentals by collection: oceanfront, pet-friendly, poolside, budget-friendly, and our premier 100 Collection."
         path="/collections"
       />
       <section className="relative overflow-hidden bg-coast-navy">

@@ -32,3 +32,8 @@ npx skills add base44/skills
 - Prefer the existing Base44 CLI workflow over adding new npm scripts for Base44-specific tasks.
 - Reuse the existing SDK client and Vite plugin patterns before adding new Base44 integration paths.
 - Run the relevant checks from `package.json` before finishing code changes.
+
+## Copy Style
+
+- Never use em dashes (—) in any guest-facing copy. Rewrite each instance naturally using a comma, period, or colon instead of deleting the dash and leaving broken spacing.
+- This applies to hardcoded UI text, SEO and meta descriptions, tooltips, and aria-labels, as well as editorial content stored in entity text fields (e.g. `AreaGuide` title/excerpt/body, `Listing.storyCopy`, `Review.text`, and collection blurbs in `src/lib/collections.js`).
