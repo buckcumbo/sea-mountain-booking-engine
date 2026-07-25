@@ -128,7 +128,13 @@ export default function MatchGame() {
         description="Swipe through our beach homes and find the one. Right to save it, left to let it go."
         path="/match"
       />
-      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col" style={{ minHeight: "calc(100vh - 80px)" }}>
+      {/* 100dvh: mobile browser chrome expands/collapses — dvh tracks the
+          real visible height so the action buttons never sit under the URL
+          bar; safe-area padding clears the iPhone home indicator. */}
+      <main
+        className="max-w-lg mx-auto px-4 py-6 flex flex-col"
+        style={{ minHeight: "calc(100dvh - 80px)", paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
+      >
         <div className="text-center mb-4">
           <h1 className="font-heading text-2xl font-semibold text-coast-navy">Find your match</h1>
           <p className="text-sm text-muted-foreground mt-1">
