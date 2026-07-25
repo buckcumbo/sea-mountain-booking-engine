@@ -14,6 +14,7 @@ export default function AdminImages() {
   const [byKey, setByKey] = useState({});
   const [drafts, setDrafts] = useState({});
   const [busy, setBusy] = useState({});
+  const [savingAll, setSavingAll] = useState(false);
 
   const load = async () => {
     setLoading(true);

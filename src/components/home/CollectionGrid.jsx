@@ -44,8 +44,8 @@ export default function CollectionGrid({ images }) {
             ) : (
               <Icon className="absolute top-5 right-5 w-8 h-8 text-white/40 group-hover:text-white/70 transition-colors" />
             )}
-            <h3 className="font-heading text-lg font-semibold">{label}</h3>
-            <span className="text-xs text-white/70 mt-1">Explore homes →</span>
+            <h3 className="relative z-10 font-heading text-lg font-semibold">{label}</h3>
+            <span className="relative z-10 text-xs text-white/70 mt-1">Explore homes →</span>
           </Link>
         );
       })}

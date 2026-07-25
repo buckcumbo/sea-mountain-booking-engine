@@ -37,9 +37,9 @@ export default function AreaGrid({ images }) {
                 <div className="absolute inset-0 bg-gradient-to-br from-coast-navy-soft/70 to-coast-navy/90" />
               </>
             )}
-            <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors" />
-            <h3 className="font-heading text-lg font-semibold">{label}</h3>
-            <p className="text-xs text-white/75 mt-1 line-clamp-2">{BLURBS[slug]}</p>
+            <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors z-10" />
+            <h3 className="relative z-10 font-heading text-lg font-semibold">{label}</h3>
+            <p className="relative z-10 text-xs text-white/75 mt-1 line-clamp-2">{BLURBS[slug]}</p>
           </Link>
         );
       })}
