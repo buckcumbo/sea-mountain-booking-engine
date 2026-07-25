@@ -7,7 +7,6 @@ import {
   Save,
   Trash2,
   ExternalLink,
-  AlertTriangle,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +18,7 @@ import { AREA_LABELS } from "@/lib/availability";
 import Seo from "@/components/Seo";
 import AdminShell from "@/components/admin/AdminShell";
 import GuideMarkdown from "@/components/guides/GuideMarkdown";
+import ImageUploadField from "@/components/admin/ImageUploadField";
 
 function slugify(text) {
   return text
@@ -38,7 +38,6 @@ export default function AdminGuideEditor() {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
-  const [heroBroken, setHeroBroken] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,7 +65,6 @@ export default function AdminGuideEditor() {
         if (cancelled) return;
         setGuide(found);
         setForm({ ...found });
-        setHeroBroken(false);
       } catch {
         if (!cancelled) setNotFound(true);
       } finally {
@@ -280,38 +278,11 @@ export default function AdminGuideEditor() {
 
       {/* HERO IMAGE */}
       <Section title="Hero Image">
-        <div className="flex gap-4 items-start">
-          <div className="relative w-32 h-24 rounded-lg overflow-hidden bg-muted shrink-0 border border-border">
-            {form.heroImage ? (
-              <img
-                src={form.heroImage}
-                alt="Hero preview"
-                className="w-full h-full object-cover"
-                onError={() => setHeroBroken(true)}
-                onLoad={() => setHeroBroken(false)}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                No image
-              </div>
-            )}
-          </div>
-          <div className="flex-1 space-y-2">
-            {heroBroken && form.heroImage && (
-              <div className="inline-flex items-center gap-1 text-xs font-medium text-destructive bg-destructive/10 px-2 py-1 rounded">
-                <AlertTriangle className="w-3 h-3" /> Image failed to load — check the URL
-              </div>
-            )}
-            <Input
-              value={form.heroImage || ""}
-              onChange={(e) => {
-                set({ heroImage: e.target.value });
-                setHeroBroken(false);
-              }}
-              placeholder="Paste hero image URL…"
-            />
-          </div>
-        </div>
+        <ImageUploadField
+          value={form.heroImage}
+          onChange={(v) => set({ heroImage: v })}
+          placeholder="Paste hero image URL…"
+        />
       </Section>
 
       {/* PUBLISHING */}
