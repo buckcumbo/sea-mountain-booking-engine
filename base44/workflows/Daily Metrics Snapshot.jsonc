@@ -1,0 +1,45 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_metrics_snapshot",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "snapshot": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "snapshotMetrics",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Snapshot GA4 + Search Console metrics",
+            "description": "Upsert the last 5 days of GA4 and Search Console data into DailyMetric; on Mondays also email the week-over-week digest"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Metrics Snapshot",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 5 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Daily at 5AM UTC: pulls the trailing 5 days of GA4 sessions/users/pageviews and Search Console clicks/impressions into DailyMetric. On Mondays, emails Buck the week-over-week digest."
+}
