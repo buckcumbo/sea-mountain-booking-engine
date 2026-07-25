@@ -39,12 +39,8 @@
     },
     "source": {
       "type": "string",
-      "enum": [
-        "direct",
-        "airbnb",
-        "vrbo"
-      ],
-      "default": "direct"
+      "default": "direct",
+      "description": "Booking channel, stored verbatim from Guesty (direct, airbnb, vrbo, bookingCom, manual, \u2026) \u2014 deliberately not an enum so unknown channels never fail webhook sync"
     },
     "flags": {
       "type": "array",
