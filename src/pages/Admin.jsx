@@ -3,8 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { normalizeRole } from "@/lib/roles";
-import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare, Compass } from "lucide-react";
+import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare, Compass, Download } from "lucide-react";
 import InquiriesTable from "@/components/admin/InquiriesTable";
+import HospitableImport from "@/components/admin/HospitableImport";
 import Seo from "@/components/Seo";
 
 const STAT_CARDS = [
@@ -120,9 +121,16 @@ export default function Admin() {
           <TabButton active={tab === "inquiries"} onClick={() => setTab("inquiries")} icon={MessageSquare}>
             Inquiries
           </TabButton>
+          {role === "admin" && (
+            <TabButton active={tab === "import"} onClick={() => setTab("import")} icon={Download}>
+              Import
+            </TabButton>
+          )}
         </div>
 
-        {tab === "listings" ? (
+        {tab === "import" && role === "admin" ? (
+          <HospitableImport />
+        ) : tab === "listings" ? (
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
