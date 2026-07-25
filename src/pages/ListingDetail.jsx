@@ -21,6 +21,7 @@ import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
 import BookingPanel from "@/components/listing/BookingPanel";
 import TrustBlock from "@/components/listing/TrustBlock";
+import AskAboutHome from "@/components/listing/AskAboutHome";
 import Reviews from "@/components/listing/Reviews";
 import LocationMap from "@/components/listing/LocationMap";
 import RelatedListings from "@/components/listing/RelatedListings";
@@ -285,6 +286,7 @@ export default function ListingDetail() {
             ) : (
               <div className="space-y-4">
                 <BookingPanel listing={listing} cal={cal} restore={restore} />
+                <AskAboutHome listing={listing} />
                 <TrustBlock />
               </div>
             )}
