@@ -88,9 +88,75 @@ export default function AdminImages() {
     }
   };
 
+  // A row is "dirty" when its draft differs from the saved record (or is a new
+  // row with an image). Rows without an image can't be saved and are ignored.
+  const dirtyKeys = Object.keys(drafts).filter((key) => {
+    const d = drafts[key] || { imageUrl: "", altText: "" };
+    if (!d.imageUrl) return false;
+    const s = byKey[key];
+    if (!s) return true;
+    return d.imageUrl !== (s.imageUrl || "") || (d.altText || "") !== (s.altText || "");
+  });
+  const dirtyCount = dirtyKeys.length;
+
+  const onSaveAll = async () => {
+    if (dirtyKeys.length === 0) return;
+    setSavingAll(true);
+    let ok = 0;
+    const nextByKey = { ...byKey };
+    for (const key of dirtyKeys) {
+      const draft = drafts[key];
+      try {
+        const existing = byKey[key];
+        if (existing) {
+          await base44.entities.SiteImage.update(existing.id, {
+            imageUrl: draft.imageUrl,
+            altText: draft.altText || "",
+          });
+          nextByKey[key] = { ...existing, imageUrl: draft.imageUrl, altText: draft.altText || "" };
+        } else {
+          const created = await base44.entities.SiteImage.create({
+            key,
+            imageUrl: draft.imageUrl,
+            altText: draft.altText || "",
+          });
+          nextByKey[key] = created;
+        }
+        ok++;
+      } catch {
+        // leave dirty; reported in summary
+      }
+    }
+    setByKey(nextByKey);
+    setSavingAll(false);
+    const fail = dirtyKeys.length - ok;
+    if (fail === 0) {
+      toast({ title: `Saved ${ok} image${ok === 1 ? "" : "s"}` });
+    } else if (ok === 0) {
+      toast({ title: "Save failed", variant: "destructive" });
+    } else {
+      toast({ title: `${ok} saved, ${fail} failed`, variant: "destructive" });
+    }
+  };
+
   return (
     <AdminShell title="Site Images" subtitle="Page heroes and card photos">
       <Seo title="Site Images | Admin" path="/admin/images" robots="noindex,nofollow" />
+      <div className="sticky top-0 z-20 -mx-6 px-6 py-3 bg-background/90 backdrop-blur border-b border-border mb-6 flex items-center justify-between">
+        <span className="text-sm text-muted-foreground">
+          {dirtyCount === 0
+            ? "All changes saved"
+            : `${dirtyCount} unsaved change${dirtyCount === 1 ? "" : "s"}`}
+        </span>
+        <Button onClick={onSaveAll} disabled={dirtyCount === 0 || savingAll} size="sm">
+          {savingAll ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
+          Save all changes
+        </Button>
+      </div>
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
