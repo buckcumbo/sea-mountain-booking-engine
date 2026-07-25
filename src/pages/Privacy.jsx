@@ -13,7 +13,7 @@ function Section({ title, children }) {
 export default function Privacy() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
-      <Seo title="Privacy | Sea Mountain Vacations" path="/privacy" />
+      <Seo title="Privacy | Sea Mountain Vacations" path="/privacy" description="How Sea Mountain Vacations collects, uses, and protects your information when you browse or book one of our Grand Strand vacation rentals." />
       <h1 className="font-heading text-3xl md:text-4xl font-semibold text-coast-navy mb-3">Privacy Policy</h1>
       <p className="text-sm text-muted-foreground mb-10">Last updated: April 15, 2026</p>
       <div className="space-y-8 text-muted-foreground leading-relaxed">
