@@ -13,6 +13,8 @@ import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
 import MapView, { useIsLgUp } from "@/components/search/MapView";
 import { track } from "@/lib/analytics";
+import HeroBackground from "@/components/HeroBackground";
+import { useSiteImage } from "@/hooks/useSiteImageMap";
 
 const DEFAULT_FILTERS = {
   checkIn: "",
@@ -34,6 +36,7 @@ export default function Search() {
   const [sort, setSort] = useState("price");
   const [selectedId, setSelectedId] = useState(null);
   const isLgUp = useIsLgUp();
+  const heroImage = useSiteImage("hero:search");
   const showMap = isLgUp || view === "map";
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
@@ -177,6 +180,15 @@ export default function Search() {
         description="Search oceanfront condos, beach houses, and pet-friendly vacation rentals across the Grand Strand. Filter by dates, area, and guests. Book direct with no fees."
         path="/search"
       />
+      {heroImage && (
+        <section className="relative overflow-hidden bg-coast-navy">
+          <HeroBackground image={heroImage} />
+          <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">
+            <h1 className="font-heading text-3xl md:text-5xl font-semibold">Find a Vacation Rental</h1>
+            <p className="mt-3 text-white/80 max-w-2xl">Search oceanfront condos, beach houses, and pet-friendly stays across the Grand Strand.</p>
+          </div>
+        </section>
+      )}
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-[300px_1fr] gap-8">
           <aside className="lg:sticky lg:top-6 lg:self-start">

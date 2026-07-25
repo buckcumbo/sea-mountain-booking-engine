@@ -6,10 +6,12 @@ import AreaGuideHero from "@/components/area/AreaGuideHero";
 import Seo from "@/components/Seo";
 import { prettifyArea, buildCalendarMap } from "@/lib/availability";
 import { DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { useSiteImage } from "@/hooks/useSiteImageMap";
 
 // Public area page. Reads ONLY Listing + AreaGuide. No external calls, no price math.
 export default function AreaGuidePage() {
   const { slug } = useParams();
+  const heroImage = useSiteImage(`hero:area:${slug}`);
   const [loading, setLoading] = useState(true);
   const [guide, setGuide] = useState(null);
   const [listings, setListings] = useState([]);
@@ -93,7 +95,7 @@ export default function AreaGuidePage() {
         description={guide.excerpt || DEFAULT_DESCRIPTION}
         path={`/area/${slug}`}
       />
-      <AreaGuideHero guide={guide} listings={listings} guides={guides} calendarMap={calendarMap} />
+      <AreaGuideHero guide={guide} listings={listings} guides={guides} calendarMap={calendarMap} siteImage={heroImage} />
     </>
   );
 }

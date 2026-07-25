@@ -12,21 +12,37 @@ const BLURBS = {
   "pawleys-island": "Timeless lowcountry: one of America's oldest resort beaches.",
 };
 
-export default function AreaGrid() {
+export default function AreaGrid({ images }) {
   const areas = Object.entries(AREA_LABELS);
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {areas.map(([slug, label]) => (
-        <Link
-          key={slug}
-          to={`/area/${slug}`}
-          className="group relative overflow-hidden rounded-2xl h-48 flex flex-col justify-end p-5 text-white bg-gradient-to-br from-coast-navy-soft to-coast-navy hover:shadow-lg transition-shadow"
-        >
-          <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors" />
-          <h3 className="font-heading text-lg font-semibold">{label}</h3>
-          <p className="text-xs text-white/75 mt-1 line-clamp-2">{BLURBS[slug]}</p>
-        </Link>
-      ))}
+      {areas.map(([slug, label]) => {
+        const img = images?.[`area-card:${slug}`];
+        return (
+          <Link
+            key={slug}
+            to={`/area/${slug}`}
+            className="group relative overflow-hidden rounded-2xl h-48 flex flex-col justify-end p-5 text-white bg-gradient-to-br from-coast-navy-soft to-coast-navy hover:shadow-lg transition-shadow"
+          >
+            {img && (
+              <>
+                <img
+                  src={img.imageUrl}
+                  alt={img.altText || label}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-coast-navy-soft/70 to-coast-navy/90" />
+              </>
+            )}
+            <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors" />
+            <h3 className="font-heading text-lg font-semibold">{label}</h3>
+            <p className="text-xs text-white/75 mt-1 line-clamp-2">{BLURBS[slug]}</p>
+          </Link>
+        );
+      })}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { Loader2 } from "lucide-react";
 import { AREA_LABELS } from "@/lib/availability";
 import GuideCard from "@/components/guides/GuideCard";
 import Seo from "@/components/Seo";
+import HeroBackground from "@/components/HeroBackground";
+import { useSiteImage } from "@/hooks/useSiteImageMap";
 
 const CATEGORIES = ["attractions", "activities", "dining", "seasonal"];
 
@@ -12,6 +14,7 @@ export default function Guides() {
   const [guides, setGuides] = useState([]);
   const [area, setArea] = useState("all");
   const [category, setCategory] = useState("all");
+  const heroImage = useSiteImage("hero:guides");
 
   useEffect(() => {
     (async () => {
@@ -45,7 +48,7 @@ export default function Guides() {
         path="/guides"
       />
       <section className="relative overflow-hidden bg-coast-navy">
-        <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
+        <HeroBackground image={heroImage} />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">
           <h1 className="font-heading text-3xl md:text-5xl font-semibold">
             Things To Do on the Grand Strand

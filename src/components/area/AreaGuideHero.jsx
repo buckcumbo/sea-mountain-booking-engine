@@ -6,16 +6,17 @@ import { prettifyArea, computeListingPrice } from "@/lib/availability";
 import ListingCard from "@/components/search/ListingCard";
 import GuideCard from "@/components/guides/GuideCard";
 
-export default function AreaGuideHero({ guide, listings, guides, calendarMap = {} }) {
+export default function AreaGuideHero({ guide, listings, guides, calendarMap = {}, siteImage }) {
   const areaName = prettifyArea(guide.area);
+  const heroSrc = siteImage?.imageUrl || guide.heroImage;
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden bg-coast-navy">
-        {guide.heroImage && (
+        {heroSrc && (
           <img
-            src={guide.heroImage}
-            alt=""
+            src={heroSrc}
+            alt={siteImage?.altText || ""}
             className="absolute inset-0 w-full h-full object-cover"
             onError={(e) => { e.target.style.display = "none"; }}
           />

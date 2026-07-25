@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
 
-export default function Hero() {
+export default function Hero({ image }) {
   const navigate = useNavigate();
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -22,8 +22,8 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-coast-navy">
       <img
-        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"
-        alt=""
+        src={image?.imageUrl || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"}
+        alt={image?.altText || ""}
         className="absolute inset-0 w-full h-full object-cover fade-in"
         onError={(e) => { e.target.style.display = "none"; }}
       />

@@ -13,6 +13,8 @@ import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
 import { buildCalendarMap } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
+import { useSiteImageMap } from "@/hooks/useSiteImageMap";
+import { HOMEPAGE_IMAGE_KEYS } from "@/lib/siteImageKeys";
 
 function Section({ title, subtitle, viewAllTo, children }) {
   return (
@@ -43,6 +45,7 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [newest, setNewest] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
+  const siteImages = useSiteImageMap(HOMEPAGE_IMAGE_KEYS);
 
   useEffect(() => {
     (async () => {
@@ -66,14 +69,14 @@ export default function Home() {
         path="/"
         jsonLd={buildLocalBusinessJsonLd()}
       />
-      <Hero />
+      <Hero image={siteImages["hero:home"]} />
 
       <Section title="Browse by Collection" subtitle="From oceanfront retreats to budget-friendly getaways, find the perfect fit.">
-        <CollectionGrid />
+        <CollectionGrid images={siteImages} />
       </Section>
 
       <Section title="Explore Our Areas" subtitle="Six distinct communities along the Grand Strand, each with its own coastal character.">
-        <AreaGrid />
+        <AreaGrid images={siteImages} />
       </Section>
 
       <Section
