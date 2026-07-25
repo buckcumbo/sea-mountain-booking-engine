@@ -35,7 +35,7 @@ export default function Today() {
     <div className="min-h-screen bg-muted/30">
       <Seo title="Today's Board | Sea Mountain Vacations" path="/today" robots="noindex,nofollow" />
       <header className="bg-primary text-primary-foreground">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary-foreground/10 flex items-center justify-center">
               <Waves className="w-5 h-5" />
