@@ -14,17 +14,19 @@ import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
 import MapView, { useIsLgUp } from "@/components/search/MapView";
 import { track } from "@/lib/analytics";
+import { listingMatchesFeatures } from "@/lib/features";
 import HeroBackground from "@/components/HeroBackground";
 import { useSiteImage } from "@/hooks/useSiteImageMap";
 
 const DEFAULT_FILTERS = {
+  query: "",
   checkIn: "",
   checkOut: "",
   flexDays: 0,
   guests: 0,
   area: "all",
   minBedrooms: 0,
-  petFriendly: false,
+  features: [],
   collections: [],
   maxBudget: 1000,
 };
@@ -43,11 +45,14 @@ export default function Search() {
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
     const collection = p.get("collection");
+    const features = p.get("features");
     return {
       ...DEFAULT_FILTERS,
+      query: p.get("q") || "",
       checkIn: p.get("checkIn") || "",
       checkOut: p.get("checkOut") || "",
       guests: Number(p.get("guests")) || 0,
+      features: features ? features.split(",").filter(Boolean) : [],
       collections: collection ? [collection] : [],
     };
   });
@@ -100,7 +105,8 @@ export default function Search() {
         guests: filters.guests || undefined,
         area: filters.area !== "all" ? filters.area : undefined,
         minBedrooms: filters.minBedrooms || undefined,
-        petFriendly: filters.petFriendly || undefined,
+        query: filters.query.trim() ? filters.query.trim().slice(0, 100) : undefined,
+        features: filters.features.length ? filters.features : undefined,
         collections: filters.collections.length ? filters.collections : undefined,
         maxBudget: filters.maxBudget < 1000 ? filters.maxBudget : undefined,
       },
@@ -138,7 +144,12 @@ export default function Search() {
           return false;
         if (filters.minBedrooms > 0 && (listing.bedrooms || 0) < filters.minBedrooms)
           return false;
-        if (filters.petFriendly && !listing.petFriendly) return false;
+        if (filters.query.trim()) {
+          const q = filters.query.trim().toLowerCase();
+          const hay = `${listing.title || ""} ${listing.slug || ""}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        if (!listingMatchesFeatures(listing, filters.features)) return false;
         if (
           filters.collections.length > 0 &&
           !(listing.collections || []).some((c) => filters.collections.includes(c))
@@ -183,7 +194,8 @@ export default function Search() {
     filters.guests > 0 ||
     filters.area !== "all" ||
     filters.minBedrooms > 0 ||
-    filters.petFriendly ||
+    filters.query.trim() !== "" ||
+    filters.features.length > 0 ||
     filters.collections.length > 0 ||
     filters.checkIn ||
     filters.checkOut ||
