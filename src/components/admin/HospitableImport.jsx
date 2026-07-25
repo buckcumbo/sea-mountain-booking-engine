@@ -61,6 +61,12 @@ export default function HospitableImport() {
     setRunning("enrich");
     stopRef.current = false;
     try {
+      addLog("Merging descriptions & editorial content from the original same-named records…");
+      const mergeRes = await invoke({ mode: "merge-legacy" });
+      addLog(`Merged editorial content into ${mergeRes.merged} homes from their original records.`);
+      if (Array.isArray(mergeRes.unmatched) && mergeRes.unmatched.length > 0) {
+        addLog(`No original match found for: ${mergeRes.unmatched.join("; ")}`);
+      }
       let offset = 0;
       let described = 0;
       let curated = 0;
@@ -89,7 +95,7 @@ export default function HospitableImport() {
 
   const purgeSeeds = async () => {
     const ok = window.confirm(
-      "Permanently delete all OLD MOCK listings (everything not imported from Hospitable) and their calendar rows? Real hosp_ homes are untouched. This cannot be undone."
+      "Permanently delete all ORIGINAL listings (everything not imported from Hospitable) and their calendar rows? Their descriptions and editorial content should already be merged into the real homes (step 4). Real hosp_ homes are untouched. This cannot be undone."
     );
     if (!ok) return;
     setRunning("purge");
@@ -161,13 +167,13 @@ export default function HospitableImport() {
           {running === "calendars" ? <Loader2 className="w-4 h-4 animate-spin" /> : <CalendarDays className="w-4 h-4" />}
           3. Import calendars
         </Button>
-        <Button onClick={purgeSeeds} disabled={!!running} variant="outline" className="gap-2 border-destructive/40 text-destructive">
-          {running === "purge" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-          4. Remove old seed listings
-        </Button>
         <Button onClick={enrich} disabled={!!running} variant="outline" className="gap-2">
           {running === "enrich" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-          5. Descriptions + amenity cleanup
+          4. Merge content + amenity cleanup
+        </Button>
+        <Button onClick={purgeSeeds} disabled={!!running} variant="outline" className="gap-2 border-destructive/40 text-destructive">
+          {running === "purge" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+          5. Remove old seed listings (run 4 first!)
         </Button>
         {running && running !== "dry-run" && (
           <Button variant="outline" onClick={() => { stopRef.current = true; }} className="text-destructive">
