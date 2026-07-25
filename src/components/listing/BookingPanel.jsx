@@ -9,6 +9,7 @@ import Invoice from "@/components/listing/Invoice";
 import HeartToggle from "@/components/favorites/HeartToggle";
 import { openNightsInWindow } from "@/lib/availability";
 import { PHONE } from "@/lib/contact";
+import { getAttribution } from "@/lib/analytics";
 
 // Date-range picker driven by stored CalendarDay rows: unavailable + past dates
 // are not selectable. A range shorter than the check-in day's minNights shows a
