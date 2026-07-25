@@ -10,7 +10,7 @@ import {
   Waves,
   MapPin,
 } from "lucide-react";
-import { prettifyArea, computeListingPrice, buildCalendarMap } from "@/lib/availability";
+import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
 import ListingMarkdown from "@/components/listing/ListingMarkdown";
 import { Button } from "@/components/ui/button";
 import Seo from "@/components/Seo";
@@ -194,18 +194,19 @@ export default function ListingDetail() {
               )}
             </section>
 
-            {listing.latitude != null && listing.longitude != null && (
-              <section className="space-y-3">
-                <h2 className="font-heading text-lg font-semibold text-coast-navy">Location</h2>
-                <LocationMap
-                  latitude={listing.latitude}
-                  longitude={listing.longitude}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Approximate location shown for privacy. Exact address provided after booking.
-                </p>
-              </section>
-            )}
+            <section className="space-y-3">
+              <h2 className="font-heading text-lg font-semibold text-coast-navy">Location</h2>
+              <LocationMap
+                latitude={listing.latitude}
+                longitude={listing.longitude}
+                area={listing.area}
+              />
+              <p className="text-xs text-muted-foreground">
+                {isValidCoord(listing.latitude, listing.longitude)
+                  ? "Approximate location shown for privacy. Exact address provided after booking."
+                  : "Approximate area — exact location provided after booking."}
+              </p>
+            </section>
 
             {listing.revaWidgetId && (
               <section className="space-y-3">

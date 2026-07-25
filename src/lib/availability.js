@@ -19,6 +19,27 @@ export const AREA_COORDS = {
   "pawleys-island": { x: 34, y: 92 },
 };
 
+// Real-world approximate center coordinates for each area — used as a fallback
+// map center when a listing lacks valid lat/lng.
+export const AREA_CENTER_COORDS = {
+  "north-myrtle-beach": { lat: 33.8216, lng: -78.6558 },
+  "myrtle-beach": { lat: 33.6891, lng: -78.8867 },
+  surfside: { lat: 33.6039, lng: -78.9715 },
+  "garden-city": { lat: 33.576, lng: -79.004 },
+  "murrells-inlet": { lat: 33.5518, lng: -79.0476 },
+  "pawleys-island": { lat: 33.428, lng: -79.119 },
+};
+
+export const isValidCoord = (latitude, longitude) =>
+  typeof latitude === "number" &&
+  typeof longitude === "number" &&
+  Number.isFinite(latitude) &&
+  Number.isFinite(longitude) &&
+  latitude >= -90 &&
+  latitude <= 90 &&
+  longitude >= -180 &&
+  longitude <= 180;
+
 export const prettifyArea = (slug) =>
   AREA_LABELS[slug] || (slug || "").replace(/-/g, " ");
 

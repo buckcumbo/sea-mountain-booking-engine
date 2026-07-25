@@ -1,16 +1,28 @@
 import React from "react";
 import { MapContainer, TileLayer, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { AREA_CENTER_COORDS, isValidCoord } from "@/lib/availability";
 
-// Approximate-location map for a listing detail page. Shows a ~300m circle
-// centered on the listing's coordinates — never an exact-address marker.
-export default function LocationMap({ latitude, longitude, radius = 300, className }) {
-  if (latitude == null || longitude == null) return null;
-  const center = [latitude, longitude];
+// Map for a listing detail page. When valid coordinates are present, shows a
+// ~300m circle centered on the home. When coordinates are missing/invalid,
+// falls back to the listing's area center at a wider zoom — never returns null.
+export default function LocationMap({ latitude, longitude, area, radius = 300, className }) {
+  const hasCoords = isValidCoord(latitude, longitude);
+  let center;
+  let zoom;
+  if (hasCoords) {
+    center = [latitude, longitude];
+    zoom = 14;
+  } else {
+    const fallback = AREA_CENTER_COORDS[area] || AREA_CENTER_COORDS["myrtle-beach"];
+    center = [fallback.lat, fallback.lng];
+    zoom = 11;
+  }
+
   return (
     <MapContainer
       center={center}
-      zoom={14}
+      zoom={zoom}
       scrollWheelZoom={false}
       className={className || "w-full h-72 rounded-2xl"}
     >
@@ -20,7 +32,7 @@ export default function LocationMap({ latitude, longitude, radius = 300, classNa
       />
       <Circle
         center={center}
-        radius={radius}
+        radius={hasCoords ? radius : 2000}
         pathOptions={{
           color: "#1e6b9e",
           weight: 1.5,
