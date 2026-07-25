@@ -26,6 +26,16 @@ function toDateString(d) {
   return d.toISOString().split("T")[0];
 }
 
+// API returns created_date without a "Z" suffix (e.g. "2026-07-25T03:38:07.103000").
+// Without explicit UTC parsing, the browser treats it as local time, shifting
+// events across midnight and excluding them from the range.
+function parseUTC(s) {
+  if (typeof s === "string" && !s.endsWith("Z") && !/[+-]\d{2}:?\d{2}$/.test(s)) {
+    return new Date(s + "Z");
+  }
+  return new Date(s);
+}
+
 function daysBetween(start, end) {
   const days = [];
   const cur = new Date(start);
@@ -78,7 +88,7 @@ export default function AdminAnalytics() {
 
   const filtered = useMemo(() => {
     return events.filter((e) => {
-      const d = new Date(e.created_date);
+      const d = parseUTC(e.created_date);
       return d >= rangeStart && d <= rangeEnd;
     });
   }, [events, rangeStart, rangeEnd]);
@@ -100,7 +110,7 @@ export default function AdminAnalytics() {
     filtered
       .filter((e) => e.eventType === "page_view")
       .forEach((e) => {
-        const key = toDateString(new Date(e.created_date));
+        const key = toDateString(parseUTC(e.created_date));
         byDay[key] = (byDay[key] || 0) + 1;
       });
     return days.map((d) => ({
