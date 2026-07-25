@@ -43,12 +43,11 @@ export default function ListingCard({ listing, price }) {
     <Link to={`/listing/${listing.slug || listing.id}`} className="group block bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-coast-foam">
         {photo && (
-          <img
+          <Image
             src={photo}
             alt={listing.title}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover"
+            fittingType="fill"
+            className="absolute inset-0 w-full h-full"
           />
         )}
         {(listing.featured || isHundredCollection) && (
