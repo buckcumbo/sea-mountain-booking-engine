@@ -45,7 +45,9 @@ Deno.serve(async (req) => {
       reservations: reservations.map((r) => ({ reservation: r, listing: listingMap[r.listingId] || null })),
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    // Full detail stays server-side; clients get a friendly message.
+    console.error("[getMyTrips]", error.message);
+    return Response.json({ error: "Could not load your trips. Please try again." }, { status: 500 });
   }
 });
 
