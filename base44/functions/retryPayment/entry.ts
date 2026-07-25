@@ -95,6 +95,8 @@ Deno.serve(async (req) => {
       flags: cleanedFlags,
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    // Full detail stays server-side; clients get a friendly message.
+    console.error("[retryPayment]", error.message);
+    return Response.json({ error: "Something went wrong processing the payment. Please try again." }, { status: 500 });
   }
 });
