@@ -76,10 +76,8 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const [all, days] = await Promise.all([
-          base44.entities.Listing.list("-created_date", 500),
-          base44.entities.CalendarDay.list("-created_date", 5000),
-        ]);
+        // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
+        const all = await base44.entities.Listing.list("-created_date", 500);
         const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
         setFeatured(f.slice(0, 4));
         setNewest(all.filter((l) => l.active !== false).slice(0, 4));
@@ -92,7 +90,6 @@ export default function Home() {
             .filter((l) => l && l.active !== false)
             .slice(0, 4)
         );
-        setCalendarMap(buildCalendarMap(days));
       } finally {
         setLoading(false);
       }
