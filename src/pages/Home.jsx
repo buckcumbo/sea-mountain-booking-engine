@@ -9,6 +9,7 @@ import NewRentals from "@/components/home/NewRentals";
 import { Receipt, MapPin, Tag } from "lucide-react";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { buildCalendarMap } from "@/lib/availability";
 
 function Section({ title, subtitle, children }) {
   return (
@@ -32,13 +33,18 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [newest, setNewest] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [calendarMap, setCalendarMap] = useState({});
 
   useEffect(() => {
     (async () => {
-      const all = await base44.entities.Listing.list("-created_date", 100);
+      const [all, days] = await Promise.all([
+        base44.entities.Listing.list("-created_date", 100),
+        base44.entities.CalendarDay.list("-created_date", 5000),
+      ]);
       const f = all.filter((l) => l.featured);
       setFeatured((f.length ? f : all).slice(0, 4));
       setNewest(all.filter((l) => l.active !== false).slice(0, 4));
+      setCalendarMap(buildCalendarMap(days));
       const revs = await base44.entities.Review.filter({ published: true }, "-stayDate", 3);
       setReviews(revs || []);
     })();
@@ -67,7 +73,7 @@ export default function Home() {
       </Section>
 
       <Section title="New to the Collection" subtitle="The latest additions to our Grand Strand rentals.">
-        <NewRentals listings={newest} />
+        <NewRentals listings={newest} calendarMap={calendarMap} />
       </Section>
 
       <section className="bg-coast-sand">

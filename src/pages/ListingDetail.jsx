@@ -10,7 +10,7 @@ import {
   Waves,
   MapPin,
 } from "lucide-react";
-import { prettifyArea, computeListingPrice } from "@/lib/availability";
+import { prettifyArea, computeListingPrice, buildCalendarMap } from "@/lib/availability";
 import Seo from "@/components/Seo";
 import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
@@ -29,6 +29,7 @@ export default function ListingDetail() {
   const [cal, setCal] = useState({});
   const [reviews, setReviews] = useState([]);
   const [related, setRelated] = useState([]);
+  const [calendarMap, setCalendarMap] = useState({});
 
   useEffect(() => {
     let cancelled = false;
@@ -49,14 +50,14 @@ export default function ListingDetail() {
         if (cancelled) return;
         setListing(found);
         const [days, revs, allListings] = await Promise.all([
-          base44.entities.CalendarDay.filter({ listingId: found.id }, "-date", 500),
+          base44.entities.CalendarDay.list("-created_date", 5000),
           base44.entities.Review.filter({ listingId: found.id, published: true }, "-stayDate", 100),
           base44.entities.Listing.list("-created_date", 100),
         ]);
         if (cancelled) return;
-        const map = {};
-        for (const d of days) map[d.date] = d;
-        setCal(map);
+        const fullMap = buildCalendarMap(days);
+        setCalendarMap(fullMap);
+        setCal(fullMap[found.id] || {});
         setReviews(revs || []);
         setRelated(allListings || []);
       } catch {
@@ -70,8 +71,8 @@ export default function ListingDetail() {
   }, [slug]);
 
   const price = useMemo(
-    () => (listing ? computeListingPrice(listing, cal, "", "") : null),
-    [listing, cal]
+    () => (listing ? computeListingPrice(listing, calendarMap, "", "") : null),
+    [listing, calendarMap]
   );
 
   if (loading) {
@@ -206,7 +207,7 @@ export default function ListingDetail() {
 
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">You may also like</h2>
-              <RelatedListings current={listing} listings={related} />
+              <RelatedListings current={listing} listings={related} calendarMap={calendarMap} />
             </section>
           </div>
 

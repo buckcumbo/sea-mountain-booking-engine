@@ -2,9 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ListingCard from "@/components/search/ListingCard";
+import { computeListingPrice } from "@/lib/availability";
 
 // Horizontal scroll row of the newest listings + a "View all rentals" link.
-export default function NewRentals({ listings }) {
+export default function NewRentals({ listings, calendarMap = {} }) {
   if (!listings || listings.length === 0) return null;
   return (
     <div>
@@ -14,7 +15,10 @@ export default function NewRentals({ listings }) {
             key={l.id}
             className="min-w-[280px] max-w-[280px] snap-start shrink-0"
           >
-            <ListingCard listing={l} />
+            <ListingCard
+              listing={l}
+              price={computeListingPrice(l, calendarMap, "", "")}
+            />
           </div>
         ))}
       </div>

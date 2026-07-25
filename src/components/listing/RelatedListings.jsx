@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import ListingCard from "@/components/search/ListingCard";
+import { computeListingPrice } from "@/lib/availability";
 
 function shareCollection(a, b) {
   const ac = new Set((a.collections || []).map((c) => String(c).toLowerCase()));
@@ -7,7 +8,7 @@ function shareCollection(a, b) {
 }
 
 // Up to 4 related listings: prefer same area, then shared collections, then fill.
-export default function RelatedListings({ current, listings }) {
+export default function RelatedListings({ current, listings, calendarMap = {} }) {
   const related = useMemo(() => {
     if (!current || !listings) return [];
     const others = listings.filter(
@@ -31,7 +32,10 @@ export default function RelatedListings({ current, listings }) {
           key={l.id}
           className="min-w-[280px] max-w-[280px] snap-start shrink-0"
         >
-          <ListingCard listing={l} />
+          <ListingCard
+            listing={l}
+            price={computeListingPrice(l, calendarMap, "", "")}
+          />
         </div>
       ))}
     </div>
