@@ -1,14 +1,75 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { prettifyArea, computeListingPrice } from "@/lib/availability";
+import { FEATURE_FILTERS, listingMatchesFeatures } from "@/lib/features";
 import ListingCard from "@/components/search/ListingCard";
 import GuideCard from "@/components/guides/GuideCard";
+
+const GUEST_OPTIONS = [0, 2, 4, 6, 8, 10, 12, 14, 16];
+const BED_OPTIONS = [0, 1, 2, 3, 4, 5, 6];
+const DEFAULT_AREA_FILTERS = {
+  checkIn: "",
+  checkOut: "",
+  guests: 0,
+  minBedrooms: 0,
+  features: [],
+};
 
 export default function AreaGuideHero({ guide, listings, guides, calendarMap = {}, siteImage }) {
   const areaName = prettifyArea(guide.area);
   const heroSrc = siteImage?.imageUrl || guide.heroImage;
+
+  const [filters, setFilters] = useState(DEFAULT_AREA_FILTERS);
+  const update = (patch) => setFilters((f) => ({ ...f, ...patch }));
+  const hasDates = !!(
+    filters.checkIn &&
+    filters.checkOut &&
+    filters.checkOut > filters.checkIn
+  );
+  const filtersActive =
+    hasDates || filters.guests > 0 || filters.minBedrooms > 0 || filters.features.length > 0;
+
+  const toggleFeature = (key) => {
+    const has = filters.features.includes(key);
+    update({
+      features: has
+        ? filters.features.filter((k) => k !== key)
+        : [...filters.features, key],
+    });
+  };
+
+  // Client-side only: listings and CalendarDay data are already loaded by the
+  // page, so filtering never triggers a network call.
+  const filtered = useMemo(() => {
+    return listings
+      .map((l) => ({
+        listing: l,
+        price: computeListingPrice(
+          l,
+          calendarMap,
+          hasDates ? filters.checkIn : "",
+          hasDates ? filters.checkOut : ""
+        ),
+      }))
+      .filter(({ listing: l, price }) => {
+        if (hasDates && !price.available) return false;
+        if (filters.guests > 0 && (Number(l.sleeps) || 0) < filters.guests) return false;
+        if (filters.minBedrooms > 0 && (Number(l.bedrooms) || 0) < filters.minBedrooms) return false;
+        if (!listingMatchesFeatures(l, filters.features)) return false;
+        return true;
+      });
+  }, [listings, calendarMap, filters, hasDates]);
   return (
     <div>
       {/* Hero */}
@@ -52,7 +113,9 @@ export default function AreaGuideHero({ guide, listings, guides, calendarMap = {
               Rentals in {areaName}
             </h2>
             <p className="mt-2 text-muted-foreground">
-              {listings.length} {listings.length === 1 ? "home" : "homes"} available here.
+              {filtersActive
+                ? `${filtered.length} of ${listings.length} homes match your filters.`
+                : `${listings.length} ${listings.length === 1 ? "home" : "homes"} available here.`}
             </p>
           </div>
           <Link
@@ -62,14 +125,115 @@ export default function AreaGuideHero({ guide, listings, guides, calendarMap = {
             View all <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+        {listings.length > 0 && (
+          <div className="mb-7 rounded-2xl border border-border bg-card p-4 space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Check-in</Label>
+                <Input
+                  type="date"
+                  value={filters.checkIn}
+                  onChange={(e) => update({ checkIn: e.target.value })}
+                  className="h-10"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Check-out</Label>
+                <Input
+                  type="date"
+                  value={filters.checkOut}
+                  min={filters.checkIn || undefined}
+                  onChange={(e) => update({ checkOut: e.target.value })}
+                  className="h-10"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Guests</Label>
+                <Select
+                  value={String(filters.guests)}
+                  onValueChange={(v) => update({ guests: Number(v) })}
+                >
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GUEST_OPTIONS.map((g) => (
+                      <SelectItem key={g} value={String(g)}>
+                        {g === 0 ? "Any" : `${g}+`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Min bedrooms</Label>
+                <Select
+                  value={String(filters.minBedrooms)}
+                  onValueChange={(v) => update({ minBedrooms: Number(v) })}
+                >
+                  <SelectTrigger className="h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BED_OPTIONS.map((b) => (
+                      <SelectItem key={b} value={String(b)}>
+                        {b === 0 ? "Any" : `${b}+`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {FEATURE_FILTERS.map(({ key, label, icon: Icon }) => {
+                const active = filters.features.includes(key);
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleFeature(key)}
+                    aria-pressed={active}
+                    className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                      active
+                        ? "bg-coast-navy text-white border-coast-navy"
+                        : "bg-card text-coast-navy border-border hover:border-coast-ocean"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" /> {label}
+                  </button>
+                );
+              })}
+              {filtersActive && (
+                <button
+                  type="button"
+                  onClick={() => setFilters(DEFAULT_AREA_FILTERS)}
+                  className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full text-muted-foreground hover:text-coast-navy transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" /> Clear filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
         {listings.length === 0 ? (
           <div className="text-sm text-muted-foreground italic border border-dashed border-border rounded-xl p-8 text-center">
             No rentals available in {areaName} right now.
           </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-sm text-muted-foreground border border-dashed border-border rounded-xl p-8 text-center">
+            <p>No homes match those filters.</p>
+            <button
+              type="button"
+              onClick={() => setFilters(DEFAULT_AREA_FILTERS)}
+              className="mt-2 text-coast-ocean hover:underline"
+            >
+              Clear filters
+            </button>
+          </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {listings.map((l) => (
-              <ListingCard key={l.id} listing={l} price={computeListingPrice(l, calendarMap, "", "")} />
+            {filtered.map(({ listing: l, price }) => (
+              <ListingCard key={l.id} listing={l} price={price} />
             ))}
           </div>
         )}
