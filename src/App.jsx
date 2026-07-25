@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+import LegacyCatchAll from '@/components/LegacyCatchAll';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { FavoritesProvider } from '@/lib/FavoritesContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -74,7 +75,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/users" element={<AdminGuard allowedRoles={["admin"]}><AdminUsers /></AdminGuard>} />
       <Route path="/admin/analytics" element={<AdminGuard allowedRoles={["admin"]}><AdminAnalytics /></AdminGuard>} />
       <Route path="/today" element={<AdminGuard allowedRoles={["admin", "staff"]}><Today /></AdminGuard>} />
-      <Route path="*" element={<PageNotFound />} />
+      <Route path="*" element={<LegacyCatchAll />} />
     </Routes>
   );
 };
