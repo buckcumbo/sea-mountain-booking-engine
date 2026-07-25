@@ -1,4 +1,4 @@
-import { parseISO, eachDayOfInterval, subDays, format, startOfDay } from "date-fns";
+import { parseISO, eachDayOfInterval, subDays, addDays, format, startOfDay } from "date-fns";
 
 export const AREA_LABELS = {
   "north-myrtle-beach": "North Myrtle Beach",
@@ -106,4 +106,60 @@ export function computeListingPrice(listing, calendarMap, checkIn, checkOut) {
     if (from === null || r < from) from = r;
   }
   return { hasDates: false, available: true, total: null, avg: null, from };
+}
+
+// Flexible-date search: when the exact dates don't work, slide the same stay
+// length up to ±flexDays and return the nearest available window (cheapest
+// wins at equal distance). Runs entirely on stored CalendarDay data — no
+// network calls. Returns the exact-date result untouched when it's available
+// or when flex is off.
+export function computeFlexiblePrice(listing, calendarMap, checkIn, checkOut, flexDays = 0) {
+  const exact = computeListingPrice(listing, calendarMap, checkIn, checkOut);
+  if (!checkIn || !checkOut || !flexDays || !exact.hasDates) return exact;
+  if (exact.available) {
+    return { ...exact, matchedCheckIn: checkIn, matchedCheckOut: checkOut, shifted: false };
+  }
+  const today = format(startOfDay(new Date()), "yyyy-MM-dd");
+  const start = parseISO(checkIn);
+  const end = parseISO(checkOut);
+  for (let off = 1; off <= flexDays; off++) {
+    let best = null;
+    for (const sign of [-1, 1]) {
+      const ci = format(addDays(start, sign * off), "yyyy-MM-dd");
+      const co = format(addDays(end, sign * off), "yyyy-MM-dd");
+      if (ci < today) continue;
+      const p = computeListingPrice(listing, calendarMap, ci, co);
+      if (p.available && (best === null || p.total < best.total)) {
+        best = { ...p, matchedCheckIn: ci, matchedCheckOut: co, shifted: true };
+      }
+    }
+    if (best) return best; // smallest shift wins
+  }
+  return exact;
+}
+
+// "Jul 3 – Jul 10" from two yyyy-MM-dd strings.
+export function prettifyDateRange(checkIn, checkOut) {
+  try {
+    const f = (iso) => format(parseISO(iso), "MMM d");
+    return `${f(checkIn)} – ${f(checkOut)}`;
+  } catch {
+    return `${checkIn} – ${checkOut}`;
+  }
+}
+
+// Honest scarcity: of the next `windowDays` nights with calendar data, how
+// many are still open? Only ever surfaced when the numbers are literally true.
+export function openNightsInWindow(cal, windowDays = 60) {
+  const start = startOfDay(new Date());
+  let open = 0;
+  let tracked = 0;
+  for (let i = 0; i < windowDays; i++) {
+    const ds = format(addDays(start, i), "yyyy-MM-dd");
+    const day = cal[ds];
+    if (!day) continue;
+    tracked++;
+    if (day.available === true) open++;
+  }
+  return { open, tracked, windowDays };
 }
