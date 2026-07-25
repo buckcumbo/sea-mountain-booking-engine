@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { allowRequest, clientIp } from '../../shared/rateLimit.ts';
 
 // MOCK reservation booker. Converts an active Quote into a Reservation using
 // the same mock-now / Guesty-later pattern as createQuote. When Guesty
@@ -23,6 +24,11 @@ Deno.serve(async (req) => {
 
     if (!quoteId) {
       return Response.json({ error: "quoteId is required" }, { status: 400 });
+    }
+
+    // Rate limit: public unauthenticated endpoint on the money path.
+    if (!(await allowRequest(base44, "bookReservation", clientIp(req), 10, 10))) {
+      return Response.json({ error: "Too many booking attempts. Please try again shortly." }, { status: 429 });
     }
 
     // (2) Validate guest fields.
@@ -92,12 +98,20 @@ Deno.serve(async (req) => {
       });
     } else {
       const cur = existing[0];
-      const updates: any = { firstName, lastName, phone: phone || "" };
       if (paymentOk) {
-        updates.stayCount = (Number(cur.stayCount) || 0) + 1;
-        updates.lifetimeValue = (Number(cur.lifetimeValue) || 0) + totalAmount;
+        // Contact fields and stats change ONLY on a successful payment — an
+        // unauthenticated failed-payment call must not be able to overwrite
+        // an existing guest's profile (data poisoning).
+        guestProfile = await base44.asServiceRole.entities.GuestProfile.update(cur.id, {
+          firstName,
+          lastName,
+          phone: phone || "",
+          stayCount: (Number(cur.stayCount) || 0) + 1,
+          lifetimeValue: (Number(cur.lifetimeValue) || 0) + totalAmount,
+        });
+      } else {
+        guestProfile = cur;
       }
-      guestProfile = await base44.asServiceRole.entities.GuestProfile.update(cur.id, updates);
     }
 
     // (5) Create the Reservation.
