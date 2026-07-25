@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { format, startOfDay, differenceInCalendarDays, parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
 import HeartToggle from "@/components/favorites/HeartToggle";
@@ -44,6 +46,23 @@ export default function BookingPanel({ listing, cal, restore }) {
     const day = cal[ds];
     if (!day || day.available !== true) return true;
     return false;
+  };
+
+  // Nightly rates inside the date picker — the number under each open night
+  // comes straight from the stored CalendarDay row (display only; totals
+  // always come from the quote).
+  const DayContent = ({ date }) => {
+    const ds = format(date, "yyyy-MM-dd");
+    const day = cal[ds];
+    const showRate = day && day.available === true && ds >= today && Number(day.rate) > 0;
+    return (
+      <span className="flex flex-col items-center justify-center leading-none">
+        <span>{date.getDate()}</span>
+        <span className={`text-[8px] mt-0.5 tabular-nums ${showRate ? "opacity-70" : "opacity-0"}`}>
+          {showRate ? `$${Math.round(Number(day.rate))}` : " "}
+        </span>
+      </span>
+    );
   };
 
   useEffect(() => {
@@ -121,6 +140,14 @@ export default function BookingPanel({ listing, cal, restore }) {
           onSelect={setRange}
           numberOfMonths={1}
           disabled={isDisabled}
+          components={{ DayContent }}
+          classNames={{
+            day: cn(
+              buttonVariants({ variant: "ghost" }),
+              "h-11 w-9 p-0 font-normal aria-selected:opacity-100"
+            ),
+            head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+          }}
         />
       </div>
 
