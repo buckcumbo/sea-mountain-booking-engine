@@ -11,6 +11,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
+import { listingMatchesCollection } from "@/lib/collections";
+import CollectionMemberBadge from "@/components/listing/CollectionMemberBadge";
 import StoryDescription from "@/components/listing/StoryDescription";
 import VideoTour from "@/components/listing/VideoTour";
 import { Button } from "@/components/ui/button";
@@ -149,6 +151,9 @@ export default function ListingDetail() {
                   <Users className="w-4 h-4" /> Sleeps {listing.sleeps}
                 </span>
               </div>
+              {listingMatchesCollection(listing, "the-100-collection") && (
+                <CollectionMemberBadge />
+              )}
               {visibleAmenities.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
                   {visibleAmenities.map((a, i) => (
