@@ -22,8 +22,13 @@ function endOfDay(d) {
   return x;
 }
 
+// Local date key (YYYY-MM-DD) so event buckets and chart-day buckets match
+// regardless of timezone — toISOString() would shift them to UTC date.
 function toDateString(d) {
-  return d.toISOString().split("T")[0];
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 // API returns created_date without a "Z" suffix (e.g. "2026-07-25T03:38:07.103000").
