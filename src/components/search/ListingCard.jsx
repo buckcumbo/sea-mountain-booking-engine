@@ -3,6 +3,7 @@ import { PawPrint, BedDouble, Bath, Users } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
 import { Link } from "react-router-dom";
 import HeartToggle from "@/components/favorites/HeartToggle";
+import CollectionChips from "@/components/search/CollectionChips";
 
 function PriceLine({ price }) {
   if (price.hasDates) {
@@ -60,6 +61,7 @@ export default function ListingCard({ listing, price }) {
             <PawPrint className="w-4 h-4 text-coast-ocean shrink-0" />
           )}
         </div>
+        <CollectionChips listing={listing} />
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <BedDouble className="w-4 h-4" />

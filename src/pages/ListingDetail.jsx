@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
@@ -10,13 +10,15 @@ import {
   Waves,
   MapPin,
 } from "lucide-react";
-import { prettifyArea } from "@/lib/availability";
+import { prettifyArea, computeListingPrice } from "@/lib/availability";
 import Seo from "@/components/Seo";
 import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
 import BookingPanel from "@/components/listing/BookingPanel";
 import Reviews from "@/components/listing/Reviews";
 import LocationMap from "@/components/listing/LocationMap";
+import RelatedListings from "@/components/listing/RelatedListings";
+import MobileBookingBar from "@/components/listing/MobileBookingBar";
 
 // Reads ONLY Listing, CalendarDay, Review. No external network calls.
 export default function ListingDetail() {
@@ -26,6 +28,7 @@ export default function ListingDetail() {
   const [listing, setListing] = useState(null);
   const [cal, setCal] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [related, setRelated] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,15 +48,17 @@ export default function ListingDetail() {
         if (!found) { if (!cancelled) setNotFound(true); return; }
         if (cancelled) return;
         setListing(found);
-        const [days, revs] = await Promise.all([
+        const [days, revs, allListings] = await Promise.all([
           base44.entities.CalendarDay.filter({ listingId: found.id }, "-date", 500),
           base44.entities.Review.filter({ listingId: found.id, published: true }, "-stayDate", 100),
+          base44.entities.Listing.list("-created_date", 100),
         ]);
         if (cancelled) return;
         const map = {};
         for (const d of days) map[d.date] = d;
         setCal(map);
         setReviews(revs || []);
+        setRelated(allListings || []);
       } catch {
         if (!cancelled) setNotFound(true);
       } finally {
@@ -63,6 +68,11 @@ export default function ListingDetail() {
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  const price = useMemo(
+    () => (listing ? computeListingPrice(listing, cal, "", "") : null),
+    [listing, cal]
+  );
 
   if (loading) {
     return (
@@ -92,7 +102,7 @@ export default function ListingDetail() {
         ogImage={listing.photos && listing.photos[0] ? listing.photos[0].url : undefined}
         jsonLd={buildVacationRentalJsonLd(listing, reviews)}
       />
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 pb-28 lg:pb-8">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div className="space-y-8">
             <PhotoGallery photos={listing.photos} title={listing.title} />
@@ -193,13 +203,19 @@ export default function ListingDetail() {
               <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest reviews</h2>
               <Reviews reviews={reviews} />
             </section>
+
+            <section className="space-y-3">
+              <h2 className="font-heading text-lg font-semibold text-coast-navy">You may also like</h2>
+              <RelatedListings current={listing} listings={related} />
+            </section>
           </div>
 
-          <aside className="lg:sticky lg:top-6 lg:self-start">
+          <aside id="booking" className="lg:sticky lg:top-6 lg:self-start">
             <BookingPanel listing={listing} cal={cal} />
           </aside>
         </div>
       </main>
+      <MobileBookingBar listing={listing} price={price} />
     </div>
   );
 }

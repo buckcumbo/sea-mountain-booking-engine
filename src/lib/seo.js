@@ -4,6 +4,9 @@ export const SITE_NAME = "Sea Mountain Vacations";
 // Canonical production origin. Update if the domain changes.
 export const SITE_ORIGIN = "https://www.seamountainvacations.com";
 
+export const SITE_PHONE = "(843) 555-0100";
+export const SITE_PHONE_TEL = "+18435550100";
+
 export const DEFAULT_DESCRIPTION =
   "Book direct and save on North Myrtle Beach & Grand Strand vacation rentals — oceanfront condos, beach houses, and pet-friendly stays with no booking fees.";
 

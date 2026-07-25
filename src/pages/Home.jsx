@@ -5,6 +5,7 @@ import CollectionGrid from "@/components/home/CollectionGrid";
 import AreaGrid from "@/components/home/AreaGrid";
 import FeaturedRentals from "@/components/home/FeaturedRentals";
 import ReviewStrip from "@/components/home/ReviewStrip";
+import NewRentals from "@/components/home/NewRentals";
 import { Receipt, MapPin, Tag } from "lucide-react";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
@@ -29,6 +30,7 @@ const WHY = [
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
+  const [newest, setNewest] = useState([]);
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function Home() {
       const all = await base44.entities.Listing.list("-created_date", 100);
       const f = all.filter((l) => l.featured);
       setFeatured((f.length ? f : all).slice(0, 4));
+      setNewest(all.filter((l) => l.active !== false).slice(0, 4));
       const revs = await base44.entities.Review.filter({ published: true }, "-stayDate", 3);
       setReviews(revs || []);
     })();
@@ -61,6 +64,10 @@ export default function Home() {
 
       <Section title="Featured Rentals" subtitle="Hand-picked stays from our 100 Collection.">
         <FeaturedRentals listings={featured} />
+      </Section>
+
+      <Section title="New to the Collection" subtitle="The latest additions to our Grand Strand rentals.">
+        <NewRentals listings={newest} />
       </Section>
 
       <section className="bg-coast-sand">
