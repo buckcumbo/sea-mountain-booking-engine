@@ -38,11 +38,7 @@
         "role": "admin"
       }
     },
-    "create": {
-      "user_condition": {
-        "role": "system"
-      }
-    },
+    "create": false,
     "update": {
       "user_condition": {
         "role": "admin"
