@@ -60,9 +60,19 @@ export default function MatchGame() {
   const current = deck[0];
   const upNext = deck.slice(1, 3);
 
+  // Guard against runaway input: a held-down arrow key auto-repeats at
+  // ~12 events/sec, which once liked an entire 74-home deck in 6 seconds
+  // (true story). Swipes are hard-limited to one per 350ms — matching the
+  // exit animation — regardless of input source.
+  const lastSwipeAt = useRef(0);
+
   const swipe = useCallback(
     (direction) => {
       if (!current) return;
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      if (now - lastSwipeAt.current < 350) return;
+      lastSwipeAt.current = now;
       setExitDirection(direction);
       if (direction > 0) {
         toggle(current.id); // save to favorites
@@ -97,6 +107,7 @@ export default function MatchGame() {
   // Keyboard: ← pass, → like, Z undo.
   useEffect(() => {
     const onKey = (e) => {
+      if (e.repeat) return; // held keys auto-repeat — one swipe per press
       if (e.key === "ArrowLeft") swipe(-1);
       if (e.key === "ArrowRight") swipe(1);
       if (e.key.toLowerCase() === "z") undo();
