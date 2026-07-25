@@ -15,6 +15,26 @@ import { buildCalendarMap } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
 import { useSiteImageMap } from "@/hooks/useSiteImageMap";
 import { HOMEPAGE_IMAGE_KEYS } from "@/lib/siteImageKeys";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Placeholder cards shown while listings load — the section never renders its
+// empty/blank state during the initial fetch.
+function SkeletonCards({ count = 4, className = "grid sm:grid-cols-2 lg:grid-cols-4 gap-5" }) {
+  return (
+    <div className={className}>
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden">
+          <Skeleton className="aspect-[4/3] w-full rounded-none" />
+          <div className="p-4 space-y-3">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Section({ title, subtitle, viewAllTo, children }) {
   return (
@@ -42,6 +62,7 @@ const WHY = [
 ];
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
   const [featured, setFeatured] = useState([]);
   const [newest, setNewest] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
@@ -49,15 +70,18 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      const [all, days] = await Promise.all([
-        base44.entities.Listing.list("-created_date", 500),
-        base44.entities.CalendarDay.list("-created_date", 5000),
-      ]);
-      const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
-      setFeatured(f.slice(0, 4));
-      setNewest(all.filter((l) => l.active !== false).slice(0, 4));
-      setCalendarMap(buildCalendarMap(days));
-
+      try {
+        const [all, days] = await Promise.all([
+          base44.entities.Listing.list("-created_date", 500),
+          base44.entities.CalendarDay.list("-created_date", 5000),
+        ]);
+        const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
+        setFeatured(f.slice(0, 4));
+        setNewest(all.filter((l) => l.active !== false).slice(0, 4));
+        setCalendarMap(buildCalendarMap(days));
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
@@ -84,11 +108,15 @@ export default function Home() {
         subtitle="The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard. They don't settle for less than 100%."
         viewAllTo="/collections/the-100-collection"
       >
-        <FeaturedRentals listings={featured} calendarMap={calendarMap} />
+        {loading ? <SkeletonCards count={4} /> : <FeaturedRentals listings={featured} calendarMap={calendarMap} />}
       </Section>
 
       <Section title="New to the Collection" subtitle="The latest additions to our Grand Strand rentals.">
-        <NewRentals listings={newest} calendarMap={calendarMap} />
+        {loading ? (
+          <SkeletonCards count={4} className="flex gap-5 overflow-hidden [&>div]:min-w-[280px] [&>div]:max-w-[280px]" />
+        ) : (
+          <NewRentals listings={newest} calendarMap={calendarMap} />
+        )}
       </Section>
 
       <section className="bg-coast-sand">
