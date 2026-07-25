@@ -51,6 +51,32 @@ export default function FiltersPanel({ filters, onChange, collections }) {
         </div>
       </div>
 
+      {filters.checkIn && filters.checkOut && (
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Date flexibility</Label>
+          <div className="flex gap-2">
+            {[
+              { v: 0, l: "Exact dates" },
+              { v: 1, l: "± 1 day" },
+              { v: 3, l: "± 3 days" },
+            ].map(({ v, l }) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => onChange({ flexDays: v })}
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                  (filters.flexDays || 0) === v
+                    ? "bg-coast-navy text-white border-coast-navy"
+                    : "bg-card text-coast-navy border-border hover:border-coast-ocean"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Guests</Label>
