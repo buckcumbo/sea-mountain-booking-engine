@@ -52,6 +52,20 @@ Deno.serve(async (req) => {
     if (!paymentToken || typeof paymentToken !== "string" || paymentToken.trim() === "") {
       return Response.json({ error: "paymentToken is required" }, { status: 400 });
     }
+
+    // (3b) Atomically claim the quote so a double-submit (two concurrent
+    // requests with the same quoteId) creates exactly ONE reservation.
+    // Compare-and-set: only an unclaimed active quote can be claimed; we then
+    // re-read and verify OUR claim token won, otherwise another request got it.
+    const claimToken = "claim-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+    await base44.asServiceRole.entities.Quote.updateMany(
+      { id: quoteId, status: "active", bookingClaim: null },
+      { $set: { bookingClaim: claimToken } },
+    );
+    const claimed = await base44.asServiceRole.entities.Quote.get(quoteId);
+    if (!claimed || claimed.bookingClaim !== claimToken) {
+      return Response.json({ error: "This quote is already being booked. If your booking did not complete, request a new quote." }, { status: 409 });
+    }
     const paymentOk = paymentToken !== "tok_fail";
 
     // Total taken verbatim from the Quote invoice — never recomputed.
