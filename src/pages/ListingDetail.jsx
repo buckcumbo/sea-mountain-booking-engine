@@ -27,6 +27,8 @@ import LocationMap from "@/components/listing/LocationMap";
 import RelatedListings from "@/components/listing/RelatedListings";
 import MobileBookingBar from "@/components/listing/MobileBookingBar";
 import { track } from "@/lib/analytics";
+import { addRecentlyViewed } from "@/lib/recentlyViewed";
+import LazyIframe from "@/components/LazyIframe";
 
 // Reads ONLY Listing, CalendarDay, Review. No external network calls.
 export default function ListingDetail() {
@@ -59,6 +61,7 @@ export default function ListingDetail() {
         if (cancelled) return;
         setListing(found);
         track("listing_view", { listingSlug: found.slug, area: found.area });
+        addRecentlyViewed(found.id);
         const [days, revs, allListings] = await Promise.all([
           base44.entities.CalendarDay.list("-created_date", 5000),
           base44.entities.Review.filter({ listingId: found.id, published: true }, "-stayDate", 100),
@@ -252,20 +255,25 @@ export default function ListingDetail() {
               </p>
             </section>
 
-            {listing.revaWidgetId && (
+            {listing.revaWidgetId ? (
               <section className="space-y-3">
                 <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest Reviews</h2>
-                <iframe
+                <LazyIframe
                   src={`https://embed.joinreva.com/widgets/${listing.revaWidgetId}`}
-                  loading="lazy"
                   width="100%"
-                  height="1200"
+                  height={1200}
                   frameBorder="0"
                   className="w-full block"
-                  style={{ border: 0, minHeight: 1200 }}
                   title="Guest Reviews"
                 />
               </section>
+            ) : (
+              reviews.length > 0 && (
+                <section className="space-y-3">
+                  <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest Reviews</h2>
+                  <Reviews reviews={reviews} />
+                </section>
+              )
             )}
 
             <section className="space-y-3">
