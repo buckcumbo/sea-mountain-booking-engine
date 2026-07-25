@@ -97,6 +97,21 @@ export default function Home() {
           <ReviewStrip reviews={reviews} />
         </Section>
       )}
+
+      <Section title="What Our Guests Say" subtitle="Verified reviews from our recent guests.">
+        <div className="w-full">
+          <iframe
+            src="https://embed.joinreva.com/widgets/959b0dfd-c95f-4730-9f81-522a32ad120e"
+            loading="lazy"
+            width="100%"
+            height="1400"
+            frameBorder="0"
+            className="w-full block"
+            style={{ border: 0, minHeight: 1400 }}
+            title="Guest Reviews"
+          />
+        </div>
+      </Section>
     </div>
   );
 }
