@@ -42,6 +42,10 @@
     "recoveryEmailSentAt": {
       "type": "string",
       "format": "date-time"
+    },
+    "bookingClaim": {
+      "type": "string",
+      "description": "Compare-and-set token written by bookReservation so a quote is booked exactly once (double-submit guard)"
     }
   },
   "required": [
