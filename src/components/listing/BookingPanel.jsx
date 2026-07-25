@@ -233,6 +233,18 @@ export default function BookingPanel({ listing, cal, restore }) {
         </div>
       )}
 
+      {restore?.requoted && (
+        <div className="text-sm rounded-lg bg-coast-ocean/10 text-coast-ocean px-3 py-2">
+          We refreshed your quote with today's rates
+          {restore.previousTotal != null &&
+          quote?.invoice?.total != null &&
+          Number(restore.previousTotal) !== Number(quote.invoice.total)
+            ? ` (was $${Number(restore.previousTotal).toLocaleString()})`
+            : ""}
+          . Your dates are held below.
+        </div>
+      )}
+
       {quote && (
         <div className="space-y-1.5">
           <input
