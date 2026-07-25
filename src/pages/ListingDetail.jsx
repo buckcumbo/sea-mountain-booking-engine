@@ -62,8 +62,11 @@ export default function ListingDetail() {
         setListing(found);
         track("listing_view", { listingSlug: found.slug, area: found.area });
         addRecentlyViewed(found.id);
+        // Fetch ONLY this listing's calendar — the table is tens of
+        // thousands of rows across all homes; a global capped fetch was
+        // silently missing most listings' data.
         const [days, revs, allListings] = await Promise.all([
-          base44.entities.CalendarDay.list("-created_date", 5000),
+          base44.entities.CalendarDay.filter({ listingId: found.id }, "date", 500),
           base44.entities.Review.filter({ listingId: found.id, published: true }, "-stayDate", 100),
           base44.entities.Listing.list("-created_date", 100),
         ]);
