@@ -150,6 +150,8 @@ Deno.serve(async (req) => {
       balanceDue,
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    // Full detail stays server-side; clients get a friendly message.
+    console.error("[bookReservation]", error.message);
+    return Response.json({ error: "Something went wrong completing your booking. Please try again or call us." }, { status: 500 });
   }
 });
