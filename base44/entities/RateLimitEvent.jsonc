@@ -1,0 +1,32 @@
+{
+  "name": "RateLimitEvent",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "The rate-limited action, e.g. createQuote, saveQuoteEmail, submitInquiry"
+    },
+    "key": {
+      "type": "string",
+      "description": "The caller identity being counted, currently the client IP"
+    }
+  },
+  "required": [
+    "action",
+    "key"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": false,
+    "update": false,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
