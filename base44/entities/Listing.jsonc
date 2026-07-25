@@ -84,6 +84,10 @@
         }
       }
     },
+    "fromRate": {
+      "type": "number",
+      "description": "Precomputed lowest upcoming nightly rate (display only) \u2014 refreshed nightly by refreshFromRates so cards never need the full calendar"
+    },
     "active": {
       "type": "boolean",
       "default": true
