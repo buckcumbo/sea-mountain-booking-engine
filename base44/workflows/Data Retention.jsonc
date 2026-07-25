@@ -15,10 +15,24 @@
             "function_name": "pruneOldRecords",
             "args": {}
           },
-          "then": "end",
+          "then": "refresh_rates",
           "x-base44": {
             "title": "Prune old records",
             "description": "Delete WebhookEvent/AnalyticsEvent/RateLimitEvent/expired Quote rows past their retention window"
+          }
+        }
+      },
+      {
+        "refresh_rates": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "refreshFromRates",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Refresh from-rates",
+            "description": "Recompute each listing's lowest upcoming nightly rate for card pricing"
           }
         }
       }
