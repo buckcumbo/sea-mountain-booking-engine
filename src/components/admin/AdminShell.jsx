@@ -6,6 +6,7 @@ import {
   Building2,
   Compass,
   Users,
+  BarChart3,
 } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { normalizeRole } from "@/lib/roles";
@@ -16,6 +17,7 @@ const ALL_NAV = [
   { to: "/admin/listings", label: "Listings", icon: Building2, roles: ["admin"] },
   { to: "/admin/guides", label: "Guides", icon: Compass, roles: ["admin"] },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["admin"] },
 ];
 
 export default function AdminShell({ title, subtitle, children, actions }) {
