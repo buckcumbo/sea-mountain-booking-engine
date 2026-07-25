@@ -18,6 +18,7 @@ import AdminListings from '@/pages/admin/AdminListings';
 import AdminListingEditor from '@/pages/admin/AdminListingEditor';
 import AdminGuides from '@/pages/admin/AdminGuides';
 import AdminGuideEditor from '@/pages/admin/AdminGuideEditor';
+import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminGuard from '@/components/admin/AdminGuard';
 import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
@@ -64,12 +65,13 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
-      <Route path="/admin/listings" element={<AdminGuard><AdminListings /></AdminGuard>} />
-      <Route path="/admin/listings/:slug" element={<AdminGuard><AdminListingEditor /></AdminGuard>} />
-      <Route path="/admin/guides" element={<AdminGuard><AdminGuides /></AdminGuard>} />
-      <Route path="/admin/guides/:slug" element={<AdminGuard><AdminGuideEditor /></AdminGuard>} />
-      <Route path="/today" element={<Today />} />
+      <Route path="/admin" element={<AdminGuard allowedRoles={["admin", "staff"]}><Admin /></AdminGuard>} />
+      <Route path="/admin/listings" element={<AdminGuard allowedRoles={["admin"]}><AdminListings /></AdminGuard>} />
+      <Route path="/admin/listings/:slug" element={<AdminGuard allowedRoles={["admin"]}><AdminListingEditor /></AdminGuard>} />
+      <Route path="/admin/guides" element={<AdminGuard allowedRoles={["admin"]}><AdminGuides /></AdminGuard>} />
+      <Route path="/admin/guides/:slug" element={<AdminGuard allowedRoles={["admin"]}><AdminGuideEditor /></AdminGuard>} />
+      <Route path="/admin/users" element={<AdminGuard allowedRoles={["admin"]}><AdminUsers /></AdminGuard>} />
+      <Route path="/today" element={<AdminGuard allowedRoles={["admin", "staff"]}><Today /></AdminGuard>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

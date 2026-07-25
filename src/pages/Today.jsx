@@ -93,6 +93,12 @@ export default function Today() {
                 >
                   Guides
                 </Link>
+                <Link
+                  to="/admin/users"
+                  className="text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  Users
+                </Link>
               </>
             )}
             <button

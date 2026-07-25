@@ -1,10 +1,16 @@
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import { normalizeRole } from "@/lib/roles";
+import NoAccess from "@/components/admin/NoAccess";
 
-// Redirects non-admin users away from protected admin pages.
-export default function AdminGuard({ children }) {
+// Role-aware guard. allowedRoles defaults to ["admin"].
+// - Unauthenticated or guest: redirect to homepage.
+// - Staff on an admin-only page: show the NoAccess state (not a redirect loop, not a 404).
+// - Role in allowedRoles: render children.
+export default function AdminGuard({ allowedRoles = ["admin"], children }) {
   const { user, isLoadingAuth } = useAuth();
+
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
@@ -12,8 +18,20 @@ export default function AdminGuard({ children }) {
       </div>
     );
   }
-  if (!user || user.role !== "admin") {
+
+  if (!user) {
     return <Navigate to="/" replace />;
   }
-  return children;
+
+  const role = normalizeRole(user.role);
+
+  if (allowedRoles.includes(role)) {
+    return children;
+  }
+
+  if (role === "staff") {
+    return <NoAccess />;
+  }
+
+  return <Navigate to="/" replace />;
 }

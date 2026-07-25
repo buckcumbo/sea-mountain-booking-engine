@@ -1,14 +1,28 @@
 import { Link } from "react-router-dom";
-import { Waves, LayoutDashboard, CalendarCheck, Building2, Compass } from "lucide-react";
+import {
+  Waves,
+  LayoutDashboard,
+  CalendarCheck,
+  Building2,
+  Compass,
+  Users,
+} from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
+import { normalizeRole } from "@/lib/roles";
 
-const NAV = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/today", label: "Today's Board", icon: CalendarCheck },
-  { to: "/admin/listings", label: "Listings", icon: Building2 },
-  { to: "/admin/guides", label: "Guides", icon: Compass },
+const ALL_NAV = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "staff"] },
+  { to: "/today", label: "Today's Board", icon: CalendarCheck, roles: ["admin", "staff"] },
+  { to: "/admin/listings", label: "Listings", icon: Building2, roles: ["admin"] },
+  { to: "/admin/guides", label: "Guides", icon: Compass, roles: ["admin"] },
+  { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
 ];
 
 export default function AdminShell({ title, subtitle, children, actions }) {
+  const { user } = useAuth();
+  const role = normalizeRole(user?.role);
+  const nav = ALL_NAV.filter((item) => item.roles.includes(role));
+
   return (
     <div className="min-h-screen bg-muted/30">
       <header className="bg-primary text-primary-foreground">
@@ -26,7 +40,7 @@ export default function AdminShell({ title, subtitle, children, actions }) {
             {actions}
           </div>
           <nav className="flex flex-wrap items-center gap-2">
-            {NAV.map(({ to, label, icon: Icon }) => (
+            {nav.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}

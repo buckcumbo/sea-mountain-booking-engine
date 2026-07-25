@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/lib/AuthContext";
+import { normalizeRole } from "@/lib/roles";
 import { Waves, Building2, CalendarDays, BookOpen, Users, FileText, Loader2, RefreshCw, PawPrint, MessageSquare, Compass } from "lucide-react";
 import InquiriesTable from "@/components/admin/InquiriesTable";
 import Seo from "@/components/Seo";
@@ -17,6 +19,8 @@ const prettifyArea = (slug) =>
   (slug || "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 export default function Admin() {
+  const { user } = useAuth();
+  const role = normalizeRole(user?.role);
   const [loading, setLoading] = useState(true);
   const [counts, setCounts] = useState({});
   const [listings, setListings] = useState([]);
@@ -59,18 +63,28 @@ export default function Admin() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              to="/admin/listings"
-              className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
-            >
-              <Building2 className="w-4 h-4" /> Listings
-            </Link>
-            <Link
-              to="/admin/guides"
-              className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
-            >
-              <Compass className="w-4 h-4" /> Guides
-            </Link>
+            {role === "admin" && (
+              <>
+                <Link
+                  to="/admin/listings"
+                  className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  <Building2 className="w-4 h-4" /> Listings
+                </Link>
+                <Link
+                  to="/admin/guides"
+                  className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  <Compass className="w-4 h-4" /> Guides
+                </Link>
+                <Link
+                  to="/admin/users"
+                  className="inline-flex items-center gap-2 text-sm bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors px-3 py-2 rounded-lg"
+                >
+                  <Users className="w-4 h-4" /> Users
+                </Link>
+              </>
+            )}
             <button
               onClick={load}
               disabled={loading}
