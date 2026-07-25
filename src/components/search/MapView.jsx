@@ -1,9 +1,36 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Link } from "react-router-dom";
 import { prettifyArea } from "@/lib/availability";
+
+// Tracks whether the viewport is at or above the lg breakpoint (1024px).
+// On smaller screens the map container is toggled via CSS (hidden/block),
+// so we only mount MapContainer when it will actually be visible — mounting
+// Leaflet inside a display:none container corrupts its internal panes and
+// throws "Cannot read properties of undefined (reading '_leaflet_pos')".
+export function useIsLgUp() {
+  const [isLgUp, setIsLgUp] = useState(
+    typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches
+  );
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setIsLgUp(mql.matches);
+    mql.addEventListener("change", onChange);
+    setIsLgUp(mql.matches);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+  return isLgUp;
+}
+
+function InvalidateOnMount() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+  }, [map]);
+  return null;
+}
 
 // Leaflet map for the search results: a price pin per listing, auto-fit to the
 // current results, with a popup (photo, name, price, link) on click. onSelect
@@ -36,6 +63,7 @@ function FitBounds({ points }) {
 }
 
 export default function MapView({ listings, prices, selectedId, onSelect, className }) {
+  const isLgUp = useIsLgUp();
   const points = useMemo(
     () =>
       listings
@@ -53,11 +81,13 @@ export default function MapView({ listings, prices, selectedId, onSelect, classN
 
   return (
     <MapContainer
+      key={isLgUp ? "desktop" : "mobile"}
       center={center}
       zoom={11}
       scrollWheelZoom={false}
       className={className || "w-full h-full"}
     >
+      <InvalidateOnMount />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'

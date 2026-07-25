@@ -11,7 +11,7 @@ import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
 import Seo from "@/components/Seo";
 import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
-import MapView from "@/components/search/MapView";
+import MapView, { useIsLgUp } from "@/components/search/MapView";
 
 const DEFAULT_FILTERS = {
   checkIn: "",
@@ -32,6 +32,8 @@ export default function Search() {
   const [view, setView] = useState("list");
   const [sort, setSort] = useState("price");
   const [selectedId, setSelectedId] = useState(null);
+  const isLgUp = useIsLgUp();
+  const showMap = isLgUp || view === "map";
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
     const collection = p.get("collection");
@@ -253,12 +255,14 @@ export default function Search() {
                 </div>
                 <div className={view === "list" ? "hidden lg:block" : "block"}>
                   <div className="lg:sticky lg:top-6 h-[460px] lg:h-[calc(100vh-7rem)] rounded-2xl overflow-hidden border border-border shadow-sm">
-                    <MapView
-                      listings={items.map((i) => i.listing)}
-                      prices={prices}
-                      selectedId={selectedId}
-                      onSelect={handleSelect}
-                    />
+                    {showMap ? (
+                      <MapView
+                        listings={items.map((i) => i.listing)}
+                        prices={prices}
+                        selectedId={selectedId}
+                        onSelect={handleSelect}
+                      />
+                    ) : null}
                   </div>
                 </div>
               </div>
