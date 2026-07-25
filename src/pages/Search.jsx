@@ -15,6 +15,7 @@ import ListingCard from "@/components/search/ListingCard";
 import SearchMap from "@/components/search/SearchMap";
 import { track } from "@/lib/analytics";
 import { listingMatchesFeatures } from "@/lib/features";
+import { getPassedListings, clearPassedListings } from "@/lib/passedListings";
 import HeroBackground from "@/components/HeroBackground";
 import { useSiteImage } from "@/hooks/useSiteImageMap";
 
@@ -41,6 +42,8 @@ export default function Search() {
   // mobile. The map mounts only in map mode, so listing browsing never pays
   // its cost.
   const [view, setView] = useState("list");
+  // Homes swiped left in the matchmaker stay out of search until reset.
+  const [passedIds, setPassedIds] = useState(() => new Set(getPassedListings()));
   const [sort, setSort] = useState("price");
   const [selectedId, setSelectedId] = useState(null);
   const heroImage = useSiteImage("hero:search");
@@ -153,6 +156,7 @@ export default function Search() {
           if (!hay.includes(q)) return false;
         }
         if (!listingMatchesFeatures(listing, filters.features)) return false;
+        if (passedIds.has(listing.id)) return false;
         if (
           filters.collections.length > 0 &&
           !(listing.collections || []).some((c) => filters.collections.includes(c))
@@ -256,8 +260,25 @@ export default function Search() {
                     ? `${filters.checkIn} → ${filters.checkOut}`
                     : "Pick dates for exact pricing & availability"}
                 </p>
+                {passedIds.size > 0 && (
+                  <button
+                    onClick={() => {
+                      clearPassedListings();
+                      setPassedIds(new Set());
+                    }}
+                    className="text-xs text-coast-ocean underline underline-offset-2 mt-0.5"
+                  >
+                    Hiding {passedIds.size} {passedIds.size === 1 ? "home" : "homes"} you passed on — bring {passedIds.size === 1 ? "it" : "them"} back
+                  </button>
+                )}
               </div>
               <div className="flex items-center gap-2">
+                <Link
+                  to="/match"
+                  className="h-9 inline-flex items-center gap-1.5 text-xs font-medium bg-coast-sunset text-white rounded-lg px-3 hover:bg-coast-sunset-deep transition-colors"
+                >
+                  <Heart className="w-4 h-4" /> Find your match
+                </Link>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
