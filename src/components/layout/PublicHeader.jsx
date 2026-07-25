@@ -13,6 +13,7 @@ import { PHONE, PHONE_TEL } from "@/lib/contact";
 import { useFavorites } from "@/lib/FavoritesContext";
 import { useAuth } from "@/lib/AuthContext";
 import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
+import { BRAND_LOGOS } from "@/lib/brand";
 
 export default function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -24,8 +25,12 @@ export default function PublicHeader() {
   return (
     <header className="sticky top-0 z-40 bg-coast-navy text-white border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="font-heading text-lg font-bold text-white">
-          Sea Mountain <span className="text-coast-cyan">Vacations</span>
+        <Link to="/" className="flex items-center shrink-0 py-1" aria-label="Sea Mountain Vacations — home">
+          <img
+            src={BRAND_LOGOS.lockupWhite}
+            alt="Sea Mountain Vacations"
+            className="w-[128px] h-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-white">

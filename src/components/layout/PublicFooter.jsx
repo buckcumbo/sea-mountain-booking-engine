@@ -4,11 +4,21 @@ import { Facebook, Instagram, Twitter, MapPin, Phone, Mail } from "lucide-react"
 import { AREA_LABELS } from "@/lib/availability";
 import { PHONE, PHONE_TEL, EMAIL, ADDRESS } from "@/lib/contact";
 import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
+import { BRAND_LOGOS } from "@/lib/brand";
 
 export default function PublicFooter() {
   const areas = Object.entries(AREA_LABELS);
   return (
     <footer className="bg-coast-navy text-white">
+      <div className="max-w-7xl mx-auto px-6 pt-12">
+        <Link to="/" className="inline-block" aria-label="Sea Mountain Vacations — home">
+          <img
+            src={BRAND_LOGOS.lockupWhite}
+            alt="Sea Mountain Vacations"
+            className="w-[144px] h-auto"
+          />
+        </Link>
+      </div>
       <div className="max-w-7xl mx-auto px-6 py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
           <h3 className="font-heading font-semibold mb-3">Explore</h3>
