@@ -18,12 +18,9 @@ export default function Favorites() {
   useEffect(() => {
     (async () => {
       try {
-        const [all, days] = await Promise.all([
-          base44.entities.Listing.list("-created_date", 500),
-          base44.entities.CalendarDay.list("-created_date", 5000),
-        ]);
+        // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
+        const all = await base44.entities.Listing.list("-created_date", 500);
         setListings(all || []);
-        setCalendarMap(buildCalendarMap(days || []));
       } finally {
         setLoading(false);
       }
