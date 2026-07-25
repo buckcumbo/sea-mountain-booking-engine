@@ -32,7 +32,7 @@ export default function CollectionDetail() {
         setCalendarMap(buildCalendarMap(days || []));
         setListings(
           (all || []).filter(
-            (l) => l.active !== false && listingMatchesCollection(l, slug)
+            (l) => listingMatchesCollection(l, slug)
           )
         );
       } catch {
