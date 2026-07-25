@@ -105,6 +105,9 @@
     "featured": {
       "type": "boolean",
       "default": false
+    },
+    "revaWidgetId": {
+      "type": "string"
     }
   },
   "required": [

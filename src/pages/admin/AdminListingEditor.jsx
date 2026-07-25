@@ -93,6 +93,7 @@ export default function AdminListingEditor() {
         beachWalkMinutes: form.beachWalkMinutes ? Number(form.beachWalkMinutes) : null,
         sleepsWhere: form.sleepsWhere,
         active: form.active !== false,
+        revaWidgetId: form.revaWidgetId || null,
       };
       await base44.entities.Listing.update(listing.id, patch);
       setListing({ ...listing, ...patch });
@@ -307,6 +308,16 @@ export default function AdminListingEditor() {
             items={form.sleepsWhere}
             onChange={(sleepsWhere) => set({ sleepsWhere })}
           />
+        </Field>
+        <Field label="Reva Widget ID" className="mt-4">
+          <Input
+            value={form.revaWidgetId || ""}
+            onChange={(e) => set({ revaWidgetId: e.target.value })}
+            placeholder="e.g. 959b0dfd-c95f-4730-9f81-522a32ad120e"
+          />
+          <p className="text-xs text-muted-foreground mt-1.5">
+            Paste the widget ID from your Reva embed code (the UUID after /widgets/)
+          </p>
         </Field>
       </Section>
 

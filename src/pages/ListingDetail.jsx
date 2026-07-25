@@ -207,10 +207,21 @@ export default function ListingDetail() {
               </section>
             )}
 
-            <section className="space-y-3">
-              <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest reviews</h2>
-              <Reviews reviews={reviews} />
-            </section>
+            {listing.revaWidgetId && (
+              <section className="space-y-3">
+                <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest Reviews</h2>
+                <iframe
+                  src={`https://embed.joinreva.com/widgets/${listing.revaWidgetId}`}
+                  loading="lazy"
+                  width="100%"
+                  height="1200"
+                  frameBorder="0"
+                  className="w-full block"
+                  style={{ border: 0, minHeight: 1200 }}
+                  title="Guest Reviews"
+                />
+              </section>
+            )}
 
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">You may also like</h2>
