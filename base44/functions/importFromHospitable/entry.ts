@@ -322,6 +322,56 @@ Deno.serve(async (req) => {
       return Response.json({ mode, totalHospListings: hosp.length, offset, results, nextOffset });
     }
 
+    // Fill missing calendars: audits every hosp_ listing for upcoming
+    // CalendarDay rows and re-imports only the ones with none. Per-listing
+    // errors are contained (the original calendars mode let one failed fetch
+    // kill the whole batch — the likely cause of "Rates on request" homes).
+    if (mode === "calendar-fill") {
+      const today = isoDate(0);
+      const months = Math.min(Number(payload.months) || 12, 18);
+      const all = await svc.Listing.list("-created_date", 500);
+      const hosp = (Array.isArray(all) ? all : []).filter((l: any) =>
+        String(l.guestyId || "").startsWith("hosp_"),
+      );
+      const results: any[] = [];
+      let filled = 0;
+      for (const listing of hosp) {
+        try {
+          const upcoming = await svc.CalendarDay.filter(
+            { listingId: listing.id, date: { $gte: today } },
+            "-date",
+            1,
+          );
+          if (Array.isArray(upcoming) && upcoming.length > 0) continue; // healthy
+          const propertyId = String(listing.guestyId).slice(5);
+          const cal = await hospFetch(
+            token,
+            `/properties/${propertyId}/calendar?start_date=${today}&end_date=${isoDate(months * 30)}`,
+          );
+          const days = cal?.data?.days || cal?.data || [];
+          const rows = (Array.isArray(days) ? days : [])
+            .map((d: any) => mapCalendarDay(listing.id, d))
+            .filter(Boolean);
+          let created = 0;
+          try {
+            await svc.CalendarDay.bulkCreate(rows);
+            created = rows.length;
+          } catch {
+            for (const r of rows) {
+              try { await svc.CalendarDay.create(r); created++; } catch { /* logged below */ }
+            }
+          }
+          filled++;
+          results.push({ listing: listing.title, days: created });
+        } catch (e) {
+          console.error("[calendar-fill]", listing.title, e.message);
+          results.push({ listing: listing.title, error: e.message });
+        }
+      }
+      console.log("[calendar-fill]", JSON.stringify({ filled, results }));
+      return Response.json({ mode, checked: hosp.length, filled, results });
+    }
+
     // Everything in one invocation — built to run unattended from a one-time
     // workflow: (1) merge editorial content from same-named original records,
     // (2) fetch Hospitable descriptions for homes with no donor (capped),
