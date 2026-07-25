@@ -16,6 +16,7 @@ import { truncateDescription, buildVacationRentalJsonLd } from "@/lib/seo";
 import PhotoGallery from "@/components/listing/PhotoGallery";
 import BookingPanel from "@/components/listing/BookingPanel";
 import Reviews from "@/components/listing/Reviews";
+import LocationMap from "@/components/listing/LocationMap";
 
 // Reads ONLY Listing, CalendarDay, Review. No external network calls.
 export default function ListingDetail() {
@@ -174,6 +175,19 @@ export default function ListingDetail() {
                 </div>
               )}
             </section>
+
+            {listing.latitude != null && listing.longitude != null && (
+              <section className="space-y-3">
+                <h2 className="font-heading text-lg font-semibold text-coast-navy">Location</h2>
+                <LocationMap
+                  latitude={listing.latitude}
+                  longitude={listing.longitude}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Approximate location shown for privacy. Exact address provided after booking.
+                </p>
+              </section>
+            )}
 
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">Guest reviews</h2>

@@ -104,3 +104,49 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+@layer components {
+  .coast-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 26px;
+    border-radius: 9999px;
+    background: #fff;
+    color: hsl(var(--coast-navy));
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    border: 1.5px solid hsl(var(--coast-navy) / 0.25);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+    white-space: nowrap;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .coast-pin--active {
+    background: hsl(var(--coast-navy));
+    color: #fff;
+    border-color: hsl(var(--coast-navy));
+    transform: scale(1.12);
+    z-index: 1000;
+  }
+}
+
+.leaflet-container {
+  border-radius: inherit;
+  font: inherit;
+  background: hsl(var(--coast-foam));
+}
+.leaflet-control a {
+  color: hsl(var(--coast-navy));
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.leaflet-popup-content {
+  margin: 0.6rem;
+}
+.leaflet-popup-content img {
+  border-radius: 0.5rem;
+}

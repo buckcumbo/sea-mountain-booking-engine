@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import {
   Loader2,
@@ -48,6 +48,13 @@ export default function Search() {
     (patch) => setFilters((f) => ({ ...f, ...patch })),
     []
   );
+
+  const cardRefs = useRef({});
+  const handleSelect = useCallback((id) => {
+    setSelectedId(id);
+    const el = cardRefs.current[id];
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -192,7 +199,7 @@ export default function Search() {
                   <option value="price">Price: low to high</option>
                   <option value="featured">Featured first</option>
                 </select>
-                <div className="flex rounded-lg border border-border overflow-hidden">
+                <div className="flex rounded-lg border border-border overflow-hidden lg:hidden">
                   <button
                     onClick={() => setView("list")}
                     className={`h-9 w-9 flex items-center justify-center ${
@@ -225,18 +232,35 @@ export default function Search() {
               <div className="text-center py-20 text-muted-foreground">{error}</div>
             ) : items.length === 0 ? (
               <EmptyState onClear={() => setFilters(DEFAULT_FILTERS)} />
-            ) : view === "map" ? (
-              <MapView
-                listings={items.map((i) => i.listing)}
-                prices={prices}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-              />
             ) : (
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                {items.map(({ listing, price }) => (
-                  <ListingCard key={listing.id} listing={listing} price={price} />
-                ))}
+              <div className="grid lg:grid-cols-[1fr_400px] gap-6 items-start">
+                <div className={view === "map" ? "hidden lg:block" : "block"}>
+                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {items.map(({ listing, price }) => (
+                      <div
+                        key={listing.id}
+                        ref={(el) => (cardRefs.current[listing.id] = el)}
+                        className={
+                          selectedId === listing.id
+                            ? "rounded-2xl ring-2 ring-coast-ocean"
+                            : ""
+                        }
+                      >
+                        <ListingCard listing={listing} price={price} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className={view === "list" ? "hidden lg:block" : "block"}>
+                  <div className="lg:sticky lg:top-6 h-[460px] lg:h-[calc(100vh-7rem)] rounded-2xl overflow-hidden border border-border shadow-sm">
+                    <MapView
+                      listings={items.map((i) => i.listing)}
+                      prices={prices}
+                      selectedId={selectedId}
+                      onSelect={handleSelect}
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </section>
