@@ -25,6 +25,7 @@ import AdminImages from '@/pages/admin/AdminImages';
 import AdminGuard from '@/components/admin/AdminGuard';
 import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
+import MatchGame from '@/pages/MatchGame';
 import Search from '@/pages/Search';
 import ListingDetail from '@/pages/ListingDetail';
 import AreaGuidePage from '@/pages/AreaGuidePage';
@@ -99,6 +100,7 @@ function App() {
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/match" element={<MatchGame />} />
               <Route path="/listing/:slug" element={<ListingDetail />} />
               <Route path="/area/:slug" element={<AreaGuidePage />} />
               <Route path="/guides" element={<Guides />} />
