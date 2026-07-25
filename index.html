@@ -10,6 +10,20 @@
     <link rel="manifest" href="/manifest.json" />
     <meta name="description" content="Book direct and save on North Myrtle Beach & Grand Strand vacation rentals: oceanfront condos, beach houses, and pet-friendly stays with no booking fees." />
     <title>Sea Mountain Vacations | North Myrtle Beach & Grand Strand Vacation Rentals</title>
+    <!-- Google Analytics 4: loads only on the production domain so preview/dev traffic never pollutes the data -->
+    <script>
+      if (/(^|\.)seamountainvacations\.com$/.test(location.hostname)) {
+        var gs = document.createElement("script");
+        gs.async = true;
+        gs.src = "https://www.googletagmanager.com/gtag/js?id=G-MV337RPP6G";
+        document.head.appendChild(gs);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag("js", new Date());
+        gtag("config", "G-MV337RPP6G");
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
