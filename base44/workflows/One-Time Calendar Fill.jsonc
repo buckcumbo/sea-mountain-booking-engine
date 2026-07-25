@@ -1,0 +1,47 @@
+{
+  "name": "One-Time Calendar Fill",
+  "description": "Runs once: audits every imported home for missing upcoming calendar data and re-imports calendars only where absent. Fixes 'Rates on request' homes. Safe to delete after it fires.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "one_time_calendar_fill",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "fill": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "importFromHospitable",
+            "args": {
+              "mode": "calendar-fill"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Fill missing calendars",
+            "description": "Re-import calendar data for homes with none"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "one_time",
+      "cron_expression": null,
+      "one_time_date": "2026-07-25T22:40:00Z",
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
