@@ -168,9 +168,9 @@ export default function Home() {
           <LazyIframe
             src="https://embed.joinreva.com/widgets/959b0dfd-c95f-4730-9f81-522a32ad120e"
             width="100%"
-            height={1400}
+            height={1150}
             frameBorder="0"
-            className="w-full block"
+            className="w-full block h-[1950px] sm:h-[1500px] md:h-[1350px] lg:h-[1150px]"
             title="Guest Reviews"
           />
         </div>
