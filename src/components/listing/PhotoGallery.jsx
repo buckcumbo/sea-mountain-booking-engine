@@ -13,6 +13,9 @@ export default function PhotoGallery({ photos, title }) {
   );
   const [idx, setIdx] = useState(0);
   const [lightbox, setLightbox] = useState(false);
+  // Touch swipe in the lightbox — phones page through photos like a native
+  // gallery instead of hunting for arrow buttons.
+  const touchX = useRef(null);
 
   // [label, firstIndex] per distinct caption, in photo order.
   const rooms = useMemo(() => {
@@ -102,7 +105,17 @@ export default function PhotoGallery({ photos, title }) {
 
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex flex-col"
+          className="fixed inset-0 z-50 bg-black/95 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          onTouchStart={(e) => {
+            touchX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            if (touchX.current == null) return;
+            const dx = e.changedTouches[0].clientX - touchX.current;
+            touchX.current = null;
+            if (dx > 60) prev();
+            else if (dx < -60) next();
+          }}
           role="dialog"
           aria-modal="true"
           aria-label={`Photos of ${title || "this home"}`}
