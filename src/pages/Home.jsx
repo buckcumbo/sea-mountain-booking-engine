@@ -139,7 +139,7 @@ export default function Home() {
         {loading ? <SkeletonCards count={4} /> : <FeaturedRentals listings={featured} calendarMap={calendarMap} />}
       </Section>
 
-      <Section title="New to the Collection" subtitle="The latest additions to our Grand Strand rentals.">
+      <Section title="Just Added" subtitle="The newest homes to join our Grand Strand lineup.">
         {loading ? (
           <SkeletonCards count={4} className="flex gap-5 overflow-hidden [&>div]:min-w-[280px] [&>div]:max-w-[280px]" />
         ) : (
