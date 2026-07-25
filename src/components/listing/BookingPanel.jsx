@@ -113,7 +113,13 @@ export default function BookingPanel({ listing, cal, restore }) {
     setQuote(null);
     setLoading(true);
     base44.functions
-      .invoke("createQuote", { listingId: listing.id, checkIn, checkOut, guests })
+      .invoke("createQuote", {
+        listingId: listing.id,
+        checkIn,
+        checkOut,
+        guests,
+        attribution: getAttribution(),
+      })
       .then((res) => setQuote(res.data))
       .catch((e) =>
         setMessage(e?.response?.data?.error || e?.message || "Unable to generate quote")
