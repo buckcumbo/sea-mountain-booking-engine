@@ -6,6 +6,7 @@ import AreaGrid from "@/components/home/AreaGrid";
 import FeaturedRentals from "@/components/home/FeaturedRentals";
 
 import NewRentals from "@/components/home/NewRentals";
+import GuestFaq from "@/components/home/GuestFaq";
 import { Link } from "react-router-dom";
 import { Receipt, MapPin, Tag } from "lucide-react";
 import Seo from "@/components/Seo";
@@ -117,6 +118,8 @@ export default function Home() {
           />
         </div>
       </Section>
+
+      <GuestFaq />
     </div>
   );
 }
