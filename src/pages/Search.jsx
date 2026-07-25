@@ -7,8 +7,9 @@ import {
   Search as SearchIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
+import { buildCalendarMap, computeFlexiblePrice } from "@/lib/availability";
 import Seo from "@/components/Seo";
+import { Skeleton } from "@/components/ui/skeleton";
 import FiltersPanel from "@/components/search/FiltersPanel";
 import ListingCard from "@/components/search/ListingCard";
 import MapView, { useIsLgUp } from "@/components/search/MapView";
@@ -19,6 +20,7 @@ import { useSiteImage } from "@/hooks/useSiteImageMap";
 const DEFAULT_FILTERS = {
   checkIn: "",
   checkOut: "",
+  flexDays: 0,
   guests: 0,
   area: "all",
   minBedrooms: 0,
@@ -94,6 +96,7 @@ export default function Search() {
       searchParams: {
         checkIn: filters.checkIn || undefined,
         checkOut: filters.checkOut || undefined,
+        flexDays: filters.flexDays || undefined,
         guests: filters.guests || undefined,
         area: filters.area !== "all" ? filters.area : undefined,
         minBedrooms: filters.minBedrooms || undefined,
@@ -118,11 +121,12 @@ export default function Search() {
     const computed = listings
       .filter((l) => l.active !== false)
       .map((l) => {
-        const price = computeListingPrice(
+        const price = computeFlexiblePrice(
           l,
           calendarMap,
           filters.checkIn,
-          filters.checkOut
+          filters.checkOut,
+          filters.flexDays
         );
         prices[l.id] = price;
         return { listing: l, price };
@@ -153,6 +157,18 @@ export default function Search() {
         const fa = a.listing.featured ? 1 : 0;
         const fb = b.listing.featured ? 1 : 0;
         if (fb !== fa) return fb - fa;
+      }
+      if (sort === "bedrooms") {
+        const d = (b.listing.bedrooms || 0) - (a.listing.bedrooms || 0);
+        if (d !== 0) return d;
+      }
+      if (sort === "sleeps") {
+        const d = (b.listing.sleeps || 0) - (a.listing.sleeps || 0);
+        if (d !== 0) return d;
+      }
+      if (sort === "newest") {
+        const d = String(b.listing.created_date || "").localeCompare(String(a.listing.created_date || ""));
+        if (d !== 0) return d;
       }
       const pa = a.price.hasDates ? a.price.total : a.price.from;
       const pb = b.price.hasDates ? b.price.total : b.price.from;
@@ -234,6 +250,9 @@ export default function Search() {
                 >
                   <option value="price">Price: low to high</option>
                   <option value="featured">Featured first</option>
+                  <option value="bedrooms">Most bedrooms</option>
+                  <option value="sleeps">Sleeps the most</option>
+                  <option value="newest">Newest homes</option>
                 </select>
                 <div className="flex rounded-lg border border-border overflow-hidden lg:hidden">
                   <button
@@ -261,8 +280,17 @@ export default function Search() {
             </div>
 
             {loading ? (
-              <div className="flex items-center justify-center py-24">
-                <Loader2 className="w-6 h-6 animate-spin text-coast-ocean" />
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden">
+                    <Skeleton className="aspect-[4/3] w-full rounded-none" />
+                    <div className="p-4 space-y-3">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : error ? (
               <div className="text-center py-20 text-muted-foreground">{error}</div>
