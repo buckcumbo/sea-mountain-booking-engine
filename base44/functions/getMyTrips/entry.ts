@@ -27,7 +27,46 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Not found' }, { status: 404 });
       }
       const listing = reservation.listingId ? await fetchListing(base44, reservation.listingId) : null;
-      return Response.json({ reservation, listing });
+
+      // Trip-portal property info, gated by reservation state and proximity:
+      //   - address / parking / check-in notes: once confirmed
+      //   - wifi + house manual: within 7 days of check-in (credentials should
+      //     not float around inboxes weeks ahead)
+      // PropertyInfo RLS is admin-only; this service-role read is the only
+      // guest-facing path, so the gating lives here.
+      let propertyInfo = null;
+      const status = String(reservation.status || '').toLowerCase();
+      const confirmed = status === 'confirmed' || status === 'checked_in';
+      if (confirmed && reservation.listingId) {
+        try {
+          const infos = await base44.asServiceRole.entities.PropertyInfo.filter(
+            { listingId: String(reservation.listingId) },
+            '-created_date',
+            1,
+          );
+          const info = infos && infos[0];
+          if (info) {
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const daysToCheckIn = Math.ceil(
+              (new Date(String(reservation.checkIn) + 'T00:00:00Z').getTime() - Date.now()) / msPerDay,
+            );
+            const nearArrival = daysToCheckIn <= 7;
+            propertyInfo = {
+              address: info.address || null,
+              parkingInfo: info.parkingInfo || null,
+              checkInNotes: info.checkInNotes || null,
+              wifiName: nearArrival ? (info.wifiName || null) : null,
+              wifiPassword: nearArrival ? (info.wifiPassword || null) : null,
+              houseManual: nearArrival ? (info.houseManual || null) : null,
+              wifiLocked: !nearArrival && Boolean(info.wifiName || info.wifiPassword),
+            };
+          }
+        } catch (e) {
+          console.error('[getMyTrips] propertyInfo lookup failed:', e.message);
+        }
+      }
+
+      return Response.json({ reservation, listing, propertyInfo });
     }
 
     const reservations = await base44.asServiceRole.entities.Reservation.filter(
