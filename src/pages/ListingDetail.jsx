@@ -36,6 +36,7 @@ export default function ListingDetail() {
   const [reviews, setReviews] = useState([]);
   const [related, setRelated] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
+  const [restore, setRestore] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,6 +77,30 @@ export default function ListingDetail() {
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const quoteId = params.get("quoteId");
+    if (!quoteId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await base44.functions.invoke("getQuote", { quoteId });
+        if (cancelled) return;
+        const d = res.data;
+        if (!d) return;
+        if (d.expired) {
+          setRestore({ expiredNote: true, checkIn: d.checkIn, checkOut: d.checkOut });
+        } else {
+          setRestore({ quote: d, checkIn: d.checkIn, checkOut: d.checkOut, guests: d.guests });
+        }
+      } catch {
+        // silent
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const price = useMemo(
     () => (listing ? computeListingPrice(listing, calendarMap, "", "") : null),
@@ -257,7 +282,7 @@ export default function ListingDetail() {
                 </Button>
               </div>
             ) : (
-              <BookingPanel listing={listing} cal={cal} />
+              <BookingPanel listing={listing} cal={cal} restore={restore} />
             )}
           </aside>
         </div>

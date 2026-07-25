@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { format, startOfDay, differenceInCalendarDays } from "date-fns";
+import { format, startOfDay, differenceInCalendarDays, parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
@@ -10,12 +10,21 @@ import HeartToggle from "@/components/favorites/HeartToggle";
 // are not selectable. A range shorter than the check-in day's minNights shows a
 // friendly message instead of a quote. On a valid range, calls createQuote and
 // renders the returned invoice verbatim — no pricing math in the frontend.
-export default function BookingPanel({ listing, cal }) {
-  const [range, setRange] = useState({ from: undefined, to: undefined });
-  const [guests, setGuests] = useState(1);
-  const [quote, setQuote] = useState(null);
+export default function BookingPanel({ listing, cal, restore }) {
+  const [range, setRange] = useState(() => {
+    if (restore?.checkIn && restore?.checkOut) {
+      try {
+        return { from: parseISO(restore.checkIn), to: parseISO(restore.checkOut) };
+      } catch { return { from: undefined, to: undefined }; }
+    }
+    return { from: undefined, to: undefined };
+  });
+  const [guests, setGuests] = useState(restore?.guests || 1);
+  const [quote, setQuote] = useState(restore?.quote || null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [emailInput, setEmailInput] = useState(restore?.quote?.email || "");
+  const skipQuoteRef = useRef(!!restore?.quote);
 
   const today = format(startOfDay(new Date()), "yyyy-MM-dd");
 
@@ -28,6 +37,10 @@ export default function BookingPanel({ listing, cal }) {
   };
 
   useEffect(() => {
+    if (skipQuoteRef.current) {
+      skipQuoteRef.current = false;
+      return;
+    }
     if (!range.from || !range.to) {
       setQuote(null);
       setMessage("");
@@ -61,6 +74,15 @@ export default function BookingPanel({ listing, cal }) {
   }, [range.from, range.to]);
 
   const maxGuests = Math.max(1, listing.sleeps || 1);
+
+  const handleEmailBlur = () => {
+    const email = emailInput.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid || !quote?.quoteId) return;
+    base44.functions
+      .invoke("saveQuoteEmail", { quoteId: quote.quoteId, email })
+      .catch(() => {});
+  };
 
   return (
     <div className="bg-card rounded-2xl border border-border shadow-sm p-5 space-y-4">
@@ -114,7 +136,24 @@ export default function BookingPanel({ listing, cal }) {
         </div>
       )}
 
-      {quote && <Invoice quote={quote} />}
+      {restore?.expiredNote && (
+        <div className="text-sm rounded-lg bg-amber-500/10 text-amber-700 px-3 py-2">
+          That quote expired, but pick your dates and we will price it fresh.
+        </div>
+      )}
+
+      {quote && (
+        <div className="space-y-1.5">
+          <input
+            type="email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            onBlur={handleEmailBlur}
+            placeholder="Email (saves your quote)"
+            className="w-full h-9 rounded-lg border border-border bg-card px-3 text-sm text-coast-navy"
+          />
+        </div>
+      )}
     </div>
   );
 }
