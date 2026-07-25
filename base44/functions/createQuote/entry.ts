@@ -123,6 +123,8 @@ Deno.serve(async (req) => {
       expiresAt,
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    // Full detail stays server-side; clients get a friendly message.
+    console.error("[createQuote]", error.message);
+    return Response.json({ error: "Something went wrong getting your quote. Please try again." }, { status: 500 });
   }
 });
