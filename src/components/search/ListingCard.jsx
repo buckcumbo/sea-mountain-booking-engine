@@ -1,9 +1,14 @@
 import React from "react";
 import { PawPrint, BedDouble, Bath, Users } from "lucide-react";
 import { prettifyArea } from "@/lib/availability";
+import { listingMatchesCollection } from "@/lib/collections";
 import { Link } from "react-router-dom";
+import { Image } from "@/components/ui/image";
 import HeartToggle from "@/components/favorites/HeartToggle";
 import CollectionChips from "@/components/search/CollectionChips";
+
+const HUNDRED_COLLECTION_LOGO =
+  "https://media.base44.com/images/public/6a63dd8f4f2513356229c302/d4de64f63_100_Collection_Logo_Gold.png";
 
 function PriceLine({ price }) {
   if (!price) {
@@ -33,6 +38,7 @@ function PriceLine({ price }) {
 
 export default function ListingCard({ listing, price }) {
   const photo = listing.photos && listing.photos[0] ? listing.photos[0].url : null;
+  const isHundredCollection = listingMatchesCollection(listing, "the-100-collection");
   return (
     <Link to={`/listing/${listing.slug || listing.id}`} className="group block bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-coast-foam">
@@ -43,10 +49,27 @@ export default function ListingCard({ listing, price }) {
             className="w-full h-full object-cover"
           />
         )}
-        {listing.featured && (
-          <span className="absolute top-3 left-3 bg-coast-navy text-white text-xs font-medium px-2.5 py-1 rounded-full">
-            Featured
-          </span>
+        {(listing.featured || isHundredCollection) && (
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+            {listing.featured && (
+              <span className="bg-coast-navy text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                Featured
+              </span>
+            )}
+            {isHundredCollection && (
+              <span className="inline-flex items-center gap-1 bg-black/55 backdrop-blur text-white text-[10px] font-medium tracking-wide px-2 py-0.5 rounded-full">
+                <Image
+                  src={HUNDRED_COLLECTION_LOGO}
+                  alt=""
+                  fittingType="fit"
+                  originWidth={300}
+                  originHeight={400}
+                  className="h-[18px]"
+                />
+                100 COLLECTION™
+              </span>
+            )}
+          </div>
         )}
         <span className="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-coast-navy text-xs font-medium px-2.5 py-1 rounded-full">
           {prettifyArea(listing.area)}
