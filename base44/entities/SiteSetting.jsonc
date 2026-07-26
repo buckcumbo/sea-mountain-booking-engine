@@ -1,0 +1,36 @@
+{
+  "name": "SiteSetting",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Namespaced setting key, e.g. header:logoVariant, header:logoHeight (unique, enforced by admin UI upsert)"
+    },
+    "value": {
+      "type": "string",
+      "description": "Setting value stored as a string"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
