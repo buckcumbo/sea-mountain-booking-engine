@@ -3,9 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon } from "lucide-react";
-import { Image } from "@/components/ui/image";
+import { sizedImageUrl } from "@/lib/mediaUrl";
 
-export default function Hero({ image }) {
+const FALLBACK =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
+
+export default function Hero({ image, ready }) {
+  // Never flash the stock fallback: render no photo (the navy backdrop shows)
+  // until the site-image lookup finishes, and only fall back if no hero is
+  // configured. The configured hero loads as a CDN-sized WebP, eagerly and
+  // at high priority — it's the largest thing above the fold.
+  const src = image?.imageUrl
+    ? sizedImageUrl(image.imageUrl, 1920)
+    : ready
+      ? FALLBACK
+      : null;
   const navigate = useNavigate();
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -22,14 +34,17 @@ export default function Hero({ image }) {
 
   return (
     <section className="relative overflow-hidden bg-coast-navy">
-      {/* CDN-resized + WebP via the Image component — the hero was the page's
-          heaviest download when served at original resolution. */}
-      <Image
-        src={image?.imageUrl || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"}
-        alt={image?.altText || ""}
-        fittingType="fill"
-        className="absolute inset-0 w-full h-full fade-in"
-      />
+      {src && (
+        <img
+          src={src}
+          alt={image?.altText || ""}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover fade-in"
+          onError={(e) => { e.target.style.display = "none"; }}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-coast-navy/50 via-coast-navy/40 to-coast-navy/75" />
       <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28 text-white">
         <h1 className="font-heading text-3xl md:text-5xl font-semibold max-w-3xl leading-tight">
