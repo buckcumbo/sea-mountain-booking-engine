@@ -104,7 +104,7 @@ export default function Home() {
         path="/"
         jsonLd={buildLocalBusinessJsonLd()}
       />
-      <Hero image={siteImages["hero:home"]} />
+      <Hero image={siteImages["hero:home"]} ready={siteImages.ready === true} />
 
       {!loading && recent.length > 0 && (
         <Section title="Pick up where you left off" viewAllTo="/search">
@@ -181,6 +181,24 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <Section
+        title="Take a Look Around"
+        subtitle="A quick tour of what staying with us actually looks like."
+      >
+        <div className="relative aspect-video rounded-2xl overflow-hidden bg-coast-navy max-w-4xl">
+          <LazyIframe
+            src="https://properties.williamcoveymedia.com/videos/019e0af8-01a6-700a-acf0-ae4458ec1c30"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full"
+            title="Sea Mountain Vacations property tour"
+          />
+        </div>
+      </Section>
 
       <Section title="What Our Guests Say" subtitle="Verified reviews from our recent guests.">
         <div className="w-full">
