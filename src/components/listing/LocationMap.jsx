@@ -20,6 +20,9 @@ function GoogleLocationMap({ center, zoom, radius, className }) {
           center,
           zoom,
           mapId: GOOGLE_MAPS_MAP_ID,
+          // Same aerial style as the search map.
+          mapTypeId: "hybrid",
+          tilt: 45,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
