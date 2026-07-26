@@ -29,9 +29,14 @@ export default function VideoTour({ videoUrl, tourUrl }) {
       videoEmbed = yt;
     } else if (vm) {
       videoEmbed = vm;
-    } else {
-      // Not YouTube or Vimeo — treat as a direct video file URL.
+    } else if (/\.(mp4|webm|ogg|mov|m4v)(\?|$)/i.test(videoUrl)) {
+      // A direct video file — native player.
       isFileVideo = true;
+    } else {
+      // Any other page URL (Covey Media, Matterport-style hosts, …) —
+      // treat as an embeddable player and iframe it. Paste the src from
+      // the provider's embed code into the Video URL field.
+      videoEmbed = videoUrl;
     }
   }
 
