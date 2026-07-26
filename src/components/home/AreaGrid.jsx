@@ -37,6 +37,8 @@ export default function AreaGrid({ images }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/85 via-coast-navy/30 to-coast-navy-soft/15" />
               </>
             )}
+            {/* Corner scrim keeps the icon legible over bright photo tops. */}
+            <div className="absolute top-0 right-0 w-24 h-20 bg-gradient-to-bl from-coast-navy/55 via-coast-navy/20 to-transparent pointer-events-none" />
             <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors z-10" />
             <h3 className="relative z-10 font-heading text-lg font-semibold">{label}</h3>
             <p className="relative z-10 text-xs text-white/75 mt-1 line-clamp-2">{BLURBS[slug]}</p>
