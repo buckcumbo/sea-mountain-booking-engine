@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search as SearchIcon } from "lucide-react";
+import { Search as SearchIcon, Play, X } from "lucide-react";
 import { sizedImageUrl } from "@/lib/mediaUrl";
+
+const TOUR_VIDEO_URL =
+  "https://properties.williamcoveymedia.com/videos/019e0af8-01a6-700a-acf0-ae4458ec1c30";
 
 const FALLBACK =
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
@@ -22,6 +25,18 @@ export default function Hero({ image, ready }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(0);
+  const [showFilm, setShowFilm] = useState(false);
+
+  useEffect(() => {
+    if (!showFilm) return;
+    const onKey = (e) => e.key === "Escape" && setShowFilm(false);
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [showFilm]);
 
   const submit = (e) => {
     e.preventDefault();
@@ -89,7 +104,48 @@ export default function Hero({ image, ready }) {
             <SearchIcon className="w-4 h-4 mr-1.5" /> Search
           </Button>
         </form>
+
+        <button
+          onClick={() => setShowFilm(true)}
+          className="mt-6 inline-flex items-center gap-2.5 text-sm text-white/90 hover:text-white group"
+        >
+          <span className="w-11 h-11 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center group-hover:bg-coast-sunset group-hover:border-coast-sunset transition-colors">
+            <Play className="w-4 h-4 fill-current ml-0.5" />
+          </span>
+          Watch the tour
+        </button>
       </div>
+
+      {showFilm && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 sm:p-8"
+          onClick={() => setShowFilm(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Property tour video"
+        >
+          <button
+            onClick={() => setShowFilm(false)}
+            aria-label="Close video"
+            className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div
+            className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={TOUR_VIDEO_URL}
+              className="absolute inset-0 w-full h-full"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              title="Sea Mountain Vacations tour"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
