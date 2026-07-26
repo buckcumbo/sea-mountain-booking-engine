@@ -7,15 +7,23 @@ const HUNDRED_COLLECTION_LOGO =
   "https://media.base44.com/images/public/6a63dd8f4f2513356229c302/d4de64f63_100_Collection_Logo_Gold.png";
 
 export default function CollectionGrid({ images }) {
+  // Until the image lookup finishes, hold a quiet navy shimmer — painting
+  // the gradient first and swapping to photos reads as an orange flash.
+  const ready = images?.ready === true;
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {COLLECTIONS.map(({ label, slug, icon: Icon }) => {
-        const img = images?.[`collection-card:${slug}`];
+        const img = ready ? images?.[`collection-card:${slug}`] : null;
+        const fallbackGradient = ready && !img;
         return (
           <Link
             key={slug}
             to={`/collections/${slug}`}
-            className="group relative overflow-hidden rounded-2xl p-6 h-40 flex flex-col justify-end text-white bg-gradient-to-br from-coast-ocean to-coast-navy hover:shadow-lg transition-shadow"
+            className={`group relative overflow-hidden rounded-2xl p-6 h-40 flex flex-col justify-end text-white hover:shadow-lg transition-shadow ${
+              fallbackGradient
+                ? "bg-gradient-to-br from-coast-ocean to-coast-navy"
+                : "bg-coast-navy"
+            } ${!ready ? "animate-pulse" : ""}`}
           >
             {img && (
               <>
