@@ -10,6 +10,18 @@ function extractUrl(value) {
   return m ? m[1] : v;
 }
 
+// The lightbox opens from a click (a user gesture), so players are allowed
+// to start with sound — ask them to via the conventional autoplay param.
+function withAutoplay(url) {
+  try {
+    const u = new URL(url);
+    u.searchParams.set("autoplay", "1");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 // Extract a YouTube embed URL from various YouTube link formats.
 function getYouTubeEmbed(url) {
   const m = url.match(
@@ -140,7 +152,7 @@ export default function VideoTour({ videoUrl, tourUrl, poster }) {
               <video src={videoUrl} controls autoPlay className="absolute inset-0 w-full h-full" title="Video tour" />
             ) : (
               <iframe
-                src={videoEmbed}
+                src={withAutoplay(videoEmbed)}
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
