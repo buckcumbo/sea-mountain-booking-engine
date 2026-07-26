@@ -22,7 +22,6 @@ export const COLLECTION_SLUGS = [
   "budget-friendly",
   "the-100-collection",
   "family",
-  "marshfront",
 ];
 
 export const AREA_SLUGS = Object.keys(AREA_LABELS);
