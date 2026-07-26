@@ -124,11 +124,13 @@ export default function ListingDetail() {
     [listing, calendarMap]
   );
 
-  const visibleAmenities = useMemo(() => {
-    if (!listing?.amenities) return [];
-    const hidden = new Set(listing.amenitiesHidden || []);
-    return listing.amenities.filter((a) => !hidden.has(a));
-  }, [listing]);
+  // Only highlight amenities (pool, hot tub, grill, game room…) render as
+  // cards — the generic soup (kitchen, tv, washer…) stays hidden. The story
+  // copy's Key Features checklist carries the specific details.
+  const visibleAmenities = useMemo(
+    () => (listing ? curatedAmenities(listing) : []),
+    [listing]
+  );
 
   if (loading) {
     return (
@@ -198,12 +200,12 @@ export default function ListingDetail() {
               )}
               {visibleAmenities.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {visibleAmenities.map((a, i) => (
+                  {visibleAmenities.map(({ key, label }) => (
                     <span
-                      key={i}
-                      className="text-xs bg-card border border-border rounded-full px-2.5 py-1 text-coast-navy capitalize"
+                      key={key}
+                      className="text-xs bg-card border border-border rounded-full px-2.5 py-1 text-coast-navy"
                     >
-                      {String(a).replace(/[_-]+/g, " ")}
+                      {label}
                     </span>
                   ))}
                 </div>
