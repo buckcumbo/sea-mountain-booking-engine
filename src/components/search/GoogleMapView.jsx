@@ -54,7 +54,10 @@ export default function GoogleMapView({ listings, prices, selectedId, onSelect, 
     let cancelled = false;
     loadGoogleMaps(GOOGLE_MAPS_API_KEY)
       .then(() => !cancelled && setReady(true))
-      .catch(() => !cancelled && setFailed(true));
+      .catch((e) => {
+        console.error("[GoogleMapView] loader failed:", e);
+        if (!cancelled) setFailed(true);
+      });
     return () => {
       cancelled = true;
     };
