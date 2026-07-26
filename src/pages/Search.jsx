@@ -364,7 +364,7 @@ export default function Search() {
             </div>
 
             {loading ? (
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="bg-card rounded-2xl border border-border overflow-hidden">
                     <Skeleton className="aspect-[4/3] w-full rounded-none" />
@@ -408,7 +408,7 @@ export default function Search() {
                   </div>
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {items.map(({ listing, price }) => (
                     <div
                       key={listing.id}
