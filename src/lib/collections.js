@@ -47,13 +47,6 @@ export const COLLECTIONS = [
     icon: Crown,
     match: ["100-collection", "the-100-collection", "100 collection"],
   },
-  {
-    slug: "family",
-    label: "Family",
-    blurb: "Room for everyone: multigenerational getaways made easy.",
-    icon: Users,
-    match: ["family"],
-  },
 ];
 
 export const COLLECTION_BY_SLUG = Object.fromEntries(
