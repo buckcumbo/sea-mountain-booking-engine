@@ -19,6 +19,7 @@ import SearchMap from "@/components/search/SearchMap";
 import { track } from "@/lib/analytics";
 import { listingMatchesFeatures } from "@/lib/features";
 import { getPassedListings, clearPassedListings } from "@/lib/passedListings";
+import { getSessionSeed, seededOrder } from "@/lib/shuffle";
 import HeroBackground from "@/components/HeroBackground";
 import { useSiteImage } from "@/hooks/useSiteImageMap";
 
@@ -50,7 +51,10 @@ export default function Search() {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   // Homes swiped left in the matchmaker stay out of search until reset.
   const [passedIds, setPassedIds] = useState(() => new Set(getPassedListings()));
-  const [sort, setSort] = useState("price");
+  // Default is a session-seeded shuffle (featured homes first) so visitors
+  // don't all see the same property at the top of every search.
+  const [sort, setSort] = useState("recommended");
+  const shuffleSeed = useMemo(() => getSessionSeed(), []);
   const [selectedId, setSelectedId] = useState(null);
   const heroImage = useSiteImage("hero:search");
   const [filters, setFilters] = useState(() => {
@@ -204,6 +208,15 @@ export default function Search() {
       });
 
     computed.sort((a, b) => {
+      if (sort === "recommended") {
+        const fa = a.listing.featured ? 1 : 0;
+        const fb = b.listing.featured ? 1 : 0;
+        if (fb !== fa) return fb - fa;
+        return (
+          seededOrder(a.listing.id, shuffleSeed) -
+          seededOrder(b.listing.id, shuffleSeed)
+        );
+      }
       if (sort === "featured") {
         const fa = a.listing.featured ? 1 : 0;
         const fb = b.listing.featured ? 1 : 0;
@@ -330,6 +343,7 @@ export default function Search() {
                   onChange={(e) => setSort(e.target.value)}
                   className="h-9 rounded-lg border border-border bg-card text-sm px-3 text-coast-navy"
                 >
+                  <option value="recommended">Recommended</option>
                   <option value="price">Price: low to high</option>
                   <option value="featured">Featured first</option>
                   <option value="bedrooms">Most bedrooms</option>
