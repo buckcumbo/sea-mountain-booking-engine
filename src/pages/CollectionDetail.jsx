@@ -15,17 +15,17 @@ import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
 const HUNDRED_ABOUT = {
   heading: "What is The 100 Collection™?",
   intro:
-    "The 100 Collection™ is an independent, curated guide to the best vacation rentals in the US, Mexico, and Canada. Homes don't buy their way in — they're personally vetted, and only properties managed by professional hospitality teams make the list. These Sea Mountain homes met that standard.",
+    "The 100 Collection™ imprint marks a collaborative effort to set the gold standard for vacation rentals across the US, Mexico, and Canada. Homes don't buy their way in: properties must pass quality, safety, and cleanliness inspections, and the stamp of approval is issued by a peer collective of the industry's most respected owners and operators — known as doyens. These Sea Mountain homes met that standard.",
   points: [
     {
       icon: BadgeCheck,
-      title: "Personally vetted",
-      body: "Every 100 Collection home is individually evaluated for quality and comfort — not self-nominated, not pay-to-play.",
+      title: "Inspected, not self-nominated",
+      body: "Every home must pass specific quality, safety, and cleanliness inspections — and keep passing them.",
     },
     {
       icon: ShieldCheck,
-      title: "Professionally managed",
-      body: "The badge requires a professional hospitality team behind the home — real people accountable for your stay.",
+      title: "Awarded by industry peers",
+      body: "Only locally owned and operated brands are invited, and the imprint is issued by doyens — the most respected professionals in the field.",
     },
     {
       icon: Users2,
