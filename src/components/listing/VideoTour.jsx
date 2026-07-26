@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Play, X } from "lucide-react";
 
 // People paste full embed snippets (<iframe src="...">) as often as bare
 // URLs — accept both by pulling the src out of any pasted HTML.
@@ -25,9 +26,24 @@ function getVimeoEmbed(url) {
 
 // "Video & 3D Tour" section for the public listing detail page.
 // Renders nothing when both videoUrl and tourUrl are empty.
-export default function VideoTour({ videoUrl, tourUrl }) {
+export default function VideoTour({ videoUrl, tourUrl, poster }) {
   videoUrl = extractUrl(videoUrl);
   tourUrl = extractUrl(tourUrl);
+  // The video opens big: inline we show a poster + play button, and the
+  // actual player loads in a full-screen lightbox only when asked for.
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!playing) return;
+    const onKey = (e) => e.key === "Escape" && setPlaying(false);
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [playing]);
+
   if (!videoUrl && !tourUrl) return null;
 
   let videoEmbed = null;
@@ -63,27 +79,28 @@ export default function VideoTour({ videoUrl, tourUrl }) {
       </h2>
       <div className="grid md:grid-cols-2 gap-4">
         {showVideo && (
-          <div>
-            {isFileVideo ? (
-              <video
-                src={videoUrl}
-                controls
-                className="w-full rounded-xl aspect-video bg-black"
-                title="Property video"
+          <button
+            type="button"
+            onClick={() => setPlaying(true)}
+            className="group relative aspect-video rounded-xl overflow-hidden bg-coast-navy text-left"
+            aria-label="Play video tour"
+          >
+            {poster && (
+              <img
+                src={poster}
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity"
               />
-            ) : (
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-                <iframe
-                  src={videoEmbed}
-                  className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  frameBorder="0"
-                  title="Property video"
-                />
-              </div>
             )}
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/70 to-coast-navy/20" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <span className="w-16 h-16 rounded-full bg-white/20 backdrop-blur border border-white/40 flex items-center justify-center group-hover:bg-coast-sunset group-hover:border-coast-sunset transition-colors">
+                <Play className="w-6 h-6 text-white fill-current ml-0.5" />
+              </span>
+              <span className="text-white text-sm font-medium">Play video tour</span>
+            </div>
+          </button>
         )}
         {showTour && (
           <div>
@@ -99,6 +116,41 @@ export default function VideoTour({ videoUrl, tourUrl }) {
           </div>
         )}
       </div>
+
+      {playing && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 sm:p-8"
+          onClick={() => setPlaying(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Video tour"
+        >
+          <button
+            onClick={() => setPlaying(false)}
+            aria-label="Close video"
+            className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div
+            className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {isFileVideo ? (
+              <video src={videoUrl} controls autoPlay className="absolute inset-0 w-full h-full" title="Video tour" />
+            ) : (
+              <iframe
+                src={videoEmbed}
+                className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                frameBorder="0"
+                title="Video tour"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
