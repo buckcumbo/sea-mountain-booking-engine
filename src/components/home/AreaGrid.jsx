@@ -33,7 +33,8 @@ export default function AreaGrid({ images }) {
                   fittingType="fill"
                   className="absolute inset-0 w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-coast-navy-soft/70 to-coast-navy/90" />
+                {/* Bottom-weighted wash: photo stays visible, text stays readable. */}
+                <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/85 via-coast-navy/30 to-coast-navy-soft/15" />
               </>
             )}
             <MapPin className="absolute top-4 right-4 w-6 h-6 text-white/40 group-hover:text-white/70 transition-colors z-10" />
