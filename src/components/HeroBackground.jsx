@@ -1,4 +1,5 @@
 import React from "react";
+import { sizedImageUrl } from "@/lib/mediaUrl";
 
 // Renders a page hero background. When a SiteImage record exists for the page,
 // shows the uploaded photo with a legible gradient overlay. Otherwise renders
@@ -8,8 +9,11 @@ export default function HeroBackground({ image }) {
     return (
       <>
         <img
-          src={image.imageUrl}
+          src={sizedImageUrl(image.imageUrl, 1920)}
           alt={image.altText || ""}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover fade-in"
           onError={(e) => {
             e.target.style.display = "none";
