@@ -1,32 +1,27 @@
-// Loads the Google Maps JS API exactly once, on demand. No npm dependency —
-// the official script tag pattern, promisified.
+// Loads the Google Maps JS API exactly once, on demand. Uses the standard
+// callback pattern — Google calls our global fn when the full API (Map,
+// Circle, AdvancedMarkerElement, etc.) is ready. No importLibrary fragility.
 let loadPromise = null;
 
 export function loadGoogleMaps(apiKey) {
-  if (typeof window !== "undefined" && window.google?.maps?.marker) {
+  if (typeof window !== "undefined" && window.google?.maps?.Map) {
     return Promise.resolve();
   }
   if (!apiKey) return Promise.reject(new Error("No Google Maps API key configured"));
   if (loadPromise) return loadPromise;
   loadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&loading=async`;
-    script.async = true;
-    // With loading=async, google.maps.* classes don't exist until their
-    // libraries are imported — touching maps.Map before this line was a
-    // guaranteed crash (blank page).
-    script.onload = async () => {
-      try {
-        await window.google.maps.importLibrary("maps");
-        await window.google.maps.importLibrary("marker");
-        resolve();
-      } catch (e) {
-        loadPromise = null;
-        reject(e);
-      }
+    const cb = `__gmaps_cb_${Date.now()}`;
+    window[cb] = () => {
+      delete window[cb];
+      resolve();
     };
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&v=weekly&callback=${cb}`;
+    script.async = true;
+    script.defer = true;
     script.onerror = () => {
       loadPromise = null;
+      delete window[cb];
       reject(new Error("Google Maps failed to load"));
     };
     document.head.appendChild(script);
