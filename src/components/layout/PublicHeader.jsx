@@ -1,6 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Menu, X, Phone, Heart } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Menu,
+  X,
+  Phone,
+  Heart,
+  Search,
+  MapPin,
+  Layers,
+  Compass,
+  CalendarDays,
+  Sparkles,
+  Building2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,9 +29,36 @@ import { useAuth } from "@/lib/AuthContext";
 import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
 import { BRAND_LOGOS } from "@/lib/brand";
 
+// One tappable row of the mobile menu: icon + label + chevron, 44px min
+// height so thumbs never miss.
+function MobileRow({ to, icon: Icon, label, badge, onClick }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="flex items-center justify-between py-3 active:bg-white/5 rounded-lg px-2 -mx-2"
+    >
+      <span className="flex items-center gap-3">
+        <Icon className="w-[18px] h-[18px] text-coast-ocean" />
+        {label}
+        {badge > 0 && (
+          <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-coast-sunset text-white text-[11px] font-semibold inline-flex items-center justify-center">
+            {badge}
+          </span>
+        )}
+      </span>
+      <ChevronRight className="w-4 h-4 text-white/30" />
+    </Link>
+  );
+}
+
 export default function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const close = () => setMobileOpen(false);
+  const [areasOpen, setAreasOpen] = useState(false);
+  const close = () => {
+    setMobileOpen(false);
+    setAreasOpen(false);
+  };
   const areas = Object.entries(AREA_LABELS);
   const { count } = useFavorites();
   const { isAuthenticated } = useAuth();
@@ -81,25 +122,65 @@ export default function PublicHeader() {
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden border-t border-white/10 bg-coast-navy px-6 py-4 space-y-3 text-sm font-medium text-white">
-          <Link to="/search" onClick={close} className="block">Find a Rental</Link>
-          <div>
-            <div className="text-xs uppercase tracking-wide text-white/60 mb-1">Areas</div>
-            <div className="grid grid-cols-2 gap-1">
-              {areas.map(([slug, label]) => (
-                <Link key={slug} to={`/area/${slug}`} onClick={close} className="block py-0.5">
-                  {label}
-                </Link>
-              ))}
-            </div>
+        <div className="lg:hidden border-t border-white/10 bg-coast-navy px-6 pt-2 pb-6 text-[15px] font-medium text-white max-h-[calc(100dvh-72px)] overflow-y-auto">
+          {/* Guest journey first: search, match, saved homes, trips. */}
+          <nav aria-label="Mobile">
+            <MobileRow to="/search" icon={Search} label="Find a Rental" onClick={close} />
+            <MobileRow to="/match" icon={Sparkles} label="Find Your Match" onClick={close} />
+            <MobileRow to="/favorites" icon={Heart} label="Favorites" badge={count} onClick={close} />
+            {isAuthenticated && (
+              <MobileRow to="/my-trips" icon={CalendarDays} label="My Trips" onClick={close} />
+            )}
+
+            {/* Areas collapse behind one row instead of eating half the menu. */}
+            <button
+              onClick={() => setAreasOpen((v) => !v)}
+              aria-expanded={areasOpen}
+              className="w-full flex items-center justify-between py-3 active:bg-white/5 rounded-lg px-2 -mx-2"
+            >
+              <span className="flex items-center gap-3">
+                <MapPin className="w-[18px] h-[18px] text-coast-ocean" />
+                Explore Areas
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 text-white/30 transition-transform ${areasOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {areasOpen && (
+              <div className="pb-1">
+                {areas.map(([slug, label]) => (
+                  <Link
+                    key={slug}
+                    to={`/area/${slug}`}
+                    onClick={close}
+                    className="block py-2.5 pl-11 pr-2 text-white/85 active:bg-white/5 rounded-lg"
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <MobileRow to="/collections" icon={Layers} label="Collections" onClick={close} />
+            <MobileRow to="/guides" icon={Compass} label="Things To Do" onClick={close} />
+          </nav>
+
+          {/* Secondary + contact, visually separated from the guest journey. */}
+          <div className="mt-3 pt-3 border-t border-white/10">
+            <Link
+              to="/list-your-property"
+              onClick={close}
+              className="flex items-center gap-3 py-2.5 px-2 -mx-2 text-sm text-white/70 active:bg-white/5 rounded-lg"
+            >
+              <Building2 className="w-[18px] h-[18px]" /> List Your Property
+            </Link>
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className="mt-3 flex items-center justify-center gap-2 h-12 rounded-xl border border-white/25 text-sm font-semibold active:bg-white/10"
+            >
+              <Phone className="w-4 h-4" /> Call {PHONE}
+            </a>
           </div>
-          <Link to="/guides" onClick={close} className="block">Things To Do</Link>
-          {isAuthenticated && <Link to="/my-trips" onClick={close} className="block">My Trips</Link>}
-          <Link to="/favorites" onClick={close} className="block">Favorites{count > 0 ? ` (${count})` : ""}</Link>
-          <Link to="/list-your-property" onClick={close} className="block">List Your Property</Link>
-          <a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-1.5 pt-1">
-            <Phone className="w-4 h-4" /> {PHONE}
-          </a>
         </div>
       )}
     </header>
