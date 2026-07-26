@@ -1,8 +1,13 @@
 import React from "react";
 import CollectionGrid from "@/components/home/CollectionGrid";
 import Seo from "@/components/Seo";
+import { useSiteImageMap } from "@/hooks/useSiteImageMap";
+import { COLLECTIONS } from "@/lib/collections";
 
 export default function CollectionsIndex() {
+  // The grid needs the uploaded card photos — the homepage passes its own
+  // image map, so this page must fetch one too or the cards render bare.
+  const images = useSiteImageMap(COLLECTIONS.map((c) => `collection-card:${c.slug}`));
   return (
     <div>
       <Seo
@@ -20,7 +25,7 @@ export default function CollectionsIndex() {
         </div>
       </section>
       <section className="max-w-7xl mx-auto px-6 py-14">
-        <CollectionGrid />
+        <CollectionGrid images={images} />
       </section>
     </div>
   );
