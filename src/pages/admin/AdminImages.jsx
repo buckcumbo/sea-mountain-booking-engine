@@ -4,6 +4,7 @@ import { Loader2, Upload, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AdminShell from "@/components/admin/AdminShell";
+import BrandingCard from "@/components/admin/BrandingCard";
 import Seo from "@/components/Seo";
 import { useToast } from "@/components/ui/use-toast";
 import { SITE_IMAGE_GROUPS } from "@/lib/siteImageKeys";
@@ -140,8 +141,11 @@ export default function AdminImages() {
   };
 
   return (
-    <AdminShell title="Site Images" subtitle="Page heroes and card photos">
+    <AdminShell title="Site Images" subtitle="Page heroes, card photos, and header branding">
       <Seo title="Site Images | Admin" path="/admin/images" robots="noindex,nofollow" />
+      <div className="mb-6">
+        <BrandingCard />
+      </div>
       <div className="sticky top-0 z-20 -mx-6 px-6 py-3 bg-background/90 backdrop-blur border-b border-border mb-6 flex items-center justify-between">
         <span className="text-sm text-muted-foreground">
           {dirtyCount === 0
