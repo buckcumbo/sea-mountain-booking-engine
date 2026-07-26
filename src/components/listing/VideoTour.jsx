@@ -58,7 +58,9 @@ export default function VideoTour({ videoUrl, tourUrl }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="font-heading text-lg font-semibold text-coast-navy">Video &amp; 3D Tour</h2>
+      <h2 className="font-heading text-lg font-semibold text-coast-navy">
+        {showVideo && showTour ? "Video & 3D Tour" : showVideo ? "Video Tour" : "3D Tour"}
+      </h2>
       <div className="grid md:grid-cols-2 gap-4">
         {showVideo && (
           <div>
