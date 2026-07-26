@@ -9,6 +9,7 @@ import ListingCard from "@/components/search/ListingCard";
 import { COLLECTIONS, COLLECTION_BY_SLUG, listingMatchesCollection } from "@/lib/collections";
 import Seo from "@/components/Seo";
 import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
+import { getSessionSeed, seededShuffle } from "@/lib/shuffle";
 
 // Guest-facing explainer for The 100 Collection — every claim comes from
 // theonehundredcollection.com. Other collections have no about block.
@@ -58,9 +59,14 @@ export default function CollectionDetail() {
         // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
         const all = await base44.entities.Listing.list("-created_date", 500);
         if (cancelled) return;
+        // Session-seeded shuffle: a different home tops the grid for each
+        // visitor, but the order is stable while they browse.
         setListings(
-          (all || []).filter(
-            (l) => l.active !== false && listingMatchesCollection(l, slug)
+          seededShuffle(
+            (all || []).filter(
+              (l) => l.active !== false && listingMatchesCollection(l, slug)
+            ),
+            getSessionSeed()
           )
         );
       } catch {
