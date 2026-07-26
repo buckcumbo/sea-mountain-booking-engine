@@ -27,11 +27,15 @@ export default function AreaGrid({ images }) {
           >
             {img && (
               <>
-                <Image
+                {/* Plain img on purpose: these six curated photos don't need
+                    CDN transforms, and the transform pipeline's blur-up
+                    placeholder + pre-crop read as "warped" here. */}
+                <img
                   src={img.imageUrl}
                   alt={img.altText || label}
-                  fittingType="fill"
-                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = "none"; }}
                 />
                 {/* Bottom-weighted wash: photo stays visible, text stays readable. */}
                 <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/85 via-coast-navy/30 to-coast-navy-soft/15" />
