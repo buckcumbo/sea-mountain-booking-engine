@@ -1,5 +1,14 @@
 import React from "react";
 
+// People paste full embed snippets (<iframe src="...">) as often as bare
+// URLs — accept both by pulling the src out of any pasted HTML.
+function extractUrl(value) {
+  const v = String(value || "").trim();
+  if (!v) return "";
+  const m = v.match(/src\s*=\s*["']([^"']+)["']/i);
+  return m ? m[1] : v;
+}
+
 // Extract a YouTube embed URL from various YouTube link formats.
 function getYouTubeEmbed(url) {
   const m = url.match(
@@ -17,6 +26,8 @@ function getVimeoEmbed(url) {
 // "Video & 3D Tour" section for the public listing detail page.
 // Renders nothing when both videoUrl and tourUrl are empty.
 export default function VideoTour({ videoUrl, tourUrl }) {
+  videoUrl = extractUrl(videoUrl);
+  tourUrl = extractUrl(tourUrl);
   if (!videoUrl && !tourUrl) return null;
 
   let videoEmbed = null;
