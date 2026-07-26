@@ -75,7 +75,7 @@ export default function Hero({ image, ready }) {
         >
           <div className="flex-1 w-full space-y-1">
             <label className="text-xs text-muted-foreground">Check-in</label>
-            <Input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="h-11 min-w-0 max-w-full" />
+            <Input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="h-11 block" />
           </div>
           <div className="flex-1 w-full space-y-1">
             <label className="text-xs text-muted-foreground">Check-out</label>
@@ -84,7 +84,7 @@ export default function Hero({ image, ready }) {
               value={checkOut}
               min={checkIn || undefined}
               onChange={(e) => setCheckOut(e.target.value)}
-              className="h-11 min-w-0 max-w-full"
+              className="h-11 block"
             />
           </div>
           <div className="flex-1 w-full space-y-1">
