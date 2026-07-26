@@ -5,6 +5,7 @@ const PAGE_HERO_LABELS = {
   "hero:home": "Homepage",
   "hero:search": "Search",
   "hero:guides": "Things To Do",
+  "hero:collections": "Collections",
   "hero:about": "About",
   "hero:contact": "Contact",
   "hero:list-your-property": "List Your Property",
