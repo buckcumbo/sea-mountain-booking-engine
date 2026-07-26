@@ -56,7 +56,10 @@ export default function Hero({ image, ready }) {
           loading="eager"
           fetchpriority="high"
           decoding="async"
-          className="absolute inset-0 w-full h-full object-cover fade-in"
+          // Mobile crops the wide photo hard — bias the frame toward the
+          // lower part so the house shows above the search card instead of
+          // mostly sky. Desktop keeps the normal center crop.
+          className="absolute inset-0 w-full h-full object-cover object-[center_72%] md:object-center fade-in"
           onError={(e) => { e.target.style.display = "none"; }}
         />
       )}
