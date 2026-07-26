@@ -19,11 +19,14 @@ export default function CollectionGrid({ images }) {
           >
             {img && (
               <>
-                <Image
+                {/* Plain img on purpose — see AreaGrid: curated photos skip
+                    the CDN transform pipeline. */}
+                <img
                   src={img.imageUrl}
                   alt={img.altText || label}
-                  fittingType="fill"
-                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = "none"; }}
                 />
                 {/* Bottom-weighted wash: photo stays visible, text stays readable. */}
                 <div className="absolute inset-0 bg-gradient-to-t from-coast-navy/85 via-coast-navy/30 to-coast-ocean/15" />
