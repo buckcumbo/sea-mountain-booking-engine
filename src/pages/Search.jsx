@@ -241,7 +241,7 @@ export default function Search() {
       return pa - pb;
     });
     return { items: computed, prices };
-  }, [listings, calendarMap, filters, sort, passedIds]);
+  }, [listings, calendarMap, filters, sort, passedIds, shuffleSeed]);
 
   const hasActiveFilters =
     filters.guests > 0 ||
