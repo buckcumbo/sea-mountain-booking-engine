@@ -1,4 +1,4 @@
-import { Waves, PawPrint, Droplets, Anchor, Wallet, Crown, Users } from "lucide-react";
+import { Waves, PawPrint, Droplets, Anchor, Wallet, Crown } from "lucide-react";
 
 // Canonical collection config. `slug` is the URL slug for /collections/:slug;
 // `match` lists the stored Listing.collections values (slugified) that resolve
