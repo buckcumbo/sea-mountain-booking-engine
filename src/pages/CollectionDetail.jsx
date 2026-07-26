@@ -1,16 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Loader2, Search as SearchIcon, Layers } from "lucide-react";
+import { Loader2, Search as SearchIcon, Layers, BadgeCheck, Users2, ShieldCheck, ArrowUpRight } from "lucide-react";
+import HeroBackground from "@/components/HeroBackground";
+import { useSiteImageMap } from "@/hooks/useSiteImageMap";
 import { Button } from "@/components/ui/button";
 import ListingCard from "@/components/search/ListingCard";
 import { COLLECTIONS, COLLECTION_BY_SLUG, listingMatchesCollection } from "@/lib/collections";
 import Seo from "@/components/Seo";
 import { buildCalendarMap, computeListingPrice } from "@/lib/availability";
 
+// Guest-facing explainer for The 100 Collection — every claim comes from
+// theonehundredcollection.com. Other collections have no about block.
+const HUNDRED_ABOUT = {
+  heading: "What is The 100 Collection™?",
+  intro:
+    "The 100 Collection™ is an independent, curated guide to the best vacation rentals in the US, Mexico, and Canada. Homes don't buy their way in — they're personally vetted, and only properties managed by professional hospitality teams make the list. These Sea Mountain homes met that standard.",
+  points: [
+    {
+      icon: BadgeCheck,
+      title: "Personally vetted",
+      body: "Every 100 Collection home is individually evaluated for quality and comfort — not self-nominated, not pay-to-play.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Professionally managed",
+      body: "The badge requires a professional hospitality team behind the home — real people accountable for your stay.",
+    },
+    {
+      icon: Users2,
+      title: "3.5 million+ guests",
+      body: "Collection partners across three countries have hosted millions of stays. The standard travels.",
+    },
+  ],
+};
+
 export default function CollectionDetail() {
   const { slug } = useParams();
   const cfg = COLLECTION_BY_SLUG[slug];
+  // Hero image: a dedicated hero:collection:<slug> upload wins; otherwise the
+  // collection's card image does double duty.
+  const heroImages = useSiteImageMap([`hero:collection:${slug}`, `collection-card:${slug}`]);
+  const heroImage = heroImages[`hero:collection:${slug}`] || heroImages[`collection-card:${slug}`];
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
@@ -71,7 +102,7 @@ export default function CollectionDetail() {
         path={`/collections/${slug}`}
       />
       <section className="relative overflow-hidden bg-coast-navy">
-        <div className="absolute inset-0 bg-gradient-to-b from-coast-navy-soft to-coast-navy" />
+        <HeroBackground image={heroImage} />
         <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">
           <div className="text-sm text-white/70 mb-2">
             <Link to="/collections" className="hover:text-white">Collections</Link>
@@ -80,6 +111,38 @@ export default function CollectionDetail() {
           <p className="mt-3 text-white/85 max-w-2xl">{cfg.blurb}</p>
         </div>
       </section>
+
+      {slug === "the-100-collection" && (
+        <section className="max-w-7xl mx-auto px-6 pt-10">
+          <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+            <h2 className="font-heading text-xl font-semibold text-coast-navy mb-2">
+              {HUNDRED_ABOUT.heading}
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-3xl mb-6">{HUNDRED_ABOUT.intro}</p>
+            <div className="grid sm:grid-cols-3 gap-5">
+              {HUNDRED_ABOUT.points.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="flex gap-3">
+                  <div className="w-9 h-9 rounded-full bg-coast-sand flex items-center justify-center shrink-0">
+                    <Icon className="w-4.5 h-4.5 text-coast-ocean" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-coast-navy">{title}</div>
+                    <p className="text-xs text-muted-foreground mt-0.5">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <a
+              href="https://www.theonehundredcollection.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-coast-ocean hover:underline mt-5"
+            >
+              Learn more at theonehundredcollection.com <ArrowUpRight className="w-3 h-3" />
+            </a>
+          </div>
+        </section>
+      )}
 
       <section className="max-w-7xl mx-auto px-6 py-10">
         <h2 className="font-heading text-lg font-semibold text-coast-navy mb-6">
