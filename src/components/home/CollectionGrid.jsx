@@ -30,7 +30,7 @@ export default function CollectionGrid({ images }) {
               </>
             )}
             {/* Corner scrim keeps the badge/icon legible over bright photo tops. */}
-            <div className="absolute top-0 right-0 w-28 h-24 bg-gradient-to-bl from-coast-navy/55 via-coast-navy/20 to-transparent pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-28 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(23,48,79,0.55),transparent_68%)]" />
             {slug === "the-100-collection" ? (
               <div className="absolute top-4 right-4 w-12 h-12 opacity-80 group-hover:opacity-100 transition-opacity">
                 <Image
