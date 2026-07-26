@@ -1,4 +1,4 @@
-import { Waves, PawPrint, Droplets, Anchor, Wallet, Crown, Users, Trees } from "lucide-react";
+import { Waves, PawPrint, Droplets, Anchor, Wallet, Crown, Users } from "lucide-react";
 
 // Canonical collection config. `slug` is the URL slug for /collections/:slug;
 // `match` lists the stored Listing.collections values (slugified) that resolve
@@ -30,7 +30,8 @@ export const COLLECTIONS = [
     label: "Channel Homes",
     blurb: "Homes along the Grand Strand's salt-marsh channels.",
     icon: Anchor,
-    match: ["channel-homes"],
+    // "marshfront" is the same waterfront — legacy tag folds in here.
+    match: ["channel-homes", "marshfront"],
   },
   {
     slug: "budget-friendly",
@@ -52,13 +53,6 @@ export const COLLECTIONS = [
     blurb: "Room for everyone: multigenerational getaways made easy.",
     icon: Users,
     match: ["family"],
-  },
-  {
-    slug: "marshfront",
-    label: "Marshfront",
-    blurb: "Front-row seats to the lowcountry marsh and its sunsets.",
-    icon: Trees,
-    match: ["marshfront"],
   },
 ];
 
