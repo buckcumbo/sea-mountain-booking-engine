@@ -209,3 +209,19 @@ html,
 body {
   overflow-x: hidden;
 }
+
+/* iOS Safari gives <input type="date"> an intrinsic UA width and ignores
+   width:100%, so its border paints past rounded card edges ("lines outside
+   the box"). Resetting appearance makes it obey the layout like any input.
+   The inner value pseudo-element keeps a line-height so the control doesn't
+   collapse or stretch when empty. */
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+}
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  min-height: 1.25em;
+}
