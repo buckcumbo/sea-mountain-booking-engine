@@ -136,7 +136,7 @@ export default function Hero({ image, ready }) {
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
-              src={TOUR_VIDEO_URL}
+              src={`${TOUR_VIDEO_URL}?autoplay=1`}
               className="absolute inset-0 w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
