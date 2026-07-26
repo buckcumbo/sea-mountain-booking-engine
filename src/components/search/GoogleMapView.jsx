@@ -91,6 +91,7 @@ export default function GoogleMapView({ listings, prices, selectedId, onSelect, 
 
   useEffect(() => {
     if (!ready || !divRef.current) return;
+    try {
     const g = window.google;
     if (!mapRef.current) {
       mapRef.current = new g.maps.Map(divRef.current, {
@@ -174,6 +175,11 @@ export default function GoogleMapView({ listings, prices, selectedId, onSelect, 
     }
 
     if (hasBounds) map.fitBounds(bounds, 44);
+    } catch (e) {
+      // A map failure must never blank the page — degrade to the fallback.
+      console.error("[GoogleMapView]", e);
+      setFailed(true);
+    }
   }, [ready, singles, stacks, areaGroups, prices, selectedId, onSelect]);
 
   if (failed) {
