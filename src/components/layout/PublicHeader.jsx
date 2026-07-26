@@ -28,6 +28,7 @@ import { useFavorites } from "@/lib/FavoritesContext";
 import { useAuth } from "@/lib/AuthContext";
 import HundredCollectionBadge from "@/components/layout/HundredCollectionBadge";
 import { BRAND_LOGOS } from "@/lib/brand";
+import { useSiteSettings, resolveLogoSettings, LOGO_SETTING_KEYS } from "@/hooks/useSiteSettings";
 
 // One tappable row of the mobile menu: icon + label + chevron, 44px min
 // height so thumbs never miss.
@@ -62,15 +63,19 @@ export default function PublicHeader() {
   const areas = Object.entries(AREA_LABELS);
   const { count } = useFavorites();
   const { isAuthenticated } = useAuth();
+  // Logo variant + size are admin-tunable (Admin → Site Images → Branding).
+  const settings = useSiteSettings(LOGO_SETTING_KEYS);
+  const logo = resolveLogoSettings(settings);
 
   return (
     <header className="sticky top-0 z-40 bg-coast-navy text-white border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
         <Link to="/" className="flex items-center shrink-0" aria-label="Sea Mountain Vacations home">
           <img
-            src={BRAND_LOGOS.lockupWhite}
+            src={logo.variant === "mark" ? BRAND_LOGOS.markWhite : BRAND_LOGOS.lockupWhite}
             alt="Sea Mountain Vacations"
-            className="h-14 w-auto object-contain"
+            style={{ height: `${logo.height}px` }}
+            className="w-auto object-contain"
           />
         </Link>
 
