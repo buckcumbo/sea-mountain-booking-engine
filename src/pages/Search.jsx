@@ -331,7 +331,9 @@ export default function Search() {
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-2">
+              {/* flex-wrap: on phones this row is wider than the screen and
+                  clipped the Map toggle — wrapping beats truncating. */}
+              <div className="flex flex-wrap items-center gap-2">
                 <Link
                   to="/match"
                   className="h-9 inline-flex items-center gap-1.5 text-xs font-medium bg-coast-sunset text-white rounded-lg px-3 hover:bg-coast-sunset-deep transition-colors"
@@ -341,7 +343,7 @@ export default function Search() {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="h-9 rounded-lg border border-border bg-card text-sm px-3 text-coast-navy"
+                  className="h-9 min-w-0 flex-1 sm:flex-none rounded-lg border border-border bg-card text-sm px-3 text-coast-navy"
                 >
                   <option value="recommended">Recommended</option>
                   <option value="price">Price: low to high</option>
