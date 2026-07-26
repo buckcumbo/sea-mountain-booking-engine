@@ -23,9 +23,13 @@ export function useSiteImageMap(keys) {
         for (const k of wanted) {
           if (lookup[k]) result[k] = lookup[k];
         }
+        // `ready` marks that the lookup finished — callers use it to avoid
+        // flashing hardcoded fallbacks while records are still loading.
+        // (Safe sentinel: real keys are namespaced like "hero:home".)
+        result.ready = true;
         if (!cancelled) setMap(result);
       } catch {
-        if (!cancelled) setMap({});
+        if (!cancelled) setMap({ ready: true });
       }
     })();
     return () => {
