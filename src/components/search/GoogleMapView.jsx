@@ -101,6 +101,11 @@ export default function GoogleMapView({ listings, prices, selectedId, onSelect, 
         center: { lat: 33.7, lng: -78.9 },
         zoom: 11,
         mapId: GOOGLE_MAPS_MAP_ID,
+        // Aerial look (satellite imagery + labels), matching the 100
+        // Collection's destination maps. 45° imagery kicks in automatically
+        // where Google has it at close zooms.
+        mapTypeId: "hybrid",
+        tilt: 45,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
