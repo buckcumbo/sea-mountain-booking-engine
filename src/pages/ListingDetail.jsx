@@ -251,7 +251,11 @@ export default function ListingDetail() {
               )}
             </section>
 
-            <VideoTour videoUrl={listing.videoUrl} tourUrl={listing.tourUrl} />
+            <VideoTour
+              videoUrl={listing.videoUrl}
+              tourUrl={listing.tourUrl}
+              poster={listing.photos?.[1]?.url || listing.photos?.[0]?.url}
+            />
 
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">Location</h2>
