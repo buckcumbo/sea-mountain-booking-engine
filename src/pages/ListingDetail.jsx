@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
+import { curatedAmenities } from "@/lib/amenities";
 import CollectionMemberBadge from "@/components/listing/CollectionMemberBadge";
 import StoryDescription from "@/components/listing/StoryDescription";
 import VideoTour from "@/components/listing/VideoTour";
