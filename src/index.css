@@ -174,6 +174,11 @@
   border-radius: inherit;
   font: inherit;
   background: hsl(var(--coast-foam));
+  /* Leaflet's internal panes use z-index up to ~1000, which punches through
+     page overlays (video/photo lightboxes, sticky header). Isolating the
+     container keeps all of that stacking private to the map. */
+  isolation: isolate;
+  z-index: 0;
 }
 .leaflet-control a {
   color: hsl(var(--coast-navy));
