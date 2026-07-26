@@ -20,6 +20,7 @@ import LazyIframe from "@/components/LazyIframe";
 import ListingCard from "@/components/search/ListingCard";
 import { computeListingPrice } from "@/lib/availability";
 import { getRecentlyViewed } from "@/lib/recentlyViewed";
+import { getSessionSeed, seededShuffle } from "@/lib/shuffle";
 
 // Placeholder cards shown while listings load — the section never renders its
 // empty/blank state during the initial fetch.
@@ -78,7 +79,12 @@ export default function Home() {
       try {
         // Card pricing uses the precomputed listing.fromRate — no calendar fetch.
         const all = await base44.entities.Listing.list("-created_date", 500);
-        const f = all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false);
+        // Shuffle per session so the homepage spotlights a different set of
+        // 100 Collection homes for each visitor instead of the same four.
+        const f = seededShuffle(
+          all.filter((l) => listingMatchesCollection(l, "the-100-collection") && l.active !== false),
+          getSessionSeed()
+        );
         setFeatured(f.slice(0, 4));
         setNewest(all.filter((l) => l.active !== false).slice(0, 4));
         // Recently viewed — ids from localStorage, resolved against the
