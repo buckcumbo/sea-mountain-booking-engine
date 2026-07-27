@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon, Play, X } from "lucide-react";
 import { sizedImageUrl } from "@/lib/mediaUrl";
+import { useSiteCopy } from "@/hooks/useSiteCopy";
 
 const TOUR_VIDEO_URL =
   "https://properties.williamcoveymedia.com/videos/019e0af8-01a6-700a-acf0-ae4458ec1c30";
@@ -26,6 +27,7 @@ export default function Hero({ image, ready }) {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(0);
   const [showFilm, setShowFilm] = useState(false);
+  const { t } = useSiteCopy();
 
   useEffect(() => {
     if (!showFilm) return;
@@ -66,12 +68,9 @@ export default function Hero({ image, ready }) {
       <div className="absolute inset-0 bg-gradient-to-b from-coast-navy/50 via-coast-navy/40 to-coast-navy/75" />
       <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28 text-white">
         <h1 className="font-heading text-3xl md:text-5xl font-semibold max-w-3xl leading-tight">
-          Vacation Rentals in North Myrtle Beach &amp; the Grand Strand
+          {t("home:hero:title")}
         </h1>
-        <p className="mt-4 text-white/85 max-w-xl">
-          Stay in one of our 100 Collection homes along the South Carolina coast: oceanfront,
-          channel, and poolside escapes managed by a local on-the-ground team.
-        </p>
+        <p className="mt-4 text-white/85 max-w-xl">{t("home:hero:subhead")}</p>
         <form
           onSubmit={submit}
           className="mt-8 bg-white text-coast-navy rounded-2xl shadow-xl p-3 flex flex-col md:flex-row md:items-end gap-3 max-w-3xl"
@@ -115,7 +114,7 @@ export default function Hero({ image, ready }) {
           <span className="w-11 h-11 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center group-hover:bg-coast-sunset group-hover:border-coast-sunset transition-colors">
             <Play className="w-4 h-4 fill-current ml-0.5" />
           </span>
-          Watch the tour
+          {t("home:hero:videoLabel")}
         </button>
       </div>
 
