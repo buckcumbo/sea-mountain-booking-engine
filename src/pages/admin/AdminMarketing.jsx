@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import AdminShell from "@/components/admin/AdminShell";
 import Seo from "@/components/Seo";
 import { useToast } from "@/components/ui/use-toast";
+import KlaviyoPanel from "@/components/admin/KlaviyoPanel";
 
 const fmtMoney = (n) =>
   n == null ? "—" : `$${Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
@@ -149,6 +150,7 @@ export default function AdminMarketing() {
     <AdminShell title="Marketing" subtitle="Meta ad campaigns, spend, and KPIs">
       <Seo title="Marketing | Admin" path="/admin/marketing" robots="noindex,nofollow" />
 
+      {/* Meta (paid social) section */}
       {loading ? (
         <div className="flex justify-center py-24">
           <Loader2 className="w-6 h-6 animate-spin text-coast-ocean" />
@@ -323,6 +325,9 @@ export default function AdminMarketing() {
           </p>
         </>
       ) : null}
+
+      {/* Email (Klaviyo) section shares the same date-range toggle */}
+      <KlaviyoPanel days={days} />
     </AdminShell>
   );
 }
