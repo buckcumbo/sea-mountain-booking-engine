@@ -20,6 +20,7 @@ import { track } from "@/lib/analytics";
 import { listingMatchesFeatures } from "@/lib/features";
 import { getPassedListings, clearPassedListings } from "@/lib/passedListings";
 import { getSessionSeed, seededOrder } from "@/lib/shuffle";
+import { useSiteCopy } from "@/hooks/useSiteCopy";
 import HeroBackground from "@/components/HeroBackground";
 import { useSiteImage } from "@/hooks/useSiteImageMap";
 
@@ -57,6 +58,7 @@ export default function Search() {
   const shuffleSeed = useMemo(() => getSessionSeed(), []);
   const [selectedId, setSelectedId] = useState(null);
   const heroImage = useSiteImage("hero:search");
+  const { t } = useSiteCopy();
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
     const collection = p.get("collection");
@@ -265,8 +267,8 @@ export default function Search() {
         <section className="relative overflow-hidden bg-coast-navy">
           <HeroBackground image={heroImage} />
           <div className="relative max-w-7xl mx-auto px-6 py-16 text-white">
-            <h1 className="font-heading text-3xl md:text-5xl font-semibold">Find a Vacation Rental</h1>
-            <p className="mt-3 text-white/80 max-w-2xl">Search oceanfront condos, beach houses, and pet-friendly stays across the Grand Strand.</p>
+            <h1 className="font-heading text-3xl md:text-5xl font-semibold">{t("search:hero:title")}</h1>
+            <p className="mt-3 text-white/80 max-w-2xl">{t("search:hero:subhead")}</p>
           </div>
         </section>
       )}
