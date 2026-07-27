@@ -21,6 +21,7 @@ import ListingCard from "@/components/search/ListingCard";
 import { computeListingPrice } from "@/lib/availability";
 import { getRecentlyViewed } from "@/lib/recentlyViewed";
 import { getSessionSeed, seededShuffle } from "@/lib/shuffle";
+import { useSiteCopy } from "@/hooks/useSiteCopy";
 
 // Placeholder cards shown while listings load — the section never renders its
 // empty/blank state during the initial fetch.
@@ -60,11 +61,8 @@ function Section({ title, subtitle, viewAllTo, children }) {
   );
 }
 
-const WHY = [
-  { icon: Receipt, title: "No booking fees", text: "Book direct and skip the marketplace service fees. The price you see is the price you pay." },
-  { icon: MapPin, title: "A local team", text: "Our Grand Strand-based team knows every home and is on call throughout your stay." },
-  { icon: Tag, title: "Best direct rates", text: "Direct bookings unlock our lowest rates and exclusive offers on 100 Collection homes." },
-];
+// Icons only — titles/text come from Site Copy (Admin → Site Copy).
+const WHY_ICONS = [Receipt, MapPin, Tag];
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -73,6 +71,7 @@ export default function Home() {
   const [recent, setRecent] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
   const siteImages = useSiteImageMap(HOMEPAGE_IMAGE_KEYS);
+  const { t } = useSiteCopy();
 
   useEffect(() => {
     (async () => {
@@ -126,7 +125,7 @@ export default function Home() {
         </Section>
       )}
 
-      <Section title="Browse by Collection" subtitle="From oceanfront retreats to budget-friendly getaways, find the perfect fit.">
+      <Section title={t("home:collections:title")} subtitle={t("home:collections:subtitle")}>
         <CollectionGrid images={siteImages} />
       </Section>
 
@@ -140,31 +139,29 @@ export default function Home() {
               <Heart className="w-6 h-6 text-white fill-current" />
             </div>
             <div>
-              <h2 className="font-heading text-xl font-semibold">Can't decide? Play matchmaker.</h2>
-              <p className="text-sm text-white/75 mt-0.5">
-                Swipe through our homes — right to save, left to pass — until you find the one.
-              </p>
+              <h2 className="font-heading text-xl font-semibold">{t("home:match:title")}</h2>
+              <p className="text-sm text-white/75 mt-0.5">{t("home:match:subtitle")}</p>
             </div>
           </div>
           <span className="shrink-0 bg-coast-sunset group-hover:bg-coast-sunset-deep transition-colors text-white text-sm font-medium rounded-xl px-5 py-3">
-            Find your match →
+            {t("home:match:button")}
           </span>
         </Link>
       </section>
 
-      <Section title="Explore Our Areas" subtitle="Six distinct communities along the Grand Strand, each with its own coastal character.">
+      <Section title={t("home:areas:title")} subtitle={t("home:areas:subtitle")}>
         <AreaGrid images={siteImages} />
       </Section>
 
       <Section
-        title="The 100 Collection™"
-        subtitle="The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard. They don't settle for less than 100%."
+        title={t("home:hundred:title")}
+        subtitle={t("home:hundred:subtitle")}
         viewAllTo="/collections/the-100-collection"
       >
         {loading ? <SkeletonCards count={4} /> : <FeaturedRentals listings={featured} calendarMap={calendarMap} />}
       </Section>
 
-      <Section title="Just Added" subtitle="The newest homes to join our Grand Strand lineup.">
+      <Section title={t("home:new:title")} subtitle={t("home:new:subtitle")}>
         {loading ? (
           <SkeletonCards count={4} className="flex gap-5 overflow-hidden [&>div]:min-w-[280px] [&>div]:max-w-[280px]" />
         ) : (
@@ -174,7 +171,10 @@ export default function Home() {
 
       <section className="bg-coast-sand">
         <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-3 gap-8">
-          {WHY.map(({ icon: Icon, title, text }) => (
+          {WHY_ICONS.map((Icon, i) => {
+            const title = t(`home:why${i + 1}:title`);
+            const text = t(`home:why${i + 1}:text`);
+            return (
             <div key={title} className="flex gap-4">
               <div className="w-11 h-11 rounded-full bg-white text-coast-ocean flex items-center justify-center shrink-0">
                 <Icon className="w-5 h-5" />
@@ -184,14 +184,12 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mt-1">{text}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
-      <Section
-        title="Take a Look Around"
-        subtitle="A quick tour of what staying with us actually looks like."
-      >
+      <Section title={t("home:video:title")} subtitle={t("home:video:subtitle")}>
         <div className="relative aspect-video rounded-2xl overflow-hidden bg-coast-navy max-w-4xl">
           <LazyIframe
             src="https://properties.williamcoveymedia.com/videos/019e0af8-01a6-700a-acf0-ae4458ec1c30"
@@ -206,7 +204,7 @@ export default function Home() {
         </div>
       </Section>
 
-      <Section title="What Our Guests Say" subtitle="Verified reviews from our recent guests.">
+      <Section title={t("home:reviews:title")} subtitle={t("home:reviews:subtitle")}>
         <div className="w-full">
           <LazyIframe
             src="https://embed.joinreva.com/widgets/959b0dfd-c95f-4730-9f81-522a32ad120e"
