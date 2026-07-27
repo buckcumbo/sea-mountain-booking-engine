@@ -1,0 +1,36 @@
+{
+  "name": "SiteCopy",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Namespaced copy key, e.g. home:hero:title (unique, enforced by admin UI upsert)"
+    },
+    "value": {
+      "type": "string",
+      "description": "The text shown on the site"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
