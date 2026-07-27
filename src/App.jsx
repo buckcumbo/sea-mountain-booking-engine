@@ -23,6 +23,7 @@ import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminAnalytics from '@/pages/admin/AdminAnalytics';
 import AdminImages from '@/pages/admin/AdminImages';
 import AdminCopy from '@/pages/admin/AdminCopy';
+import AdminMarketing from '@/pages/admin/AdminMarketing';
 import AdminGuard from '@/components/admin/AdminGuard';
 import Home from '@/pages/Home';
 import PublicLayout from '@/components/layout/PublicLayout';
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/analytics" element={<AdminGuard allowedRoles={["admin"]}><AdminAnalytics /></AdminGuard>} />
       <Route path="/admin/images" element={<AdminGuard allowedRoles={["admin"]}><AdminImages /></AdminGuard>} />
       <Route path="/admin/copy" element={<AdminGuard allowedRoles={["admin"]}><AdminCopy /></AdminGuard>} />
+      <Route path="/admin/marketing" element={<AdminGuard allowedRoles={["admin"]}><AdminMarketing /></AdminGuard>} />
       <Route path="/today" element={<AdminGuard allowedRoles={["admin", "staff"]}><Today /></AdminGuard>} />
       <Route path="*" element={<LegacyCatchAll />} />
     </Routes>
