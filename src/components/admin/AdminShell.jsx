@@ -8,6 +8,7 @@ import {
   Users,
   BarChart3,
   Image as ImageIcon,
+  Type,
 } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { normalizeRole } from "@/lib/roles";
@@ -20,6 +21,7 @@ const ALL_NAV = [
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["admin"] },
   { to: "/admin/images", label: "Images", icon: ImageIcon, roles: ["admin"] },
+  { to: "/admin/copy", label: "Site Copy", icon: Type, roles: ["admin"] },
 ];
 
 export default function AdminShell({ title, subtitle, children, actions }) {
