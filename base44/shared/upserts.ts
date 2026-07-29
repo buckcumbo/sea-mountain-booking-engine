@@ -2,7 +2,19 @@
 // Each looks up the existing record by its natural key before insert/update.
 
 // Editorial fields that sync must never overwrite.
-const EDITORIAL_FIELDS = ["revaWidgetId", "photosManaged", "photos", "videoUrl", "tourUrl", "amenitiesHidden"];
+const EDITORIAL_FIELDS = [
+  "revaWidgetId",
+  "photosManaged",
+  "photos",
+  "videoUrl",
+  "tourUrl",
+  "amenitiesHidden",
+  // Admin-written promo callout + function-managed price-drop tracking:
+  // sync must never overwrite or clear these.
+  "promoBadge",
+  "priceDropFrom",
+  "priceDropAt",
+];
 
 export async function upsertListingByGuestyId(base44, data) {
   const syncData = { ...data };
