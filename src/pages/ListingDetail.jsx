@@ -317,6 +317,15 @@ export default function ListingDetail() {
               )
             )}
 
+            {/* On phones these lived in the (now desktop-only) sidebar —
+                they still earn their keep, just after the substance. */}
+            {isMobile && listing.active !== false && (
+              <div className="space-y-4">
+                <AskAboutHome listing={listing} />
+                <TrustBlock />
+              </div>
+            )}
+
             <section className="space-y-3">
               <h2 className="font-heading text-lg font-semibold text-coast-navy">You may also like</h2>
               <RelatedListings current={listing} listings={related} calendarMap={calendarMap} />
