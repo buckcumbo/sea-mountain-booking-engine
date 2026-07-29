@@ -39,10 +39,21 @@ Deno.serve(async (req) => {
         }
         const fromRate = minAvailable ?? minAny;
         if (fromRate != null && listing.fromRate !== fromRate) {
-          await svc.Listing.update(listing.id, { fromRate });
+          const patch: Record<string, unknown> = { fromRate };
+          const old = Number(listing.fromRate) || 0;
+          if (old > 0 && fromRate <= old * 0.95) {
+            // Real drop (>=5%): record it so the site can say "was $X" honestly.
+            patch.priceDropFrom = old;
+            patch.priceDropAt = new Date().toISOString();
+          } else if (fromRate > old && listing.priceDropAt) {
+            // Price went back up — the claim is no longer true, clear it.
+            patch.priceDropFrom = null;
+            patch.priceDropAt = null;
+          }
+          await svc.Listing.update(listing.id, patch);
           updated++;
         } else if (fromRate == null && listing.fromRate != null) {
-          await svc.Listing.update(listing.id, { fromRate: 0 });
+          await svc.Listing.update(listing.id, { fromRate: 0, priceDropFrom: null, priceDropAt: null });
           cleared++;
         }
       } catch (e) {
