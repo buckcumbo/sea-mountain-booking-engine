@@ -88,6 +88,19 @@
       "type": "number",
       "description": "Precomputed lowest upcoming nightly rate (display only) \u2014 refreshed nightly by refreshFromRates so cards never need the full calendar"
     },
+    "priceDropFrom": {
+      "type": "number",
+      "description": "Previous fromRate before a real >=5% drop - set/cleared only by refreshFromRates; powers the honest Price Drop badge"
+    },
+    "priceDropAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the drop was detected; the badge expires 14 days later"
+    },
+    "promoBadge": {
+      "type": "string",
+      "description": "Editorial promo callout written by admins (e.g. 'Early-bird: $100 off September stays') - only shown when deliberately set, never generated"
+    },
     "active": {
       "type": "boolean",
       "default": true
