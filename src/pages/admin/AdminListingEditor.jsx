@@ -98,6 +98,7 @@ export default function AdminListingEditor() {
         revaWidgetId: form.revaWidgetId || null,
         videoUrl: form.videoUrl || null,
         tourUrl: form.tourUrl || null,
+        promoBadge: (form.promoBadge || "").trim() || null,
         amenitiesHidden: form.amenitiesHidden || [],
       };
       await base44.entities.Listing.update(listing.id, patch);
@@ -317,6 +318,18 @@ export default function AdminListingEditor() {
             />
           </Field>
         </div>
+        <Field label="Promo callout" className="mt-4">
+          <Input
+            value={form.promoBadge || ""}
+            onChange={(e) => set({ promoBadge: e.target.value })}
+            maxLength={80}
+            placeholder='e.g. Early-bird: $100 off September stays'
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Shows as a badge on this listing's page. Only write offers that are real and
+            currently honored — clear it when the offer ends.
+          </p>
+        </Field>
         <Field label="Sleeping arrangements" className="mt-4">
           <SleepsWhereEditor
             items={form.sleepsWhere}
