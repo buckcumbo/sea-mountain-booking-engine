@@ -14,6 +14,7 @@ import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } fro
 import { listingMatchesCollection } from "@/lib/collections";
 import { curatedAmenities } from "@/lib/amenities";
 import ListingCallouts from "@/components/listing/ListingCallouts";
+import { useIsMobile } from "@/hooks/use-mobile";
 import CollectionMemberBadge from "@/components/listing/CollectionMemberBadge";
 import StoryDescription from "@/components/listing/StoryDescription";
 import VideoTour from "@/components/listing/VideoTour";
@@ -133,6 +134,9 @@ export default function ListingDetail() {
     () => (listing ? curatedAmenities(listing) : []),
     [listing]
   );
+  // On phones the booking panel renders directly under the title — checking
+  // dates is the #1 job of this page and it must not live below the story.
+  const isMobile = useIsMobile();
 
   if (loading) {
     return (
@@ -214,6 +218,22 @@ export default function ListingDetail() {
                 </div>
               )}
             </div>
+
+            {isMobile && (
+              <div id="booking">
+                {listing.active === false ? (
+                  <div className="bg-card border border-border rounded-2xl p-6 text-center">
+                    <p className="font-heading font-semibold text-coast-navy">This property is no longer available</p>
+                    <p className="text-sm text-muted-foreground mt-2">Browse our other Grand Strand rentals.</p>
+                    <Button asChild className="mt-4 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
+                      <Link to="/search">Find a rental</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <BookingPanel listing={listing} cal={cal} restore={restore} />
+                )}
+              </div>
+            )}
 
             {listing.storyCopy && (
               <section className="space-y-2">
@@ -303,23 +323,25 @@ export default function ListingDetail() {
             </section>
           </div>
 
-          <aside id="booking" className="lg:sticky lg:top-6 lg:self-start">
-            {listing.active === false ? (
-              <div className="bg-card border border-border rounded-2xl p-6 text-center">
-                <p className="font-heading font-semibold text-coast-navy">This property is no longer available</p>
-                <p className="text-sm text-muted-foreground mt-2">Browse our other Grand Strand rentals.</p>
-                <Button asChild className="mt-4 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
-                  <Link to="/search">Find a rental</Link>
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <BookingPanel listing={listing} cal={cal} restore={restore} />
-                <AskAboutHome listing={listing} />
-                <TrustBlock />
-              </div>
-            )}
-          </aside>
+          {!isMobile && (
+            <aside id="booking" className="lg:sticky lg:top-6 lg:self-start">
+              {listing.active === false ? (
+                <div className="bg-card border border-border rounded-2xl p-6 text-center">
+                  <p className="font-heading font-semibold text-coast-navy">This property is no longer available</p>
+                  <p className="text-sm text-muted-foreground mt-2">Browse our other Grand Strand rentals.</p>
+                  <Button asChild className="mt-4 bg-coast-sunset hover:bg-coast-sunset-deep text-white">
+                    <Link to="/search">Find a rental</Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <BookingPanel listing={listing} cal={cal} restore={restore} />
+                  <AskAboutHome listing={listing} />
+                  <TrustBlock />
+                </div>
+              )}
+            </aside>
+          )}
         </div>
       </main>
       <MobileBookingBar listing={listing} price={price} />
