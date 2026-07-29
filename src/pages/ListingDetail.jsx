@@ -13,6 +13,7 @@ import {
 import { prettifyArea, computeListingPrice, buildCalendarMap, isValidCoord } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
 import { curatedAmenities } from "@/lib/amenities";
+import ListingCallouts from "@/components/listing/ListingCallouts";
 import CollectionMemberBadge from "@/components/listing/CollectionMemberBadge";
 import StoryDescription from "@/components/listing/StoryDescription";
 import VideoTour from "@/components/listing/VideoTour";
@@ -199,6 +200,7 @@ export default function ListingDetail() {
               {listingMatchesCollection(listing, "the-100-collection") && (
                 <CollectionMemberBadge />
               )}
+              <ListingCallouts listing={listing} />
               {visibleAmenities.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
                   {visibleAmenities.map(({ key, label }) => (
