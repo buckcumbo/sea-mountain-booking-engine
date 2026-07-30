@@ -101,6 +101,11 @@
       "type": "string",
       "description": "Editorial promo callout written by admins (e.g. 'Early-bird: $100 off September stays') - only shown when deliberately set, never generated"
     },
+    "weeklyDeal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Editorial: featured in the homepage weekly-stays deals section (used to boost low-occupancy homes)"
+    },
     "active": {
       "type": "boolean",
       "default": true
