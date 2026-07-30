@@ -53,8 +53,14 @@ export default function Search() {
   // Homes swiped left in the matchmaker stay out of search until reset.
   const [passedIds, setPassedIds] = useState(() => new Set(getPassedListings()));
   // Default is a session-seeded shuffle (featured homes first) so visitors
-  // don't all see the same property at the top of every search.
-  const [sort, setSort] = useState("recommended");
+  // don't all see the same property at the top of every search. ?sort= in
+  // the URL overrides it (the homepage deals section links to sort=price).
+  const [sort, setSort] = useState(() => {
+    const s = new URLSearchParams(window.location.search).get("sort");
+    return ["recommended", "price", "featured", "bedrooms", "sleeps", "newest"].includes(s)
+      ? s
+      : "recommended";
+  });
   const shuffleSeed = useMemo(() => getSessionSeed(), []);
   const [selectedId, setSelectedId] = useState(null);
   const heroImage = useSiteImage("hero:search");
