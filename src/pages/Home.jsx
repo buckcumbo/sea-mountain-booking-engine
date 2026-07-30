@@ -67,6 +67,7 @@ const WHY_ICONS = [Receipt, MapPin, Tag];
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [featured, setFeatured] = useState([]);
+  const [deals, setDeals] = useState([]);
   const [newest, setNewest] = useState([]);
   const [recent, setRecent] = useState([]);
   const [calendarMap, setCalendarMap] = useState({});
@@ -85,7 +86,19 @@ export default function Home() {
           getSessionSeed()
         );
         setFeatured(f.slice(0, 4));
-        setNewest(all.filter((l) => l.active !== false).slice(0, 4));
+        // Weekly deals: admin-flagged homes first (the lever for boosting
+        // low-occupancy properties); until any are flagged, the four lowest
+        // honest nightly rates fill the section automatically.
+        const activeListings = all.filter((l) => l.active !== false);
+        const flagged = seededShuffle(
+          activeListings.filter((l) => l.weeklyDeal === true && Number(l.fromRate) > 0),
+          getSessionSeed()
+        );
+        const cheapest = activeListings
+          .filter((l) => Number(l.fromRate) > 0)
+          .sort((a, b) => Number(a.fromRate) - Number(b.fromRate));
+        setDeals((flagged.length > 0 ? flagged : cheapest).slice(0, 4));
+        setNewest(activeListings.slice(0, 4));
         // Recently viewed — ids from localStorage, resolved against the
         // already-fetched listings, preserving most-recent-first order.
         const byId = Object.fromEntries(all.map((l) => [l.id, l]));
@@ -160,6 +173,24 @@ export default function Home() {
       >
         {loading ? <SkeletonCards count={4} /> : <FeaturedRentals listings={featured} calendarMap={calendarMap} />}
       </Section>
+
+      {deals.length > 0 && (
+        <Section
+          title={t("home:deals:title")}
+          subtitle={t("home:deals:subtitle")}
+          viewAllTo="/search?sort=price"
+        >
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {deals.map((l) => (
+              <ListingCard
+                key={l.id}
+                listing={l}
+                price={computeListingPrice(l, calendarMap, "", "")}
+              />
+            ))}
+          </div>
+        </Section>
+      )}
 
       <Section title={t("home:new:title")} subtitle={t("home:new:subtitle")}>
         {loading ? (
