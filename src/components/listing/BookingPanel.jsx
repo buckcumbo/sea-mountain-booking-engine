@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2, Users } from "lucide-react";
 import Invoice from "@/components/listing/Invoice";
+import PriceLockTimer from "@/components/listing/PriceLockTimer";
 import HeartToggle from "@/components/favorites/HeartToggle";
 import { openNightsInWindow } from "@/lib/availability";
 import { PHONE } from "@/lib/contact";
@@ -246,7 +247,18 @@ export default function BookingPanel({ listing, cal, restore }) {
       )}
 
       {quote && (
-        <div className="space-y-1.5">
+        <div className="space-y-3">
+          <Invoice quote={quote} />
+          {/* Honest countdown: the quote's REAL 24h price lock, not an
+              invented hold. Calm text until the final hour, then live
+              countdown; on expiry the quote clears for fresh pricing. */}
+          <PriceLockTimer
+            expiresAt={quote.expiresAt}
+            onExpired={() => {
+              setQuote(null);
+              setMessage("That quote expired — reselect your dates and we'll price them fresh.");
+            }}
+          />
           <input
             type="email"
             value={emailInput}
