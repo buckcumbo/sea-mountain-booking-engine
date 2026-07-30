@@ -99,6 +99,7 @@ export default function AdminListingEditor() {
         videoUrl: form.videoUrl || null,
         tourUrl: form.tourUrl || null,
         promoBadge: (form.promoBadge || "").trim() || null,
+        weeklyDeal: !!form.weeklyDeal,
         amenitiesHidden: form.amenitiesHidden || [],
       };
       await base44.entities.Listing.update(listing.id, patch);
@@ -307,6 +308,15 @@ export default function AdminListingEditor() {
                 checked={!!form.featured}
                 onCheckedChange={(v) => set({ featured: v })}
               />
+            </div>
+          </Field>
+          <Field label="Weekly deal">
+            <div className="flex items-center gap-2 h-9">
+              <Switch
+                checked={!!form.weeklyDeal}
+                onCheckedChange={(v) => set({ weeklyDeal: v })}
+              />
+              <span className="text-xs text-muted-foreground">Show in the homepage weekly-stays section</span>
             </div>
           </Field>
           <Field label="Beach walk (minutes)">
