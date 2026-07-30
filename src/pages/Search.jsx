@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import {
-  Loader2,
   LayoutGrid,
   Map as MapIcon,
   Search as SearchIcon,

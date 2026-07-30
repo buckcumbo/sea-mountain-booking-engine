@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { Receipt, MapPin, Tag, Heart } from "lucide-react";
 import Seo from "@/components/Seo";
 import { buildLocalBusinessJsonLd, DEFAULT_DESCRIPTION } from "@/lib/seo";
-import { buildCalendarMap } from "@/lib/availability";
 import { listingMatchesCollection } from "@/lib/collections";
 import { useSiteImageMap } from "@/hooks/useSiteImageMap";
 import { HOMEPAGE_IMAGE_KEYS } from "@/lib/siteImageKeys";
