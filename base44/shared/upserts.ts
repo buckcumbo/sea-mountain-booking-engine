@@ -14,6 +14,7 @@ const EDITORIAL_FIELDS = [
   "promoBadge",
   "priceDropFrom",
   "priceDropAt",
+  "weeklyDeal",
 ];
 
 export async function upsertListingByGuestyId(base44, data) {
