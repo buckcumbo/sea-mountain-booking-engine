@@ -52,6 +52,14 @@ export const SITE_COPY_GROUPS = [
         default:
           "The 100 Collection independently evaluates vacation rentals, awarding its exclusive imprint to properties that deliver the highest standard of hospitality in each unique location. These Sea Mountain homes met that standard. They don't settle for less than 100%.",
       },
+      { key: "home:deals:title", label: "Weekly deals section title", default: "A Week at the Beach, Easy on the Budget" },
+      {
+        key: "home:deals:subtitle",
+        label: "Weekly deals section subtitle",
+        multiline: true,
+        default:
+          "The lowest nightly rates in our lineup right now — room to stay the whole week.",
+      },
       { key: "home:new:title", label: "Just Added section title", default: "Just Added" },
       {
         key: "home:new:subtitle",
