@@ -17,7 +17,15 @@ export function FavoritesProvider({ children }) {
       if (isAuthenticated) {
         setLoading(true);
         try {
-          const favs = await base44.entities.Favorite.list("-created_date", 500);
+          // Filter to THIS user's rows explicitly. RLS lets admins read every
+          // user's favorites (needed for support), so an admin's .list() would
+          // return other people's rows — which once showed one user's hearts
+          // to another. Ownership is asserted here, not inferred from RLS.
+          const favs = await base44.entities.Favorite.filter(
+            { userId: user?.id },
+            "-created_date",
+            500
+          );
           if (!cancelled) {
             setItems((favs || []).map((f) => ({ id: f.id, listingId: f.listingId })));
           }
@@ -32,7 +40,7 @@ export function FavoritesProvider({ children }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.id]);
 
   const isFavorite = useCallback(
     (listingId) => items.some((f) => f.listingId === listingId),
