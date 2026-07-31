@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Image } from "@/components/ui/image";
 import { X, ChevronLeft, ChevronRight, Images, ArrowLeft } from "lucide-react";
+
+// Plain <img> on purpose throughout: the CDN-transform Image component
+// pre-crops to measured container sizes, which warped photos here exactly
+// like it warped the collection cards (see AreaGrid/CollectionGrid).
+// object-cover crops honestly in CSS; the carousel uses object-contain.
 
 // Airbnb-style gallery in three layers:
 //  1. Hero — desktop: collage (1 big + 4 small) with "Show all photos";
@@ -112,7 +116,7 @@ export default function PhotoGallery({ photos, title }) {
           className="absolute inset-0 w-full h-full"
           aria-label="Open photo gallery"
         >
-          <Image src={active.url} alt={active.caption || title || ""} fittingType="fill" className="w-full h-full" />
+          <img src={active.url} alt={active.caption || title || ""} className="w-full h-full object-cover" />
         </button>
         <span className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full tabular-nums pointer-events-none">
           {idx + 1} / {count}
@@ -127,7 +131,7 @@ export default function PhotoGallery({ photos, title }) {
           className="relative col-span-2 row-span-2 group"
           aria-label="Open photo 1"
         >
-          <Image src={collage[0].url} alt={collage[0].caption || title || ""} fittingType="fill" className="w-full h-full group-hover:brightness-95 transition-[filter]" />
+          <img src={collage[0].url} alt={collage[0].caption || title || ""} className="absolute inset-0 w-full h-full object-cover group-hover:brightness-95 transition-[filter]" />
         </button>
         {collage.slice(1).map((p, i) => (
           <button
@@ -137,7 +141,7 @@ export default function PhotoGallery({ photos, title }) {
             className="relative group"
             aria-label={`Open photo ${i + 2}`}
           >
-            <Image src={p.url} alt={p.caption || ""} fittingType="fill" className="w-full h-full group-hover:brightness-95 transition-[filter]" />
+            <img src={p.url} alt={p.caption || ""} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:brightness-95 transition-[filter]" />
           </button>
         ))}
         {/* Pad the grid when fewer than 5 photos so cells don't collapse */}
@@ -187,7 +191,7 @@ export default function PhotoGallery({ photos, title }) {
                         className={`relative overflow-hidden rounded-xl group ${pi % 3 === 0 ? "col-span-2 aspect-[2/1]" : "aspect-[4/3]"}`}
                         aria-label={`Open photo ${p.index + 1}`}
                       >
-                        <Image src={p.url} alt={p.caption || ""} fittingType="fill" className="w-full h-full group-hover:brightness-95 transition-[filter]" />
+                        <img src={p.url} alt={p.caption || ""} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:brightness-95 transition-[filter]" />
                       </button>
                     ))}
                   </div>
@@ -258,7 +262,7 @@ export default function PhotoGallery({ photos, title }) {
             >
               <ChevronLeft className="w-8 h-8" />
             </button>
-            <Image src={active.url} alt={active.caption || title || ""} fittingType="fit" className="max-h-full w-full h-full" />
+            <img src={active.url} alt={active.caption || title || ""} className="max-h-full w-full h-full object-contain" />
             <button
               type="button"
               onClick={next}
