@@ -19,6 +19,8 @@ import { track } from "@/lib/analytics";
 import { listingMatchesFeatures } from "@/lib/features";
 import { getPassedListings, clearPassedListings } from "@/lib/passedListings";
 import { getSessionSeed, seededOrder } from "@/lib/shuffle";
+import { buildTasteProfile, tasteScore } from "@/lib/personalize";
+import { useFavorites } from "@/lib/FavoritesContext";
 import { useSiteCopy } from "@/hooks/useSiteCopy";
 import HeroBackground from "@/components/HeroBackground";
 import { useSiteImage } from "@/hooks/useSiteImageMap";
@@ -64,6 +66,7 @@ export default function Search() {
   const [selectedId, setSelectedId] = useState(null);
   const heroImage = useSiteImage("hero:search");
   const { t } = useSiteCopy();
+  const { items: favoriteItems } = useFavorites();
   const [filters, setFilters] = useState(() => {
     const p = new URLSearchParams(window.location.search);
     const collection = p.get("collection");
@@ -171,6 +174,14 @@ export default function Search() {
     return [...set];
   }, [listings]);
 
+  // Per-visitor taste profile from hearts, recent views, and match-deck
+  // passes — personalizes the Recommended order (Aidaptive-style, minus the
+  // SaaS bill). Null for fresh visitors → behavior identical to before.
+  const tasteProfile = useMemo(
+    () => buildTasteProfile(listings, favoriteItems.map((f) => f.listingId)),
+    [listings, favoriteItems]
+  );
+
   const { items, prices } = useMemo(() => {
     const prices = {};
     const hasDates = !!(filters.checkIn && filters.checkOut);
@@ -219,6 +230,11 @@ export default function Search() {
         const fa = a.listing.featured ? 1 : 0;
         const fb = b.listing.featured ? 1 : 0;
         if (fb !== fa) return fb - fa;
+        // Taste similarity ranks above the shuffle; the shuffle stays as the
+        // tiebreaker so equally-matched homes still rotate per visitor.
+        const ta = tasteScore(a.listing, tasteProfile);
+        const tb = tasteScore(b.listing, tasteProfile);
+        if (tb !== ta) return tb - ta;
         return (
           seededOrder(a.listing.id, shuffleSeed) -
           seededOrder(b.listing.id, shuffleSeed)
@@ -248,7 +264,7 @@ export default function Search() {
       return pa - pb;
     });
     return { items: computed, prices };
-  }, [listings, calendarMap, filters, sort, passedIds, shuffleSeed]);
+  }, [listings, calendarMap, filters, sort, passedIds, shuffleSeed, tasteProfile]);
 
   const hasActiveFilters =
     filters.guests > 0 ||
